@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./agora-logo.png" alt="Agora" width="560">
+</p>
+
 # Agora Studio
 
 Agora Studio is a local, read-only operations console for Agora projects. It binds only to
