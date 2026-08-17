@@ -13,3 +13,6 @@ agora-studio = "agora_studio.__main__:main"
 
 [tool.setuptools.packages.find]
 include = ["agora_studio*"]
+
+[tool.setuptools.package-data]
+agora_studio = ["static/*"]

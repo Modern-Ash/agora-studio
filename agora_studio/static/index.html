@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Agora Studio</title>
+  <link rel="icon" href="/assets/agora-mark.png" type="image/png">
+  <link rel="stylesheet" href="/assets/styles.css">
+  <script src="/assets/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to project content</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Application sidebar">
+      <a class="brand" href="/" aria-label="Agora Studio home">
+        <img src="/assets/agora-mark.png" width="38" height="38" alt="">
+        <span><strong>Agora</strong><small>Studio</small></span>
+      </a>
+
+      <nav class="primary-nav" aria-label="Project views">
+        <button class="nav-item is-active" type="button" data-view="overview" disabled>
+          <span aria-hidden="true">⌂</span><span>Overview</span>
+        </button>
+        <button class="nav-item" type="button" data-view="actors" disabled>
+          <span aria-hidden="true">◎</span><span>Actors</span>
+        </button>
+        <button class="nav-item" type="button" data-view="swarms" disabled>
+          <span aria-hidden="true">⌘</span><span>Swarms</span>
+        </button>
+        <button class="nav-item" type="button" data-view="work" disabled>
+          <span aria-hidden="true">□</span><span>Work</span>
+        </button>
+        <button class="nav-item" type="button" data-view="sessions" disabled>
+          <span aria-hidden="true">↯</span><span>Sessions</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <span class="read-only-dot" aria-hidden="true"></span>
+        <span><strong>Read-only</strong><small>No project mutations</small></span>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Local operations console</p>
+          <h1 id="view-title">Select a project</h1>
+        </div>
+        <button id="refresh-button" class="icon-button" type="button" aria-label="Refresh project data" title="Refresh project data" disabled>
+          <span aria-hidden="true">↻</span>
+        </button>
+      </header>
+
+      <main id="main-content" tabindex="-1">
+        <section class="project-rail" aria-labelledby="project-path-label">
+          <form id="project-form" novalidate>
+            <div class="field-copy">
+              <label id="project-path-label" for="project-path">Local Agora project</label>
+              <span id="project-path-help">Use an absolute directory path containing .agora/project.md</span>
+            </div>
+            <div class="field-control">
+              <input id="project-path" name="path" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="/home/you/dev/project" aria-describedby="project-path-help project-path-error" required>
+              <button id="open-button" class="primary-button" type="submit">Open project</button>
+            </div>
+            <p id="project-path-error" class="field-error" role="alert"></p>
+          </form>
+          <div id="selected-project" class="selection-chip" hidden>
+            <span class="selection-status" aria-hidden="true"></span>
+            <span><small>Selected</small><strong id="selected-project-name"></strong></span>
+          </div>
+        </section>
+
+        <div id="live-status" class="sr-only" role="status" aria-live="polite"></div>
+        <section id="content" class="content-view" aria-label="Project view">
+          <div class="empty-state">
+            <span class="empty-index">00 / READY</span>
+            <h2>Open the durable state.</h2>
+            <p>Select a local Agora project to inspect its actors, delivery swarms, work, and sessions from one calm, read-only surface.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

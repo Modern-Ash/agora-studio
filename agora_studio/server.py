@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
+from pathlib import Path
 from urllib.parse import urlsplit
 
 from .core import ProjectStore, SelectionError
@@ -19,6 +20,34 @@ class StudioServer(ThreadingHTTPServer):
     def __init__(self, server_address: tuple[str, int], handler: type[BaseHTTPRequestHandler], store: ProjectStore):
         self.store = store
         super().__init__(server_address, handler)
+
+
+_STATIC_ROOT = Path(__file__).with_name("static")
+_ASSETS = {
+    "styles.css": "text/css; charset=utf-8",
+    "app.js": "text/javascript; charset=utf-8",
+    "agora-mark.png": "image/png",
+}
+
+
+def static_response(route: str) -> tuple[bytes, str, bool] | None:
+    """Resolve only the exact local interface files exposed by Studio."""
+    if route == "/":
+        name = "index.html"
+        content_type = "text/html; charset=utf-8"
+        cache = False
+    elif route.startswith("/assets/"):
+        name = route.removeprefix("/assets/")
+        if "/" in name or name not in _ASSETS:
+            return None
+        content_type = _ASSETS[name]
+        cache = True
+    else:
+        return None
+    try:
+        return (_STATIC_ROOT / name).read_bytes(), content_type, cache
+    except OSError:
+        return None
 
 
 def handle_api(
@@ -37,6 +66,20 @@ def handle_api(
         }
     if method == "GET" and route == "/api/project":
         return 200, {"project": selection.as_dict() if selection else None}
+    if method == "GET" and route == "/api/overview":
+        if selection is None:
+            return 409, {
+                "error": "project_required",
+                "reason": "Select a local Agora project before loading its overview.",
+            }
+        try:
+            return 200, store.overview()
+        except SelectionError as error:
+            return 502, {
+                "error": "project_overview_failed",
+                "operation": error.operation,
+                "reason": error.reason,
+            }
     if method == "POST" and route == "/api/projects/select":
         if not isinstance(payload, dict):
             return 400, {"error": "invalid_request", "reason": "the JSON body must be an object"}
@@ -52,41 +95,52 @@ def _handler() -> type[BaseHTTPRequestHandler]:
     class StudioHandler(BaseHTTPRequestHandler):
         server: StudioServer
 
-        def _send(self, status: int, payload: object) -> None:
+        def _send_json(self, status: int, payload: object) -> None:
             body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+            self._send_bytes(status, body, "application/json; charset=utf-8", cache=False)
+
+        def _send_bytes(self, status: int, body: bytes, content_type: str, *, cache: bool) -> None:
             self.send_response(status)
-            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Type", content_type)
             self.send_header("Content-Length", str(len(body)))
-            self.send_header("Cache-Control", "no-store")
+            self.send_header("Cache-Control", "public, max-age=3600" if cache else "no-store")
             self.end_headers()
             self.wfile.write(body)
 
         def do_GET(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
             route = urlsplit(self.path).path
+            resolved = static_response(route)
+            if resolved is not None:
+                body, content_type, cache = resolved
+                self._send_bytes(200, body, content_type, cache=cache)
+                return
+            if route.startswith("/assets/"):
+                self._send_json(404, {"error": "not_found"})
+                return
             status, payload = handle_api(self.server.store, "GET", route)
-            self._send(status, payload)
+            self._send_json(status, payload)
 
         def do_POST(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
             route = urlsplit(self.path).path
             if route != "/api/projects/select":
                 status, payload = handle_api(self.server.store, "POST", route)
-                self._send(status, payload)
+                self._send_json(status, payload)
                 return
             try:
                 length = int(self.headers.get("Content-Length", "0"))
             except ValueError:
-                self._send(400, {"error": "invalid_request", "reason": "invalid content length"})
+                self._send_json(400, {"error": "invalid_request", "reason": "invalid content length"})
                 return
             if length <= 0 or length > 1_048_576:
-                self._send(400, {"error": "invalid_request", "reason": "a JSON request body is required"})
+                self._send_json(400, {"error": "invalid_request", "reason": "a JSON request body is required"})
                 return
             try:
                 payload = json.loads(self.rfile.read(length))
             except (json.JSONDecodeError, UnicodeDecodeError):
-                self._send(400, {"error": "invalid_request", "reason": "the request body is not valid JSON"})
+                self._send_json(400, {"error": "invalid_request", "reason": "the request body is not valid JSON"})
                 return
             status, response = handle_api(self.server.store, "POST", route, payload)
-            self._send(status, response)
+            self._send_json(status, response)
 
         def log_message(self, format: str, *args: object) -> None:
             return

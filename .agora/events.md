@@ -47,3 +47,9 @@
 - 2026-08-17T01:31:00.440637Z | session.failed | session=run-studio-foundation-foundation-20260817t01251786940740z exit-code=unavailable
 - 2026-08-17T02:02:58.564575Z | session.prepared | session=run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z actor=project:agent swarm=studio-foundation
 - 2026-08-17T02:04:48.682584Z | session.completed | session=run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z exit-code=0
+- 2026-08-17T02:13:38.177787Z | session.prepared | session=run-studio-visual-console-visual-console-mvp-20260817t02131786943618z actor=project:agent swarm=studio-visual-console
+- 2026-08-17T02:14:35.673585Z | session.completed | session=run-studio-visual-console-visual-console-mvp-20260817t02131786943618z exit-code=0
+- 2026-08-17T02:14:35.679998Z | session.prepared | session=run-studio-visual-console-visual-console-mvp-20260817t02141786943675z actor=project:agent swarm=studio-visual-console
+- 2026-08-17T02:15:25.771527Z | session.completed | session=run-studio-visual-console-visual-console-mvp-20260817t02141786943675z exit-code=0
+- 2026-08-17T02:15:25.778766Z | session.prepared | session=run-studio-visual-console-visual-console-mvp-20260817t02151786943725z actor=project:agent swarm=studio-visual-console
+- 2026-08-17T02:27:09.625502Z | session.completed | session=run-studio-visual-console-visual-console-mvp-20260817t02151786943725z exit-code=0

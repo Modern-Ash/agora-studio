@@ -14,7 +14,7 @@ from typing import Callable, Mapping, Sequence
 class CliResult:
     operation: str
     exit_code: int
-    data: Mapping[str, object] | None
+    data: object
     diagnostic: str
 
 
@@ -51,7 +51,20 @@ Runner = Callable[..., subprocess.CompletedProcess[str]]
 class AgoraCliBoundary:
     """Execute only explicitly declared, non-mutating Agora reads."""
 
-    _OPERATIONS: Mapping[str, Sequence[str]] = {"status": ("status",)}
+    _OPERATIONS: Mapping[str, Sequence[str]] = {
+        "status": ("status",),
+        "actors": ("actor", "list"),
+        "swarms": ("swarm", "list"),
+        "work": ("work", "list"),
+        "sessions": ("session", "list"),
+    }
+    _RESULT_TYPES: Mapping[str, type[object]] = {
+        "status": dict,
+        "actors": list,
+        "swarms": list,
+        "work": list,
+        "sessions": list,
+    }
 
     def __init__(
         self,
@@ -101,13 +114,13 @@ class AgoraCliBoundary:
             data = json.loads(completed.stdout)
         except json.JSONDecodeError as error:
             raise SelectionError(operation, project_path, "the Agora CLI returned invalid JSON") from error
-        if not isinstance(data, dict):
+        if not isinstance(data, self._RESULT_TYPES[operation]):
             raise SelectionError(operation, project_path, "the Agora CLI returned an invalid result")
         return CliResult(operation, completed.returncode, data, diagnostic)
 
     def project_identity(self, project_path: Path) -> str:
         result = self.execute("status", project_path)
-        project = result.data.get("project") if result.data else None
+        project = result.data.get("project") if isinstance(result.data, dict) else None
         if not isinstance(project, str) or not project.strip():
             raise SelectionError("status", project_path, "the Agora CLI did not return a project identity")
         return project
@@ -156,3 +169,15 @@ class ProjectStore:
         with self._lock:
             self._selection = validated
         return validated
+
+    def overview(self) -> dict[str, object]:
+        """Read one coherent project snapshot without mutating the selection."""
+        with self._lock:
+            selection = self._selection
+        if selection is None:
+            raise SelectionError("overview", "", "a project must be selected first")
+
+        snapshot: dict[str, object] = {"selection": selection.as_dict()}
+        for operation in self._cli.allowed_operations:
+            snapshot[operation] = self._cli.execute(operation, selection.path).data
+        return snapshot
