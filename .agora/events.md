@@ -69,3 +69,33 @@
 - 2026-08-17T02:42:40.116285Z | session.completed | session=run-studio-visual-console-visual-console-mvp-20260817t02401786945242z exit-code=0
 - 2026-08-17T02:42:40.123800Z | session.prepared | session=run-studio-visual-console-visual-console-mvp-20260817t02421786945360z actor=project:agent swarm=studio-visual-console
 - 2026-08-17T02:43:55.293389Z | session.completed | session=run-studio-visual-console-visual-console-mvp-20260817t02421786945360z exit-code=0
+- 2026-08-17T12:11:06.109691Z | session.prepared | session=run-studio-activity-timeline-activity-timeline-mvp-20260817t12111786979466z actor=project:specification-agent swarm=studio-activity-timeline
+- 2026-08-17T12:14:59.636401Z | session.completed | session=run-studio-activity-timeline-activity-timeline-mvp-20260817t12111786979466z exit-code=0
+- 2026-08-17T12:17:47.794650Z | session.prepared | session=run-studio-activity-timeline-activity-timeline-mvp-20260817t12171786979867z actor=project:agent swarm=studio-activity-timeline
+- 2026-08-17T12:19:12.612470Z | session.completed | session=run-studio-activity-timeline-activity-timeline-mvp-20260817t12171786979867z exit-code=0
+- 2026-08-17T12:23:41.378458Z | session.prepared | session=run-studio-activity-timeline-activity-timeline-mvp-20260817t12231786980221z actor=project:agent swarm=studio-activity-timeline
+- 2026-08-17T12:24:57.138304Z | session.completed | session=run-studio-activity-timeline-activity-timeline-mvp-20260817t12231786980221z exit-code=0
+- 2026-08-17T12:26:48.001110Z | session.prepared | session=run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z actor=project:agent swarm=studio-activity-timeline
+- 2026-08-17T12:28:52.711543Z | tool.prepared | run=tool-20260817t12281786980532z tool=repository operation=status actor=project:agent
+- 2026-08-17T12:28:52.724558Z | tool.completed | run=tool-20260817t12281786980532z tool=repository operation=status actor=project:agent
+- 2026-08-17T12:37:46.956242Z | session.failed | session=run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z exit-code=unavailable
+- 2026-08-17T12:38:11.816513Z | session.prepared | session=run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z actor=project:agent swarm=studio-activity-timeline
+- 2026-08-17T12:39:28.168520Z | tool.prepared | run=tool-20260817t12391786981168z tool=repository operation=status actor=project:agent
+- 2026-08-17T12:39:28.181068Z | tool.completed | run=tool-20260817t12391786981168z tool=repository operation=status actor=project:agent
+- 2026-08-17T12:41:34.741379Z | session.completed | session=run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z exit-code=0
+- 2026-08-17T13:22:02.512384Z | session.prepared | session=run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13221786983722z actor=project:specification-agent swarm=studio-lifecycle-graph
+- 2026-08-17T13:23:54.741657Z | session.completed | session=run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13221786983722z exit-code=0
+- 2026-08-17T13:26:25.766159Z | session.prepared | session=run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13261786983985z actor=project:agent swarm=studio-lifecycle-graph
+- 2026-08-17T13:28:01.422648Z | tool.prepared | run=tool-20260817t13281786984081z tool=repository operation=status actor=project:agent
+- 2026-08-17T13:28:01.435190Z | tool.completed | run=tool-20260817t13281786984081z tool=repository operation=status actor=project:agent
+- 2026-08-17T13:30:34.973173Z | session.completed | session=run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13261786983985z exit-code=0
+- 2026-08-17T13:32:44.963621Z | session.prepared | session=run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13321786984364z actor=project:agent swarm=studio-lifecycle-graph
+- 2026-08-17T13:33:52.121004Z | session.completed | session=run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13321786984364z exit-code=0
+- 2026-08-17T13:35:57.622437Z | session.prepared | session=run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13351786984557z actor=project:agent swarm=studio-lifecycle-graph
+- 2026-08-17T13:37:32.053980Z | tool.prepared | run=tool-20260817t13371786984652z tool=repository operation=status actor=project:agent
+- 2026-08-17T13:37:32.066035Z | tool.completed | run=tool-20260817t13371786984652z tool=repository operation=status actor=project:agent
+- 2026-08-17T13:52:00.645581Z | session.failed | session=run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13351786984557z exit-code=125
+- 2026-08-17T14:58:08.826208Z | session.prepared | session=run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13351786984557z-retry-20260817t14581786989488z actor=project:agent swarm=studio-lifecycle-graph
+- 2026-08-17T14:59:14.136434Z | tool.prepared | run=tool-20260817t14591786989554z tool=repository operation=status actor=project:agent
+- 2026-08-17T14:59:14.148800Z | tool.completed | run=tool-20260817t14591786989554z tool=repository operation=status actor=project:agent
+- 2026-08-17T15:00:17.496834Z | session.completed | session=run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13351786984557z-retry-20260817t14581786989488z exit-code=0

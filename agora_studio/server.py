@@ -5,9 +5,12 @@ from __future__ import annotations
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from pathlib import Path
-from urllib.parse import urlsplit
+from typing import Mapping
+from urllib.parse import parse_qs, urlsplit
 
-from .core import ProjectStore, SelectionError
+from .core import ActivityQueryError, ProjectStore, SelectionError
+from .git_history import GitReadError
+from .lifecycle import LifecycleError, build_lifecycle, build_revision_detail
 
 
 class StartupError(Exception):
@@ -25,6 +28,8 @@ class StudioServer(ThreadingHTTPServer):
 _STATIC_ROOT = Path(__file__).with_name("static")
 _ASSETS = {
     "styles.css": "text/css; charset=utf-8",
+    "activity-model.js": "text/javascript; charset=utf-8",
+    "lifecycle-model.js": "text/javascript; charset=utf-8",
     "app.js": "text/javascript; charset=utf-8",
     "agora-mark.png": "image/png",
 }
@@ -55,6 +60,7 @@ def handle_api(
     method: str,
     route: str,
     payload: object | None = None,
+    query: Mapping[str, object] | None = None,
 ) -> tuple[int, object]:
     """Handle Studio semantics independently from the network adapter."""
     selection = store.selection
@@ -80,6 +86,42 @@ def handle_api(
                 "operation": error.operation,
                 "reason": error.reason,
             }
+    if method == "GET" and route == "/api/activity":
+        if selection is None:
+            return 409, {
+                "error": "project_required",
+                "reason": "Select a local Agora project before loading its activity.",
+            }
+        try:
+            return 200, store.activity(query)
+        except ActivityQueryError as error:
+            return 400, {"error": "invalid_activity_query", "reason": str(error)}
+        except SelectionError as error:
+            return 502, {
+                "error": "activity_query_failed",
+                "operation": error.operation,
+                "reason": error.reason,
+            }
+    if method == "GET" and route in ("/api/lifecycle", "/api/lifecycle/revision"):
+        if selection is None:
+            return 409, {
+                "error": "project_required",
+                "reason": "Select a local Agora project before loading lifecycle data.",
+            }
+        try:
+            payload = build_revision_detail(store, query) if route.endswith("/revision") else build_lifecycle(store, query)
+            return 200, payload
+        except LifecycleError as error:
+            status = 404 if error.kind == "not_found" else 400
+            return status, {"error": error.kind, "reason": error.reason}
+        except SelectionError as error:
+            return 502, {
+                "error": "lifecycle_read_failed",
+                "operation": error.operation,
+                "reason": "Agora could not read the requested lifecycle records.",
+            }
+        except GitReadError as error:
+            return 502, {"error": "lifecycle_read_failed", "reason": str(error)}
     if method == "POST" and route == "/api/projects/select":
         if not isinstance(payload, dict):
             return 400, {"error": "invalid_request", "reason": "the JSON body must be an object"}
@@ -108,7 +150,8 @@ def _handler() -> type[BaseHTTPRequestHandler]:
             self.wfile.write(body)
 
         def do_GET(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
-            route = urlsplit(self.path).path
+            parsed = urlsplit(self.path)
+            route = parsed.path
             resolved = static_response(route)
             if resolved is not None:
                 body, content_type, cache = resolved
@@ -117,7 +160,8 @@ def _handler() -> type[BaseHTTPRequestHandler]:
             if route.startswith("/assets/"):
                 self._send_json(404, {"error": "not_found"})
                 return
-            status, payload = handle_api(self.server.store, "GET", route)
+            query = parse_qs(parsed.query, keep_blank_values=True)
+            status, payload = handle_api(self.server.store, "GET", route, query=query)
             self._send_json(status, payload)
 
         def do_POST(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
