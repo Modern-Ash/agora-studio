@@ -1,0 +1,35 @@
+# Work events
+
+- 2026-08-17T13:17:17.824815Z | work.created | state=drafting actor=project:specification-agent
+- 2026-08-17T13:17:53.858021Z | artifact.added | kind=spec uri=repo://docs/specs/lifecycle-spec-evolution-graph.md actor=project:specification-agent
+- 2026-08-17T13:17:58.433736Z | artifact.added | kind=spec uri=repo://docs/specs/lifecycle-spec-evolution-graph.md actor=project:specification-agent
+- 2026-08-17T13:21:00.762129Z | gate.waived | waiver=defer-delivery-artifacts gate=spec-clarified actor=project:specification-agent
+- 2026-08-17T13:23:31.419716Z | work.criterion-satisfied | criterion=method-graph actor=project:specification-agent
+- 2026-08-17T13:23:31.568273Z | work.criterion-satisfied | criterion=actual-path actor=project:specification-agent
+- 2026-08-17T13:23:31.717026Z | work.criterion-satisfied | criterion=spec-versions actor=project:specification-agent
+- 2026-08-17T13:23:31.862830Z | work.criterion-satisfied | criterion=traceability actor=project:specification-agent
+- 2026-08-17T13:23:32.009604Z | work.criterion-satisfied | criterion=interaction actor=project:specification-agent
+- 2026-08-17T13:23:32.154419Z | work.criterion-satisfied | criterion=safety actor=project:specification-agent
+- 2026-08-17T13:23:32.299465Z | work.criterion-satisfied | criterion=states actor=project:specification-agent
+- 2026-08-17T13:23:32.451102Z | work.criterion-satisfied | criterion=accessibility actor=project:specification-agent
+- 2026-08-17T13:23:32.595317Z | work.criterion-satisfied | criterion=tests actor=project:specification-agent
+- 2026-08-17T13:23:38.110038Z | evidence.added | type=specification-clarification result=success actor=project:specification-agent
+- 2026-08-17T13:23:43.692970Z | work.transitioned | from=drafting to=clarified actor=project:specification-agent
+- 2026-08-17T13:28:01.422819Z | tool.prepared | run=tool-20260817t13281786984081z tool=repository operation=status actor=project:agent
+- 2026-08-17T13:28:01.435408Z | tool.completed | run=tool-20260817t13281786984081z exit-code=0
+- 2026-08-17T13:30:17.618230Z | artifact.added | kind=implementation-plan uri=repo://docs/plans/lifecycle-spec-evolution-graph.md actor=project:agent
+- 2026-08-17T13:30:24.533747Z | work.transitioned | from=clarified to=planned actor=project:agent
+- 2026-08-17T13:33:42.066142Z | work.transitioned | from=planned to=implementing actor=project:agent
+- 2026-08-17T13:37:32.054157Z | tool.prepared | run=tool-20260817t13371786984652z tool=repository operation=status actor=project:agent
+- 2026-08-17T13:37:32.066360Z | tool.completed | run=tool-20260817t13371786984652z exit-code=0
+- 2026-08-17T14:59:14.136630Z | tool.prepared | run=tool-20260817t14591786989554z tool=repository operation=status actor=project:agent
+- 2026-08-17T14:59:14.149147Z | tool.completed | run=tool-20260817t14591786989554z exit-code=0
+- 2026-08-17T14:59:59.664875Z | artifact.added | kind=verification-report uri=repo://docs/evidence/lifecycle-spec-evolution-graph-verification.md actor=project:agent
+- 2026-08-17T14:59:59.902514Z | evidence.added | type=automated-verification result=success actor=project:agent
+- 2026-08-17T15:00:00.140393Z | work.transitioned | from=implementing to=verifying actor=project:agent
+- 2026-08-17T15:03:47.286225Z | work.role-handed-off | handoff=lifecycle-spec-to-human-review role=spec-owner from=project:specification-agent to=project:owner by=project:specification-agent
+- 2026-08-17T15:14:53.785414Z | approval.added | role=spec-owner actor=project:owner delegation=none
+- 2026-08-17T15:15:02.605664Z | approval.added | role=spec-owner actor=project:owner delegation=none
+- 2026-08-17T15:15:07.502993Z | approval.added | role=spec-owner actor=project:owner delegation=none
+- 2026-08-17T15:16:31.565638Z | approval.added | role=spec-owner actor=project:owner delegation=none
+- 2026-08-17T15:17:01.365281Z | work.transitioned | from=verifying to=completed actor=project:owner

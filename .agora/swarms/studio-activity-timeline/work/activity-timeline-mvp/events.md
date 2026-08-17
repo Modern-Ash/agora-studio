@@ -1,0 +1,26 @@
+# Work events
+
+- 2026-08-17T12:03:48.962661Z | work.created | state=drafting actor=project:owner
+- 2026-08-17T12:09:24.197336Z | work.role-handed-off | handoff=activity-spec-to-ai role=spec-owner from=project:owner to=project:specification-agent by=project:owner
+- 2026-08-17T12:14:33.895279Z | artifact.added | kind=spec uri=repo://docs/specs/activity-timeline-mvp.md actor=project:specification-agent
+- 2026-08-17T12:14:39.539400Z | work.criterion-satisfied | criterion=timeline actor=project:specification-agent
+- 2026-08-17T12:14:39.712970Z | work.criterion-satisfied | criterion=filters actor=project:specification-agent
+- 2026-08-17T12:14:39.887186Z | work.criterion-satisfied | criterion=traceability actor=project:specification-agent
+- 2026-08-17T12:14:40.055836Z | work.criterion-satisfied | criterion=safety actor=project:specification-agent
+- 2026-08-17T12:14:40.220651Z | work.criterion-satisfied | criterion=states actor=project:specification-agent
+- 2026-08-17T12:14:40.373049Z | work.criterion-satisfied | criterion=responsive-accessible actor=project:specification-agent
+- 2026-08-17T12:14:40.533247Z | work.criterion-satisfied | criterion=tests actor=project:specification-agent
+- 2026-08-17T12:14:45.510009Z | evidence.added | type=specification-clarification result=success actor=project:specification-agent
+- 2026-08-17T12:14:51.299059Z | work.transitioned | from=drafting to=clarified actor=project:specification-agent
+- 2026-08-17T12:19:06.141167Z | work.transitioned | from=clarified to=planned actor=project:agent
+- 2026-08-17T12:21:55.289152Z | work.role-handed-off | handoff=activity-spec-to-human-review role=spec-owner from=project:specification-agent to=project:owner by=project:specification-agent
+- 2026-08-17T12:24:45.622476Z | work.transitioned | from=planned to=implementing actor=project:agent
+- 2026-08-17T12:28:52.711731Z | tool.prepared | run=tool-20260817t12281786980532z tool=repository operation=status actor=project:agent
+- 2026-08-17T12:28:52.724770Z | tool.completed | run=tool-20260817t12281786980532z exit-code=0
+- 2026-08-17T12:39:28.168715Z | tool.prepared | run=tool-20260817t12391786981168z tool=repository operation=status actor=project:agent
+- 2026-08-17T12:39:28.181384Z | tool.completed | run=tool-20260817t12391786981168z exit-code=0
+- 2026-08-17T12:41:05.957595Z | artifact.added | kind=verification-report uri=repo://docs/evidence/activity-timeline-mvp-verification.md actor=project:agent
+- 2026-08-17T12:41:11.802989Z | evidence.added | type=automated-verification result=success actor=project:agent
+- 2026-08-17T12:41:16.636628Z | work.transitioned | from=implementing to=verifying actor=project:agent
+- 2026-08-17T13:12:42.052313Z | approval.added | role=spec-owner actor=project:owner delegation=none
+- 2026-08-17T13:13:26.949953Z | work.transitioned | from=verifying to=completed actor=project:owner

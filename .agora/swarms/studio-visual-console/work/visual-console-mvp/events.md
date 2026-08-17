@@ -1,0 +1,31 @@
+# Work events
+
+- 2026-08-17T02:10:57.214258Z | work.created | state=drafting actor=project:owner
+- 2026-08-17T02:13:01.446533Z | artifact.added | kind=spec uri=docs/specs/visual-console-mvp.md actor=project:owner
+- 2026-08-17T02:13:03.862001Z | work.criterion-satisfied | criterion=visual-shell actor=project:owner
+- 2026-08-17T02:13:07.370265Z | work.criterion-satisfied | criterion=project-selection actor=project:owner
+- 2026-08-17T02:13:09.548435Z | work.criterion-satisfied | criterion=project-overview actor=project:owner
+- 2026-08-17T02:13:11.703629Z | work.criterion-satisfied | criterion=delivery-browser actor=project:owner
+- 2026-08-17T02:13:14.063100Z | work.criterion-satisfied | criterion=responsive-accessible actor=project:owner
+- 2026-08-17T02:13:16.596682Z | work.criterion-satisfied | criterion=read-only-safety actor=project:owner
+- 2026-08-17T02:13:20.602163Z | work.criterion-satisfied | criterion=verification actor=project:owner
+- 2026-08-17T02:13:23.120307Z | work.transitioned | from=drafting to=clarified actor=project:owner
+- 2026-08-17T02:14:24.856508Z | work.transitioned | from=clarified to=planned actor=project:agent
+- 2026-08-17T02:15:13.547263Z | work.transitioned | from=planned to=implementing actor=project:agent
+- 2026-08-17T02:26:11.763637Z | artifact.added | kind=verification-report uri=repo://docs/evidence/visual-console-mvp-verification.md actor=project:agent
+- 2026-08-17T02:26:17.911715Z | evidence.added | type=automated-verification result=success actor=project:agent
+- 2026-08-17T02:26:49.018523Z | work.block | from=active to=blocked actor=project:agent change=change-20260817t022649018214z
+- 2026-08-17T02:32:42.234761Z | work.resume | from=blocked to=active actor=project:agent change=change-20260817t023242234486z
+- 2026-08-17T02:32:54.780641Z | tool.prepared | run=tool-20260817t02321786944774z tool=repository operation=commit actor=project:agent
+- 2026-08-17T02:32:54.803165Z | tool.completed | run=tool-20260817t02321786944774z exit-code=0
+- 2026-08-17T02:34:01.312056Z | work.transitioned | from=implementing to=verifying actor=project:agent
+- 2026-08-17T02:36:13.084731Z | evidence.added | type=automated-verification result=success actor=project:agent
+- 2026-08-17T02:37:57.365712Z | evidence.added | type=automated-verification result=success actor=project:agent
+- 2026-08-17T02:39:29.189378Z | tool.prepared | run=tool-20260817t02391786945169z tool=repository operation=status actor=project:agent
+- 2026-08-17T02:39:29.201232Z | tool.completed | run=tool-20260817t02391786945169z exit-code=0
+- 2026-08-17T02:40:27.232879Z | evidence.added | type=automated-verification result=success actor=project:agent
+- 2026-08-17T02:42:27.695839Z | artifact.added | kind=repository-commit-result uri=repo://.agora/tool-runs/tool-20260817t02321786944774z/RESULT.md actor=project:agent
+- 2026-08-17T02:42:27.914163Z | evidence.added | type=repository-commit result=success actor=project:agent
+- 2026-08-17T02:43:47.533313Z | evidence.added | type=automated-verification result=success actor=project:agent
+- 2026-08-17T11:59:00.306674Z | approval.added | role=spec-owner actor=project:owner delegation=none
+- 2026-08-17T11:59:21.817016Z | work.transitioned | from=verifying to=completed actor=project:owner

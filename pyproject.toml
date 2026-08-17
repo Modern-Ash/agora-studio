@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agora-studio"
+version = "0.1.0"
+description = "Local, read-only browser for Agora projects"
+requires-python = ">=3.11"
+
+[project.scripts]
+agora-studio = "agora_studio.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["agora_studio*"]
+
+[tool.setuptools.package-data]
+agora_studio = ["static/*"]

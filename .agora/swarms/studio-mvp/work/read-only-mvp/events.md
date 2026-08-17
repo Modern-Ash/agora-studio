@@ -1,0 +1,24 @@
+# Work events
+
+- 2026-08-16T23:59:23.836562Z | work.created | state=drafting actor=project:owner
+- 2026-08-17T00:01:04.920592Z | artifact.added | kind=spec uri=.agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md actor=project:owner
+- 2026-08-17T00:08:19.056533Z | work.criterion-satisfied | criterion=scope actor=project:owner
+- 2026-08-17T00:08:19.222315Z | work.criterion-satisfied | criterion=behavior actor=project:owner
+- 2026-08-17T00:08:19.389693Z | work.criterion-satisfied | criterion=quality actor=project:owner
+- 2026-08-17T00:08:19.543154Z | work.criterion-satisfied | criterion=testability actor=project:owner
+- 2026-08-17T00:08:19.690534Z | work.criterion-satisfied | criterion=non-mutation actor=project:owner
+- 2026-08-17T00:08:32.959515Z | work.transitioned | from=drafting to=clarified actor=project:owner
+- 2026-08-17T00:10:16.889331Z | work.transitioned | from=clarified to=planned actor=project:agent
+- 2026-08-17T00:11:16.289947Z | work.transitioned | from=planned to=implementing actor=project:agent
+- 2026-08-17T00:12:18.136084Z | work.transitioned | from=implementing to=verifying actor=project:agent
+- 2026-08-17T00:13:52.767440Z | evidence.added | type=spec-verification result=success actor=project:agent
+- 2026-08-17T00:15:33.337689Z | evidence.added | type=completion-readiness result=success actor=project:agent
+- 2026-08-17T00:31:40.687125Z | evidence.added | type=session-spec-verification result=success actor=project:agent
+- 2026-08-17T00:35:09.433414Z | evidence.added | type=session-developer-verification result=success actor=project:agent
+- 2026-08-17T00:36:52.201509Z | evidence.added | type=completion-gate-prerequisites result=success actor=project:agent
+- 2026-08-17T00:38:21.714426Z | evidence.added | type=session-gate-verification result=success actor=project:agent
+- 2026-08-17T00:39:30.354722Z | evidence.added | type=developer-approval-readiness result=success actor=project:agent
+- 2026-08-17T00:40:55.832727Z | evidence.added | type=human-approval-boundary result=success actor=project:agent
+- 2026-08-17T00:42:09.927244Z | evidence.added | type=session-project-validation result=success actor=project:agent
+- 2026-08-17T00:45:22.329219Z | approval.added | role=spec-owner actor=project:owner delegation=none
+- 2026-08-17T00:45:56.895330Z | work.transitioned | from=verifying to=completed actor=project:owner
