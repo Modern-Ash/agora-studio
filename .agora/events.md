@@ -1,3 +1,37 @@
 # Project events
 
 - 2026-08-16T23:49:33.696797Z | project.initialized | integration=codex | method=spec-driven
+- 2026-08-17T00:08:57.924219Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00081786936137z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:09:21.154934Z | session.failed | session=run-studio-mvp-read-only-mvp-20260817t00081786936137z exit-code=unavailable
+- 2026-08-17T00:09:22.932283Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:10:28.260182Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z exit-code=0
+- 2026-08-17T00:10:28.264837Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00101786936228z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:11:26.266434Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00101786936228z exit-code=0
+- 2026-08-17T00:11:26.270469Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00111786936286z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:12:31.018214Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00111786936286z exit-code=0
+- 2026-08-17T00:12:31.023088Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00121786936351z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:14:03.714960Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00121786936351z exit-code=0
+- 2026-08-17T00:14:03.719760Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00141786936443z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:15:50.043132Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00141786936443z exit-code=0
+- 2026-08-17T00:15:50.047780Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00151786936550z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:17:23.251970Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00151786936550z exit-code=0
+- 2026-08-17T00:17:41.954770Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00171786936661z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:18:46.625320Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00171786936661z exit-code=0
+- 2026-08-17T00:19:21.074512Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00191786936761z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:21:01.015453Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00191786936761z exit-code=0
+- 2026-08-17T00:30:13.726494Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00301786937413z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:31:59.002610Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00301786937413z exit-code=0
+- 2026-08-17T00:31:59.007228Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00311786937519z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:33:12.810778Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00311786937519z exit-code=0
+- 2026-08-17T00:33:52.336545Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00331786937632z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:35:16.792280Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00331786937632z exit-code=0
+- 2026-08-17T00:35:16.798533Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00351786937716z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:37:07.404878Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00351786937716z exit-code=0
+- 2026-08-17T00:37:07.410329Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00371786937827z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:38:31.814103Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00371786937827z exit-code=0
+- 2026-08-17T00:38:31.819017Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00381786937911z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:39:38.452455Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00381786937911z exit-code=0
+- 2026-08-17T00:39:38.457876Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00391786937978z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:41:08.549766Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00391786937978z exit-code=0
+- 2026-08-17T00:41:08.555522Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00411786938068z actor=project:agent swarm=studio-mvp
+- 2026-08-17T00:42:14.705584Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00411786938068z exit-code=0
