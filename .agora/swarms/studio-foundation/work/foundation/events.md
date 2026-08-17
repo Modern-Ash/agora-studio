@@ -1,3 +1,26 @@
 # Work events
 
 - 2026-08-17T00:51:21.451275Z | work.created | state=drafting actor=project:owner
+- 2026-08-17T01:08:21.381295Z | artifact.added | kind=spec uri=repo://docs/specs/studio-foundation.md actor=project:owner
+- 2026-08-17T01:08:36.684930Z | work.criterion-satisfied | criterion=startup actor=project:owner
+- 2026-08-17T01:08:36.845662Z | work.criterion-satisfied | criterion=selection actor=project:owner
+- 2026-08-17T01:08:37.003118Z | work.criterion-satisfied | criterion=invalid-project actor=project:owner
+- 2026-08-17T01:08:37.164810Z | work.criterion-satisfied | criterion=read-only actor=project:owner
+- 2026-08-17T01:08:37.331281Z | work.criterion-satisfied | criterion=tests actor=project:owner
+- 2026-08-17T01:08:37.502040Z | work.transitioned | from=drafting to=clarified actor=project:owner
+- 2026-08-17T01:15:07.072529Z | work.criterion-satisfied | criterion=startup actor=project:owner
+- 2026-08-17T01:15:07.241177Z | work.criterion-satisfied | criterion=selection actor=project:owner
+- 2026-08-17T01:15:07.407971Z | work.criterion-satisfied | criterion=invalid-project actor=project:owner
+- 2026-08-17T01:15:07.566407Z | work.criterion-satisfied | criterion=read-only actor=project:owner
+- 2026-08-17T01:15:07.721893Z | work.criterion-satisfied | criterion=tests actor=project:owner
+- 2026-08-17T01:24:31.945323Z | work.transitioned | from=clarified to=planned actor=project:agent
+- 2026-08-17T01:25:30.589286Z | work.transitioned | from=planned to=implementing actor=project:agent
+- 2026-08-17T01:26:50.011989Z | tool.prepared | run=tool-20260817t01261786940810z tool=repository operation=current-branch actor=project:agent
+- 2026-08-17T01:26:50.024312Z | tool.completed | run=tool-20260817t01261786940810z exit-code=0
+- 2026-08-17T01:26:57.376274Z | tool.prepared | run=tool-20260817t01261786940817z tool=repository operation=status actor=project:agent
+- 2026-08-17T01:26:57.388384Z | tool.completed | run=tool-20260817t01261786940817z exit-code=0
+- 2026-08-17T02:04:30.963105Z | artifact.added | kind=test-report uri=repo://docs/evidence/studio-foundation-verification.md actor=project:agent
+- 2026-08-17T02:04:31.114087Z | evidence.added | type=automated-verification result=success actor=project:agent
+- 2026-08-17T02:04:31.273132Z | work.transitioned | from=implementing to=verifying actor=project:agent
+- 2026-08-17T02:06:52.408377Z | approval.added | role=spec-owner actor=project:owner delegation=none
+- 2026-08-17T02:06:52.568045Z | work.transitioned | from=verifying to=completed actor=project:owner

@@ -35,3 +35,15 @@
 - 2026-08-17T00:41:08.549766Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00391786937978z exit-code=0
 - 2026-08-17T00:41:08.555522Z | session.prepared | session=run-studio-mvp-read-only-mvp-20260817t00411786938068z actor=project:agent swarm=studio-mvp
 - 2026-08-17T00:42:14.705584Z | session.completed | session=run-studio-mvp-read-only-mvp-20260817t00411786938068z exit-code=0
+- 2026-08-17T01:21:37.622842Z | session.prepared | session=run-studio-foundation-foundation-20260817t01211786940497z actor=project:agent swarm=studio-foundation
+- 2026-08-17T01:24:39.601501Z | session.completed | session=run-studio-foundation-foundation-20260817t01211786940497z exit-code=0
+- 2026-08-17T01:24:39.607675Z | session.prepared | session=run-studio-foundation-foundation-20260817t01241786940679z actor=project:agent swarm=studio-foundation
+- 2026-08-17T01:25:40.057660Z | session.completed | session=run-studio-foundation-foundation-20260817t01241786940679z exit-code=0
+- 2026-08-17T01:25:40.063068Z | session.prepared | session=run-studio-foundation-foundation-20260817t01251786940740z actor=project:agent swarm=studio-foundation
+- 2026-08-17T01:26:50.011915Z | tool.prepared | run=tool-20260817t01261786940810z tool=repository operation=current-branch actor=project:agent
+- 2026-08-17T01:26:50.024177Z | tool.completed | run=tool-20260817t01261786940810z tool=repository operation=current-branch actor=project:agent
+- 2026-08-17T01:26:57.376213Z | tool.prepared | run=tool-20260817t01261786940817z tool=repository operation=status actor=project:agent
+- 2026-08-17T01:26:57.388266Z | tool.completed | run=tool-20260817t01261786940817z tool=repository operation=status actor=project:agent
+- 2026-08-17T01:31:00.440637Z | session.failed | session=run-studio-foundation-foundation-20260817t01251786940740z exit-code=unavailable
+- 2026-08-17T02:02:58.564575Z | session.prepared | session=run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z actor=project:agent swarm=studio-foundation
+- 2026-08-17T02:04:48.682584Z | session.completed | session=run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z exit-code=0
