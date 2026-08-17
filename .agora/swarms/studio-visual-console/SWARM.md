@@ -2,7 +2,7 @@
 schema: "agora/swarm/v1"
 id: "studio-visual-console"
 method: "spec-driven"
-status: "running"
+status: "completed"
 branch: "agora/studio-mvp"
 required-roles: ["spec-owner","developer"]
 assignments: {"spec-owner":"project:owner","developer":"project:agent"}
