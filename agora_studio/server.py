@@ -26,31 +26,32 @@ class StudioServer(ThreadingHTTPServer):
 
 
 _STATIC_ROOT = Path(__file__).with_name("static")
+_REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
 _ASSETS = {
-    "styles.css": "text/css; charset=utf-8",
-    "activity-model.js": "text/javascript; charset=utf-8",
-    "lifecycle-model.js": "text/javascript; charset=utf-8",
-    "app.js": "text/javascript; charset=utf-8",
-    "agora-mark.png": "image/png",
+    "styles.css": (_STATIC_ROOT / "styles.css", "text/css; charset=utf-8"),
+    "activity-model.js": (_STATIC_ROOT / "activity-model.js", "text/javascript; charset=utf-8"),
+    "lifecycle-model.js": (_STATIC_ROOT / "lifecycle-model.js", "text/javascript; charset=utf-8"),
+    "app.js": (_STATIC_ROOT / "app.js", "text/javascript; charset=utf-8"),
+    "agora-logo.png": (_REPOSITORY_ROOT / "agora-logo.png", "image/png"),
 }
 
 
 def static_response(route: str) -> tuple[bytes, str, bool] | None:
     """Resolve only the exact local interface files exposed by Studio."""
     if route == "/":
-        name = "index.html"
+        path = _STATIC_ROOT / "index.html"
         content_type = "text/html; charset=utf-8"
         cache = False
     elif route.startswith("/assets/"):
         name = route.removeprefix("/assets/")
         if "/" in name or name not in _ASSETS:
             return None
-        content_type = _ASSETS[name]
+        path, content_type = _ASSETS[name]
         cache = True
     else:
         return None
     try:
-        return (_STATIC_ROOT / name).read_bytes(), content_type, cache
+        return path.read_bytes(), content_type, cache
     except OSError:
         return None
 

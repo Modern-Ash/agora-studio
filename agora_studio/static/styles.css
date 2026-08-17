@@ -77,17 +77,17 @@ button { color: inherit; }
 }
 
 .brand {
-  display: flex;
-  gap: var(--space-3);
-  align-items: center;
+  display: grid;
+  justify-items: start;
+  gap: .35rem;
   color: inherit;
   text-decoration: none;
 }
 
-.brand img { object-fit: contain; }
-.brand span, .sidebar-foot span { display: grid; }
-.brand strong { font-size: 1.05rem; letter-spacing: 0; }
-.brand small, .sidebar-foot small { color: #aab4b2; font-size: .69rem; letter-spacing: 0; text-transform: uppercase; }
+.brand img { display: block; width: 176px; height: auto; background: #fff; border-radius: 5px; object-fit: contain; }
+.brand-product { padding-left: .2rem; color: #aab4b2; font-size: .69rem; font-weight: 750; letter-spacing: .16em; text-transform: uppercase; }
+.sidebar-foot span { display: grid; }
+.sidebar-foot small { color: #aab4b2; font-size: .69rem; letter-spacing: 0; text-transform: uppercase; }
 
 .primary-nav {
   display: grid;
@@ -593,7 +593,7 @@ input[aria-invalid="true"] { border-color: var(--danger); }
 @media (max-width: 760px) {
   .app-shell { display: block; }
   .sidebar { position: static; height: auto; padding: var(--space-3) var(--space-4); border-right: 0; border-bottom: 4px solid var(--coral); }
-  .brand img { width: 32px; height: 32px; }
+  .brand img { width: 136px; height: auto; }
   .primary-nav { display: flex; gap: var(--space-1); margin-top: var(--space-3); overflow-x: auto; scrollbar-width: thin; }
   .nav-item { flex: 0 0 auto; grid-template-columns: 1fr; gap: 0; min-width: 44px; padding: .55rem .65rem; text-align: center; }
   .nav-item span:first-child { display: none; }

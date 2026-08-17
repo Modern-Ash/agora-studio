@@ -125,7 +125,7 @@ class AssetAndUiContractTests(unittest.TestCase):
         expected = {
             "/assets/styles.css": "text/css; charset=utf-8",
             "/assets/app.js": "text/javascript; charset=utf-8",
-            "/assets/agora-mark.png": "image/png",
+            "/assets/agora-logo.png": "image/png",
         }
         for route, content_type in expected.items():
             with self.subTest(route=route):
@@ -147,7 +147,7 @@ class AssetAndUiContractTests(unittest.TestCase):
         self.assertEqual(1, html.count("<h1"))
         for contract in ("<main", "<nav", "<aside", "skip-link", 'aria-live="polite"', "project-path-label"):
             self.assertIn(contract, html)
-        self.assertIn("/assets/agora-mark.png", html)
+        self.assertIn("/assets/agora-logo.png", html)
         self.assertNotIn("https://", html)
         self.assertIn(":focus-visible", css)
         self.assertIn("@media (max-width: 760px)", css)
@@ -157,16 +157,20 @@ class AssetAndUiContractTests(unittest.TestCase):
         self.assertIn("textContent", javascript)
         self.assertIn("replaceChildren", javascript)
 
-    def test_logo_is_a_small_rgba_png(self) -> None:
-        path = self.static / "agora-mark.png"
+    def test_logo_asset_uses_the_repository_root_logo(self) -> None:
+        path = Path(__file__).parents[1] / "agora-logo.png"
         payload = path.read_bytes()
+        served, content_type, cache = static_response("/assets/agora-logo.png")
+
+        self.assertEqual(payload, served)
+        self.assertEqual("image/png", content_type)
+        self.assertTrue(cache)
         self.assertEqual(b"\x89PNG\r\n\x1a\n", payload[:8])
         self.assertEqual(b"IHDR", payload[12:16])
         width, height, bit_depth, color_type = struct.unpack(">IIBB", payload[16:26])
-        self.assertLessEqual(max(width, height), 192)
+        self.assertEqual((2048, 768), (width, height))
         self.assertEqual(8, bit_depth)
-        self.assertEqual(6, color_type, "the PNG must use RGBA color")
-        self.assertLess(path.stat().st_size, 30_000)
+        self.assertEqual(2, color_type, "the repository logo must use RGB color")
 
 
 if __name__ == "__main__":
