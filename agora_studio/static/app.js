@@ -25,10 +25,15 @@ const state = {
   revisionDetails: new Map(),
   lifecycleLayers: { topology: true, path: true, revisions: true },
   lifecycleScale: 1,
+  artifactsLoading: false,
+  artifacts: null,
+  artifactsError: "",
+  artifactsWork: null,
+  selectedArtifactsItem: null,
   requestSerial: 0,
   selectionPath: "",
 };
-const viewNames = { overview: "Project overview", actors: "Actors", swarms: "Swarms", work: "Work", sessions: "Sessions", activity: "Activity", lifecycle: "Lifecycle" };
+const viewNames = { overview: "Project overview", actors: "Actors", swarms: "Swarms", work: "Work", sessions: "Sessions", activity: "Activity", lifecycle: "Lifecycle", artifacts: "Artifacts" };
 
 const nodes = {
   form: document.querySelector("#project-form"),
@@ -90,7 +95,7 @@ async function requestJson(path, options) {
 function setLoading(loading, message) {
   state.loading = loading;
   nodes.open.disabled = loading;
-  nodes.refresh.disabled = loading || state.activityLoading || state.lifecycleLoading || !state.overview;
+  nodes.refresh.disabled = loading || state.activityLoading || state.lifecycleLoading || state.artifactsLoading || !state.overview;
   nodes.input.setAttribute("aria-busy", String(loading));
   nodes.refresh.classList.toggle("is-loading", loading);
   if (message) announce(message);
@@ -110,6 +115,11 @@ function setSelection(selection) {
     state.selectedLifecycleItem = null;
     state.revisionDetails = new Map();
     state.activityFilters = Object.fromEntries(Object.keys(activityFilters).map((key) => [key, ""]));
+    state.artifactsLoading = false;
+    state.artifacts = null;
+    state.artifactsError = "";
+    state.artifactsWork = null;
+    state.selectedArtifactsItem = null;
   }
   state.selectionPath = selection.path;
   nodes.selection.hidden = false;
@@ -886,12 +896,236 @@ async function loadRevisionDetail(revision) {
   renderLifecycle();
 }
 
+function artifactsWorkPicker() {
+  const select = element("select", { id: "artifacts-work-select", "aria-label": "Work item" });
+  select.append(element("option", { value: "", text: "Select work…" }));
+  (state.overview.work || []).forEach((work) => {
+    const value = `${work.swarm_id}/${work.id}`;
+    select.append(element("option", { value, text: `${work.title || work.id} · ${work.state}`, title: value }));
+  });
+  select.value = state.artifactsWork ? `${state.artifactsWork.swarm_id}/${state.artifactsWork.id}` : "";
+  select.addEventListener("change", () => {
+    const [swarmId, ...workParts] = select.value.split("/");
+    const workId = workParts.join("/");
+    state.artifactsWork = (state.overview.work || []).find((item) => item.swarm_id === swarmId && item.id === workId) || null;
+    state.selectedArtifactsItem = null;
+    if (state.artifactsWork) loadArtifacts("Loading artifacts for selected work");
+    else {
+      state.artifacts = null;
+      renderArtifacts();
+    }
+  });
+  return select;
+}
+
+function renderArtifactsSkeleton() {
+  replaceContent(
+    viewHeading("08 / Provenance", "Artifacts", "Loading durable artifacts, evidence, and approvals."),
+    element("section", { className: "activity-loading", "aria-busy": "true", "aria-label": "Loading artifacts" }, [
+      ...[0, 1, 2].map(() => element("div", { className: "skeleton-row" }, [element("span"), element("span"), element("span")])),
+    ])
+  );
+}
+
+function traceabilityNote(item) {
+  if (!ArtifactsModel.hasTraceability(item)) {
+    return element("span", { className: "muted", text: "No linked session or tool run is recorded." });
+  }
+  const trace = item.traceability;
+  return element("div", { className: "trace-note" }, [
+    trace.session_id ? element("span", { text: `Session: ${trace.session_id}` }) : null,
+    trace.tool_run_id ? element("span", { text: `Tool run: ${trace.tool_run_id}` }) : null,
+  ].filter(Boolean));
+}
+
+function artifactsDetail(projection) {
+  const found = ArtifactsModel.findSelected(projection, state.selectedArtifactsItem);
+  if (!found) {
+    return element("aside", { className: "lifecycle-detail", "aria-label": "Artifacts detail" }, [
+      element("p", { className: "section-kicker", text: "Inspect a record" }),
+      element("h3", { text: "Select an artifact, evidence, or approval record" }),
+      element("p", { className: "muted", text: "Full identifiers and, when a durable Agora record establishes it, the originating session or tool run appear here." }),
+    ]);
+  }
+  const { kind, item } = found;
+  let facts;
+  if (kind === "artifact") facts = [["Kind", item.kind], ["URI", item.uri], ["Produced by", item.produced_by], ["Timestamp", item.timestamp]];
+  else if (kind === "evidence") facts = [["Type", item.type], ["Result", item.result], ["Produced by", item.produced_by], ["Timestamp", item.timestamp]];
+  else facts = [["Role", item.role], ["Approved by", item.approved_by], ["Note", item.note], ["Timestamp", item.timestamp]];
+  const children = [
+    element("p", { className: "section-kicker", text: `Selected ${kind}` }),
+    element("h3", { className: "wrap-anywhere", text: item.kind || item.type || item.role }),
+    definitionList(facts, "detail-facts"),
+  ];
+  if (kind === "evidence" && item.artifact_references?.length) {
+    children.push(element("div", { className: "related-block" }, [
+      element("h4", { text: "Artifact references" }),
+      tags(item.artifact_references),
+    ]));
+  }
+  children.push(element("div", { className: "related-block" }, [
+    element("h4", { text: "Traceability" }),
+    traceabilityNote(item),
+  ]));
+  return element("aside", { className: "lifecycle-detail", "aria-label": "Artifacts detail" }, children);
+}
+
+function artifactsSelect(kind, item) {
+  state.selectedArtifactsItem = ArtifactsModel.itemKey(kind, item);
+  renderArtifacts();
+  announce(`${kind} ${item.id} selected. Details updated.`);
+}
+
+function recordButton(kind, item, label, meta, index = 0) {
+  const active = state.selectedArtifactsItem === ArtifactsModel.itemKey(kind, item);
+  const button = element("button", {
+    className: `event-button family-${kind}${active ? " is-selected" : ""}`,
+    type: "button",
+    "aria-current": active ? "true" : "false",
+    "aria-label": `${label}. ${meta}`,
+  }, [
+    element("span", { className: "event-index", text: String(index + 1).padStart(2, "0") }),
+    element("span", { className: "event-copy" }, [
+      element("span", { className: "event-head" }, [element("strong", { text: label })]),
+      element("span", { className: "event-meta", text: meta }),
+    ]),
+  ]);
+  keyboardSelect(button, () => artifactsSelect(kind, item));
+  return button;
+}
+
+function renderArtifactsSection(title, description, emptyMessage, items, rowBuilder) {
+  const body = items.length
+    ? element("ol", { className: "timeline-list", "aria-label": title }, items.map((item, index) => element("li", { className: "timeline-item" }, [rowBuilder(item, index)])))
+    : element("p", { className: "empty-table", text: emptyMessage });
+  return element("section", { className: "panel", "aria-label": title }, [
+    element("h3", { text: title }),
+    element("p", { className: "muted", text: description }),
+    body,
+  ]);
+}
+
+function renderApprovalsSection(projection) {
+  const satisfaction = projection.approvals.satisfaction;
+  const records = projection.approvals.records;
+  if (!satisfaction.length) {
+    return element("section", { className: "panel", "aria-label": "Approvals" }, [
+      element("h3", { text: "Approvals" }),
+      element("p", { className: "empty-table", text: "No approval roles are required for this work item." }),
+    ]);
+  }
+  const list = element("ol", { className: "timeline-list", "aria-label": "Required approval roles" });
+  satisfaction.forEach(({ role, satisfied }, index) => {
+    const record = records.find((item) => item.role === role);
+    const label = `${satisfied ? "✓ Satisfied" : "○ Missing"} · ${role}`;
+    if (record) {
+      list.append(element("li", { className: "timeline-item" }, [
+        recordButton("approval", record, label, `${record.approved_by} · ${record.timestamp}`, index),
+      ]));
+    } else {
+      list.append(element("li", { className: "timeline-item" }, [
+        element("div", { className: "event-button family-approval is-unsatisfied", role: "text", "aria-label": label }, [
+          element("span", { className: "event-index", text: String(index + 1).padStart(2, "0") }),
+          element("span", { className: "event-copy" }, [element("span", { className: "event-head" }, [element("strong", { text: label })]), element("span", { className: "event-meta", text: "No approval record yet" })]),
+        ]),
+      ]));
+    }
+  });
+  return element("section", { className: "panel", "aria-label": "Approvals" }, [
+    element("h3", { text: "Approvals" }),
+    element("p", { className: "muted", text: "Required roles and their durable satisfaction state." }),
+    list,
+  ]);
+}
+
+function renderArtifacts() {
+  if (state.artifactsLoading && !state.artifacts) return renderArtifactsSkeleton();
+  const heading = viewHeading("08 / Provenance", "Artifacts", "Registered artifacts, evidence, and required approvals for one selected work item.");
+  if (!state.artifactsWork) {
+    replaceContent(heading, element("div", { className: "empty-state compact-empty" }, [
+      element("span", { className: "empty-index", text: "08 / SELECT" }),
+      element("h2", { text: "Choose work to inspect." }),
+      element("p", { text: "Artifacts, evidence, and approvals stay bounded to one exact swarm and work item." }),
+      element("label", { className: "standalone-work-picker" }, [element("span", { className: "panel-label", text: "Work item" }), artifactsWorkPicker()]),
+    ]));
+    return;
+  }
+  if (!state.artifacts && state.artifactsError) {
+    const retry = element("button", { className: "primary-button", type: "button", text: "Retry" });
+    retry.addEventListener("click", () => loadArtifacts());
+    replaceContent(heading, element("div", { className: "error-panel", role: "alert" }, [element("h2", { text: "The last project read stayed intact." }), element("p", { text: state.artifactsError }), retry]));
+    return;
+  }
+  if (!state.artifacts) return renderArtifactsSkeleton();
+  const projection = state.artifacts;
+  if (!ArtifactsModel.selectionExists(projection, state.selectedArtifactsItem)) state.selectedArtifactsItem = null;
+  const children = [heading];
+  if (state.artifactsError) {
+    const retry = element("button", { className: "secondary-button", type: "button", text: "Retry" });
+    retry.addEventListener("click", () => loadArtifacts());
+    children.push(element("div", { className: "inline-error", role: "alert" }, [element("span", { text: state.artifactsError }), retry]));
+  }
+  children.push(element("section", { className: "lifecycle-toolbar", "aria-label": "Artifacts controls" }, [
+    element("label", { className: "work-picker" }, [element("span", { text: "Work item" }), artifactsWorkPicker()]),
+  ]));
+  if (projection.diagnostics?.length) children.push(element("div", { className: "partial-notice", role: "status" }, [element("strong", { text: "Verified partial view" }), ...projection.diagnostics.map((item) => element("span", { text: item }))]));
+
+  const artifactsSection = renderArtifactsSection(
+    "Artifacts", "Every artifact registered durably for this work item.", "No artifacts are registered for this work item.",
+    projection.artifacts, (item, index) => recordButton("artifact", item, item.kind, `${item.uri} · ${item.produced_by}`, index)
+  );
+  const evidenceSection = renderArtifactsSection(
+    "Evidence", "Every evidence record registered durably for this work item.", "No evidence has been recorded for this work item.",
+    projection.evidence, (item, index) => recordButton("evidence", item, `${item.result === "success" ? "✓" : "✗"} ${item.type}`, `${item.result} · ${item.produced_by}`, index)
+  );
+  const approvalsSection = renderApprovalsSection(projection);
+
+  children.push(element("div", { className: "lifecycle-workspace" }, [
+    element("div", { className: "artifacts-panels" }, [artifactsSection, evidenceSection, approvalsSection]),
+    artifactsDetail(projection),
+  ]));
+  replaceContent(...children);
+}
+
+async function loadArtifacts(message = "Loading artifacts") {
+  if (!state.artifactsWork || state.artifactsLoading) return;
+  const request = ++state.requestSerial;
+  const projectPath = state.selectionPath;
+  const scope = `${state.artifactsWork.swarm_id}/${state.artifactsWork.id}`;
+  state.artifactsLoading = true;
+  state.artifactsError = "";
+  nodes.refresh.disabled = true;
+  if (!state.artifacts) renderArtifactsSkeleton();
+  announce(message);
+  try {
+    const query = `swarm=${encodeURIComponent(state.artifactsWork.swarm_id)}&work=${encodeURIComponent(state.artifactsWork.id)}`;
+    const payload = await requestJson(`/api/artifacts?${query}`);
+    if (request !== state.requestSerial || projectPath !== state.selectionPath || scope !== `${state.artifactsWork?.swarm_id}/${state.artifactsWork?.id}`) return;
+    state.artifacts = payload;
+    state.artifactsLoading = false;
+    renderArtifacts();
+    announce(`Artifacts loaded for ${scope}: ${payload.artifacts.length} artifacts, ${payload.evidence.length} evidence records, ${payload.approvals.satisfaction.length} required approval roles.`);
+  } catch (error) {
+    if (request !== state.requestSerial || projectPath !== state.selectionPath) return;
+    state.artifactsError = error.message;
+    state.artifactsLoading = false;
+    renderArtifacts();
+    announce(`Artifacts could not be loaded. ${error.message}`);
+  } finally {
+    if (request === state.requestSerial) {
+      state.artifactsLoading = false;
+      syncNavigation();
+    }
+  }
+}
+
 function render() {
   nodes.title.textContent = viewNames[state.view];
   syncNavigation();
   if (state.view === "overview") renderOverview();
   else if (state.view === "activity") renderActivity();
   else if (state.view === "lifecycle") renderLifecycle();
+  else if (state.view === "artifacts") renderArtifacts();
   else renderTable(tableViews[state.view]);
 }
 
@@ -916,6 +1150,7 @@ async function loadOverview(message = "Loading project data") {
     announce(`${overview.selection.project} loaded. ${viewNames[state.view]} is visible.`);
     if (state.view === "activity" && !state.activity) await loadActivity("Project selected. Loading durable activity");
     if (state.view === "lifecycle" && state.lifecycleWork && !state.lifecycle) await loadLifecycle("Project selected. Loading lifecycle");
+    if (state.view === "artifacts" && state.artifactsWork && !state.artifacts) await loadArtifacts("Project selected. Loading artifacts");
   } catch (error) {
     renderFailure(error.message);
     announce(`Project data could not be loaded. ${error.message}`);
@@ -951,6 +1186,7 @@ nodes.form.addEventListener("submit", async (event) => {
 nodes.refresh.addEventListener("click", () => {
   if (state.view === "activity") loadActivity("Refreshing durable activity");
   else if (state.view === "lifecycle" && state.lifecycleWork) loadLifecycle("Refreshing lifecycle");
+  else if (state.view === "artifacts" && state.artifactsWork) loadArtifacts("Refreshing artifacts");
   else loadOverview("Refreshing project data");
 });
 nodes.nav.forEach((button) => button.addEventListener("click", async () => {
@@ -961,6 +1197,7 @@ nodes.nav.forEach((button) => button.addEventListener("click", async () => {
   announce(`${viewNames[state.view]} is visible.`);
   if (state.view === "activity" && !state.activity) await loadActivity();
   if (state.view === "lifecycle" && state.lifecycleWork && !state.lifecycle) await loadLifecycle();
+  if (state.view === "artifacts" && state.artifactsWork && !state.artifacts) await loadArtifacts();
 }));
 
 (async function restoreSelection() {

@@ -644,3 +644,9 @@ input[aria-invalid="true"] { border-color: var(--danger); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+.artifacts-panels { display: grid; gap: var(--space-4); min-width: 0; }
+.family-approval .event-index { background: var(--teal); }
+.event-button.is-unsatisfied { color: var(--coral-dark); cursor: default; }
+.event-button.is-unsatisfied:hover { background: none; transform: none; }
+.trace-note { display: grid; gap: var(--space-1); font-size: .78rem; overflow-wrap: anywhere; }
