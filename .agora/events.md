@@ -99,3 +99,17 @@
 - 2026-08-17T14:59:14.136434Z | tool.prepared | run=tool-20260817t14591786989554z tool=repository operation=status actor=project:agent
 - 2026-08-17T14:59:14.148800Z | tool.completed | run=tool-20260817t14591786989554z tool=repository operation=status actor=project:agent
 - 2026-08-17T15:00:17.496834Z | session.completed | session=run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13351786984557z-retry-20260817t14581786989488z exit-code=0
+- 2026-08-19T17:06:43.078473Z | session.prepared | session=run-studio-artifacts-evidence-artifacts-evidence-mvp-20260819t17061787170003z actor=project:agent swarm=studio-artifacts-evidence
+- 2026-08-19T17:06:46.611055Z | session.failed | session=run-studio-artifacts-evidence-artifacts-evidence-mvp-20260819t17061787170003z exit-code=1
+- 2026-08-19T17:09:15.324288Z | actor.runtime-updated | actor=project:agent
+- 2026-08-19T17:09:19.560728Z | session.prepared | session=run-studio-artifacts-evidence-artifacts-evidence-mvp-20260819t17061787170003z-retry-20260819t17091787170159z actor=project:agent swarm=studio-artifacts-evidence
+- 2026-08-19T17:09:23.050962Z | session.failed | session=run-studio-artifacts-evidence-artifacts-evidence-mvp-20260819t17061787170003z-retry-20260819t17091787170159z exit-code=1
+- 2026-08-19T17:09:32.781908Z | actor.runtime-updated | actor=project:agent
+- 2026-08-19T17:09:36.921938Z | session.prepared | session=run-studio-artifacts-evidence-artifacts-evidence-mvp-20260819t17061787170003z-retry-20260819t17091787170159z-retry-20260819t17091787170176z actor=project:agent swarm=studio-artifacts-evidence
+- 2026-08-19T17:09:40.178223Z | session.failed | session=run-studio-artifacts-evidence-artifacts-evidence-mvp-20260819t17061787170003z-retry-20260819t17091787170159z-retry-20260819t17091787170176z exit-code=1
+- 2026-08-19T17:10:27.427316Z | session.prepared | session=run-studio-artifacts-evidence-artifacts-evidence-mvp-20260819t17061787170003z-retry-20260819t17091787170159z-retry-20260819t17091787170176z-retry-20260819t17101787170227z actor=project:agent swarm=studio-artifacts-evidence
+- 2026-08-19T17:10:30.755116Z | session.failed | session=run-studio-artifacts-evidence-artifacts-evidence-mvp-20260819t17061787170003z-retry-20260819t17091787170159z-retry-20260819t17091787170176z-retry-20260819t17101787170227z exit-code=1
+- 2026-08-19T17:11:24.409958Z | session.prepared | session=run-studio-artifacts-evidence-artifacts-evidence-mvp-20260819t17061787170003z-retry-20260819t17091787170159z-retry-20260819t17091787170176z-retry-20260819t17101787170227z-retry-20260819t17111787170284z actor=project:agent swarm=studio-artifacts-evidence
+- 2026-08-19T17:11:25.805373Z | session.failed | session=run-studio-artifacts-evidence-artifacts-evidence-mvp-20260819t17061787170003z-retry-20260819t17091787170159z-retry-20260819t17091787170176z-retry-20260819t17101787170227z-retry-20260819t17111787170284z exit-code=1
+- 2026-08-19T17:11:49.970432Z | session.prepared | session=run-studio-artifacts-evidence-artifacts-evidence-mvp-20260819t17061787170003z-retry-20260819t17091787170159z-retry-20260819t17091787170176z-retry-20260819t17101787170227z-retry-20260819t17111787170284z-retry-20260819t17111787170309z actor=project:agent swarm=studio-artifacts-evidence
+- 2026-08-19T17:12:00.895462Z | session.completed | session=run-studio-artifacts-evidence-artifacts-evidence-mvp-20260819t17061787170003z-retry-20260819t17091787170159z-retry-20260819t17091787170176z-retry-20260819t17101787170227z-retry-20260819t17111787170284z-retry-20260819t17111787170309z exit-code=0

@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Mapping
 from urllib.parse import parse_qs, urlsplit
 
+from .artifacts import ArtifactsError, build_artifacts
 from .core import ActivityQueryError, ProjectStore, SelectionError
 from .git_history import GitReadError
 from .lifecycle import LifecycleError, build_lifecycle, build_revision_detail
@@ -31,6 +32,7 @@ _ASSETS = {
     "styles.css": (_STATIC_ROOT / "styles.css", "text/css; charset=utf-8"),
     "activity-model.js": (_STATIC_ROOT / "activity-model.js", "text/javascript; charset=utf-8"),
     "lifecycle-model.js": (_STATIC_ROOT / "lifecycle-model.js", "text/javascript; charset=utf-8"),
+    "artifacts-model.js": (_STATIC_ROOT / "artifacts-model.js", "text/javascript; charset=utf-8"),
     "app.js": (_STATIC_ROOT / "app.js", "text/javascript; charset=utf-8"),
     "agora-logo.png": (_REPOSITORY_ROOT / "agora-logo.png", "image/png"),
 }
@@ -123,6 +125,23 @@ def handle_api(
             }
         except GitReadError as error:
             return 502, {"error": "lifecycle_read_failed", "reason": str(error)}
+    if method == "GET" and route == "/api/artifacts":
+        if selection is None:
+            return 409, {
+                "error": "project_required",
+                "reason": "Select a local Agora project before loading artifacts data.",
+            }
+        try:
+            return 200, build_artifacts(store, query)
+        except ArtifactsError as error:
+            status = 404 if error.kind == "not_found" else 400
+            return status, {"error": error.kind, "reason": error.reason}
+        except SelectionError as error:
+            return 502, {
+                "error": "artifacts_read_failed",
+                "operation": error.operation,
+                "reason": "Agora could not read the requested artifacts, evidence, or approval records.",
+            }
     if method == "POST" and route == "/api/projects/select":
         if not isinstance(payload, dict):
             return 400, {"error": "invalid_request", "reason": "the JSON body must be an object"}

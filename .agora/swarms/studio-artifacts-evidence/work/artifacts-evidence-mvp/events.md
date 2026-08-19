@@ -1,0 +1,21 @@
+# Work events
+
+- 2026-08-19T17:00:57.820416Z | work.created | state=drafting actor=project:owner
+- 2026-08-19T17:02:03.885795Z | artifact.added | kind=spec uri=repo://docs/specs/artifacts-evidence-mvp.md actor=project:owner
+- 2026-08-19T17:02:04.049701Z | work.criterion-satisfied | criterion=listing actor=project:owner
+- 2026-08-19T17:02:04.239906Z | work.criterion-satisfied | criterion=approvals actor=project:owner
+- 2026-08-19T17:02:04.484143Z | work.criterion-satisfied | criterion=traceability actor=project:owner
+- 2026-08-19T17:02:04.743607Z | work.criterion-satisfied | criterion=safety actor=project:owner
+- 2026-08-19T17:02:04.981190Z | work.criterion-satisfied | criterion=states actor=project:owner
+- 2026-08-19T17:02:05.187235Z | work.criterion-satisfied | criterion=responsive-accessible actor=project:owner
+- 2026-08-19T17:02:05.434930Z | work.criterion-satisfied | criterion=tests actor=project:owner
+- 2026-08-19T17:02:10.405468Z | work.transitioned | from=drafting to=clarified actor=project:owner
+- 2026-08-19T20:10:10.930881Z | artifact.added | kind=implementation-plan uri=repo://docs/plans/artifacts-evidence-mvp.md actor=project:agent
+- 2026-08-19T20:10:11.088127Z | artifact.added | kind=verification-report uri=repo://docs/evidence/artifacts-evidence-mvp-verification.md actor=project:agent
+- 2026-08-19T20:10:15.909265Z | artifact.added | kind=implementation-plan uri=repo://docs/plans/artifacts-evidence-mvp.md actor=project:agent
+- 2026-08-19T20:10:20.899703Z | evidence.added | type=automated-verification result=success actor=project:agent
+- 2026-08-19T20:10:34.449952Z | work.transitioned | from=clarified to=planned actor=project:agent
+- 2026-08-19T20:10:34.612919Z | work.transitioned | from=planned to=implementing actor=project:agent
+- 2026-08-19T20:10:34.770558Z | work.transitioned | from=implementing to=verifying actor=project:agent
+- 2026-08-19T20:12:06.745587Z | approval.added | role=spec-owner actor=project:owner delegation=none
+- 2026-08-19T20:12:11.732750Z | work.transitioned | from=verifying to=completed actor=project:owner
