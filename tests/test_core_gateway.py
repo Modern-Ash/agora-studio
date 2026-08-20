@@ -3,6 +3,7 @@ from __future__ import annotations
 import inspect
 import tempfile
 import unittest
+from copy import deepcopy
 from importlib.metadata import PackageNotFoundError
 from pathlib import Path
 from unittest.mock import patch
@@ -70,10 +71,49 @@ class BadService(ReadServiceStub):
         return BadDTO()
 
 
+class DictDTO:
+    def __init__(self, payload: dict[str, object]) -> None:
+        self.payload = payload
+
+    def to_dict(self) -> dict[str, object]:
+        return self.payload
+
+
+class NestedSchemaService(ReadServiceStub):
+    def __init__(self, mutation) -> None:
+        super().__init__()
+        self.mutation = mutation
+
+    def work_control_projection(self, swarm: str, work: str) -> DictDTO:
+        payload = deepcopy(FakeGateway().work_control(Path("/tmp/demo"), swarm, work))
+        self.mutation(payload)
+        return DictDTO(payload)
+
+
+class LegacyWorkControlService(ReadServiceStub):
+    def work_control_projection(self, swarm: str, work: str):
+        class LegacyControl:
+            def to_dict(self):
+                return {
+                    "schema": "agora/application/work-control-projection/v1",
+                    "work": {"schema": "agora/application/work-item-detail/v1"},
+                    "lifecycle": {"schema": "agora/application/lifecycle-projection/v2"},
+                    "traceability": {"schema": "agora/application/traceability-summary/v1"},
+                    "specification_history": {
+                        "schema": "agora/application/specification-summary/v1"
+                    },
+                    "gate_decision_options": {
+                        "schema": "agora/application/gate-decision-options-projection/v1"
+                    },
+                }
+
+        return LegacyControl()
+
+
 class CoreGatewayTests(unittest.TestCase):
     def test_maps_public_dtos_and_exact_activity_filters(self) -> None:
         service = ReadServiceStub()
-        gateway = CoreReadGateway(lambda _: service, core_version="0.5.0")
+        gateway = CoreReadGateway(lambda _: service, core_version="0.6.0")
 
         overview = gateway.project_overview(Path("/tmp/demo"))
         events = gateway.activity(
@@ -97,12 +137,18 @@ class CoreGatewayTests(unittest.TestCase):
         self.assertEqual(service.activity_filters.limit, 25)
 
     def test_rejects_incompatible_core_and_schema(self) -> None:
-        with self.assertRaisesRegex(CoreGatewayError, ">=0.5,<0.6"):
+        with self.assertRaisesRegex(CoreGatewayError, ">=0.6,<0.7"):
             CoreReadGateway(lambda _: ReadServiceStub(), core_version="0.4.9").core_version
         with self.assertRaisesRegex(CoreGatewayError, "project-overview/v1"):
-            CoreReadGateway(lambda _: BadService(), core_version="0.5.0").project_overview(
+            CoreReadGateway(lambda _: BadService(), core_version="0.6.0").project_overview(
                 Path("/tmp/demo")
             )
+        with self.assertRaises(CoreGatewayError) as legacy:
+            CoreReadGateway(
+                lambda _: LegacyWorkControlService(), core_version="0.6.0"
+            ).work_control(Path("/tmp/demo"), "delivery", "release")
+        self.assertEqual(legacy.exception.code, "core.schema-incompatible")
+        self.assertIn("work-item-detail/v2", legacy.exception.reason)
 
     def test_reports_core_absence_without_cli_fallback(self) -> None:
         with patch("agora_studio.core.version", side_effect=PackageNotFoundError("missing")):
@@ -117,6 +163,25 @@ class CoreGatewayTests(unittest.TestCase):
         self.assertNotIn("subprocess", source)
         self.assertNotIn("shell=", source)
 
+    def test_rejects_malformed_nested_control_contracts(self) -> None:
+        mutations = {
+            "future option schema": lambda value: value["gate_decision_options"]["options"][
+                0
+            ].update({"schema": "agora/application/gate-decision-option-summary/v99"}),
+            "non-array materials": lambda value: value.update({"artifacts": {}}),
+            "changed option identity": lambda value: value["gate_decision_options"]["options"][
+                0
+            ].update({"work_id": "other"}),
+        }
+        for label, mutation in mutations.items():
+            with self.subTest(label=label):
+                gateway = CoreReadGateway(
+                    lambda _: NestedSchemaService(mutation), core_version="0.6.0"
+                )
+                with self.assertRaises(CoreGatewayError) as captured:
+                    gateway.work_control(Path("/tmp/demo"), "delivery", "release")
+                self.assertEqual(captured.exception.code, "core.schema-incompatible")
+
 
 class ProjectStoreTests(unittest.TestCase):
     def test_selection_is_atomic_and_core_validated(self) -> None:
@@ -125,7 +190,7 @@ class ProjectStoreTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             selected = store.select(directory)
             self.assertEqual(selected.project, Path(directory).name)
-            self.assertEqual(selected.core_version, "0.5.0")
+            self.assertEqual(selected.core_version, "0.6.0")
             with self.assertRaises(Exception):
                 store.select(Path(directory) / "missing")
             self.assertEqual(store.selection, selected)

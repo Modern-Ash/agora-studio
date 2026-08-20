@@ -14,7 +14,7 @@ python -m pip install -e ../agora -e ".[dev]"
 ```
 
 Run the application with `python -m agora_studio` or `agora-studio`. Development may use the
-sibling Core checkout, but production and wheel tests use `agora-framework>=0.5,<0.6`.
+sibling Core checkout, but production and wheel tests use `agora-framework>=0.6,<0.7`.
 
 ## Before opening a pull request
 

@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+import base64
+import hashlib
 import http.client
 import json
 import os
+import subprocess
 import tempfile
 import threading
 import unittest
+from dataclasses import replace
 from pathlib import Path
 from unittest.mock import patch
 
@@ -21,6 +25,8 @@ from agora.model import (
     WorkActorInput,
 )
 from agora.workspace import AgoraWorkspace
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
 from agora_studio.server import create_server
 
@@ -120,6 +126,45 @@ def create_gate_project(root: Path) -> Path:
     return project
 
 
+def add_multiple_gate_options(project: Path) -> None:
+    method = project / ".agora" / "methods" / "scrum"
+    completion = method / "gates" / "completion.md"
+    completion.write_text(
+        completion.read_text(encoding="utf-8").replace(
+            'required-approval-roles: ["product-owner"]',
+            'required-approval-roles: ["product-owner","scrum-master"]',
+        ),
+        encoding="utf-8",
+    )
+    (method / "gates" / "rework-review.md").write_text(
+        """---
+schema: "agora/gate/v1"
+id: "rework-review"
+require-all-criteria: false
+require-required-artifacts: false
+require-successful-evidence: false
+required-approval-roles: ["scrum-master"]
+---
+
+# Rework review gate
+""",
+        encoding="utf-8",
+    )
+    (method / "transitions" / "08-verifying-reviewing.md").write_text(
+        """---
+schema: "agora/transition/v1"
+from: "verifying"
+to: "reviewing"
+roles: ["scrum-master"]
+gate: "rework-review"
+---
+
+# Return to review
+""",
+        encoding="utf-8",
+    )
+
+
 class RunningStudio:
     def __init__(self) -> None:
         self.server = create_server(0, csrf_token="integration-token")
@@ -155,38 +200,135 @@ def gate_payload(
     decision: str = "approved", expected_state: str = "verifying"
 ) -> dict[str, object]:
     return {
-        "schema": "agora/application/approve-gate-command/v1",
+        "schema": "agora/application/approve-gate-command/v2",
         "gate_id": "completion",
-        "actor_id": "owner",
+        "actor_id": "project:owner",
         "decision": decision,
         "reason": f"Integration test {decision}",
         "expected_state": expected_state,
+        "transition_target": "completed",
+        "role_id": "product-owner",
         "evidence_references": ["repo://reports/release.txt"],
     }
 
 
 class RealCoreStudioIntegrationTests(unittest.TestCase):
+    def test_real_specification_history_and_revision_detail_stay_core_backed(self) -> None:
+        with (
+            tempfile.TemporaryDirectory() as directory,
+            patch.dict(os.environ, {"AGORA_HOME": str(Path(directory) / "home")}),
+        ):
+            project = create_gate_project(Path(directory))
+            specification = project / "docs" / "spec.md"
+            specification.parent.mkdir()
+            specification.write_text("# Release specification\n", encoding="utf-8")
+            workspace = AgoraWorkspace(cwd=project)
+            workspace.add_artifact(
+                AddArtifactInput(
+                    swarm_id="delivery",
+                    work_id="release",
+                    actor_id="developer",
+                    kind="spec",
+                    uri="repo://docs/spec.md",
+                )
+            )
+            for command in (
+                ["git", "init"],
+                ["git", "config", "user.name", "Studio Test"],
+                ["git", "config", "user.email", "studio@example.invalid"],
+                ["git", "add", "."],
+                ["git", "commit", "-m", "docs: add release specification"],
+            ):
+                subprocess.run(command, cwd=project, check=True, capture_output=True)
+            specification.write_text(
+                "# Release specification\n\nWorking tree change.\n"
+                + "".join(f"Requirement {index}\n" for index in range(2_100)),
+                encoding="utf-8",
+            )
+
+            studio = RunningStudio()
+            try:
+                self.assertEqual(
+                    studio.request("POST", "/api/v1/projects/select", {"path": str(project)})[0],
+                    200,
+                )
+                status, history = studio.request(
+                    "GET", "/api/v1/specification-history?swarm=delivery&work=release"
+                )
+                self.assertEqual(status, 200, history)
+                self.assertTrue(history["specification"]["working_tree"])
+                revision_id = history["specification"]["revisions"][0]["id"]
+                status, detail = studio.request(
+                    "GET",
+                    f"/api/v1/specification-revisions/{revision_id}?swarm=delivery&work=release",
+                )
+                self.assertEqual(status, 200, detail)
+                self.assertEqual(detail["revision"]["kind"], "working-tree")
+                self.assertIn("Working tree change", detail["revision"]["content"])
+                self.assertIn("Working tree change", detail["revision"]["diff"])
+                self.assertTrue(detail["revision"]["content_truncated"])
+                self.assertTrue(detail["revision"]["diff_truncated"])
+
+                status, unavailable = studio.request(
+                    "GET",
+                    "/api/v1/specification-revisions/" + "0" * 40 + "?swarm=delivery&work=release",
+                )
+                self.assertEqual(status, 200, unavailable)
+                self.assertFalse(unavailable["revision"]["available"])
+                self.assertIn("not present", unavailable["revision"]["reason"])
+            finally:
+                studio.close()
+
     def test_real_read_approval_persistence_activity_and_refresh(self) -> None:
         with (
             tempfile.TemporaryDirectory() as directory,
             patch.dict(os.environ, {"AGORA_HOME": str(Path(directory) / "home")}),
         ):
             project = create_gate_project(Path(directory))
+            add_multiple_gate_options(project)
             studio = RunningStudio()
             try:
                 status, opened = studio.request(
                     "POST", "/api/v1/projects/select", {"path": str(project)}
                 )
                 self.assertEqual(status, 200)
-                self.assertEqual(opened["project"]["core_version"], "0.5.0")
+                self.assertEqual(opened["project"]["core_version"], "0.6.0")
 
+                responses = {}
                 for route in (
                     "/api/v1/overview",
+                    "/api/v1/work-items/delivery/release",
                     "/api/v1/lifecycle?swarm=delivery&work=release",
                     "/api/v1/artifacts?swarm=delivery&work=release",
                 ):
                     status, payload = studio.request("GET", route)
                     self.assertEqual(status, 200, payload)
+                    responses[route] = payload
+
+                options = responses["/api/v1/work-items/delivery/release"]["control"][
+                    "gate_decision_options"
+                ]["options"]
+                self.assertEqual(len(options), 6)
+                self.assertEqual(
+                    {item["transition_target"] for item in options},
+                    {"completed", "reviewing"},
+                )
+                self.assertEqual(
+                    {item["role_id"] for item in options},
+                    {"product-owner", "scrum-master"},
+                )
+
+                status, prepared = studio.request(
+                    "POST",
+                    "/api/v1/work-items/delivery/release/approvals/prepare",
+                    gate_payload(),
+                )
+                self.assertEqual(status, 200, prepared)
+                self.assertFalse(prepared["preparation"]["authentication_required"])
+                self.assertEqual(
+                    prepared["preparation"]["command_schema"],
+                    "agora/application/approve-gate-command/v2",
+                )
 
                 status, stale = studio.request(
                     "POST",
@@ -246,6 +388,73 @@ class RealCoreStudioIntegrationTests(unittest.TestCase):
                 self.assertIn("gate.rejected", [item["type"] for item in activity["events"]])
             finally:
                 studio.close()
+
+    def test_real_signed_actor_prepares_and_persists_a_detached_signature(self) -> None:
+        with (
+            tempfile.TemporaryDirectory() as directory,
+            patch.dict(os.environ, {"AGORA_HOME": str(Path(directory) / "home")}),
+        ):
+            root = Path(directory)
+            private_key = Ed25519PrivateKey.generate()
+            public_key = private_key.public_key().public_bytes(
+                encoding=serialization.Encoding.Raw,
+                format=serialization.PublicFormat.Raw,
+            )
+            fingerprint = hashlib.sha256(public_key).hexdigest()
+            project = create_gate_project(root)
+            find_actor = AgoraWorkspace._find_actor
+
+            def authenticated_owner(workspace, project_root, actor_id):
+                actor = find_actor(workspace, project_root, actor_id)
+                if actor.reference != "project:owner":
+                    return actor
+                return replace(
+                    actor,
+                    authentication_required=True,
+                    authentication_algorithm="ed25519",
+                    authentication_public_key=base64.b64encode(public_key).decode("ascii"),
+                    authentication_fingerprint=fingerprint,
+                )
+
+            with (
+                patch.object(AgoraWorkspace, "_find_actor", authenticated_owner),
+                patch.object(AgoraWorkspace, "_assert_current_actor_key", lambda *args: None),
+            ):
+                studio = RunningStudio()
+                try:
+                    self.assertEqual(
+                        studio.request("POST", "/api/v1/projects/select", {"path": str(project)})[
+                            0
+                        ],
+                        200,
+                    )
+                    unsigned = gate_payload()
+                    status, prepared_response = studio.request(
+                        "POST",
+                        "/api/v1/work-items/delivery/release/approvals/prepare",
+                        unsigned,
+                    )
+                    self.assertEqual(status, 200, prepared_response)
+                    prepared = prepared_response["preparation"]
+                    self.assertTrue(prepared["authentication_required"])
+                    signature = base64.b64encode(
+                        private_key.sign(prepared["authorization_payload"].encode("ascii"))
+                    ).decode("ascii")
+                    signed = {
+                        **unsigned,
+                        "authentication": {
+                            "algorithm": prepared["authentication_algorithm"],
+                            "fingerprint": prepared["authentication_fingerprint"],
+                            "signature": signature,
+                        },
+                    }
+                    status, decision = studio.request(
+                        "POST", "/api/v1/work-items/delivery/release/approvals", signed
+                    )
+                    self.assertEqual(status, 200, decision)
+                    self.assertEqual(decision["projection"]["decision"], "approved")
+                finally:
+                    studio.close()
 
 
 if __name__ == "__main__":

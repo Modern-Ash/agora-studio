@@ -6,7 +6,7 @@ from agora_studio.core import ActivityQuery, CoreGatewayError
 
 
 class FakeGateway:
-    core_version = "0.5.0"
+    core_version = "0.6.0"
 
     def __init__(self) -> None:
         self.calls: list[tuple[object, ...]] = []
@@ -37,7 +37,15 @@ class FakeGateway:
             "delegation_statuses": {},
             "session_statuses": {"completed": 1},
             "tool_run_statuses": {},
-            "attention": {},
+            "attention": {
+                "forming-swarms": [],
+                "active-work": ["delivery/release"],
+                "blocked-work": [],
+                "open-delegations": [],
+                "unfinished-sessions": [],
+                "failed-sessions": [],
+                "failed-tool-runs": [],
+            },
         }
 
     def list_actors(self, project: Path) -> list[dict[str, object]]:
@@ -114,7 +122,7 @@ class FakeGateway:
             raise CoreGatewayError("read.resource-not-found", "work item not found")
         return {
             **self.list_work_items(project)[0],
-            "schema": "agora/application/work-item-detail/v1",
+            "schema": "agora/application/work-item-detail/v2",
             "artifacts": self.artifacts(project, swarm, work),
             "evidence": self.evidence(project, swarm, work),
             "approvals": self.approvals(project, swarm, work),
@@ -302,4 +310,84 @@ class FakeGateway:
             "working_tree": False,
             "truncated": False,
             "reason": "no specification registered",
+        }
+
+    def specification_revision(
+        self, project: Path, swarm: str, work: str, revision: str
+    ) -> dict[str, object]:
+        self._record("specification_revision", project, swarm, work, revision)
+        return {
+            "schema": "agora/application/specification-revision-detail/v1",
+            "available": revision == "working-tree",
+            "uri": "repo://docs/spec.md",
+            "revision_id": revision,
+            "kind": "working-tree" if revision == "working-tree" else None,
+            "sha": None,
+            "previous_revision_id": None,
+            "timestamp": None,
+            "author": None,
+            "subject": "Modified, uncommitted specification",
+            "content": "# Specification\n" if revision == "working-tree" else None,
+            "diff": "+# Specification\n" if revision == "working-tree" else None,
+            "size_bytes": 16 if revision == "working-tree" else 0,
+            "content_truncated": False,
+            "diff_truncated": False,
+            "encoding": "utf-8" if revision == "working-tree" else "unavailable",
+            "binary": False,
+            "reason": None if revision == "working-tree" else "revision unavailable",
+        }
+
+    def gate_options(self, project: Path, swarm: str, work: str) -> dict[str, object]:
+        self._record("gate_options", project, swarm, work)
+        common = {
+            "schema": "agora/application/gate-decision-option-summary/v1",
+            "swarm_id": swarm,
+            "work_id": work,
+            "expected_state": "verifying",
+            "transition_source": "verifying",
+            "transition_target": "completed",
+            "gate_id": "completion",
+            "role_id": "product-owner",
+            "actor_id": "project:owner",
+            "allowed": True,
+            "blockers": [],
+            "required_evidence_types": ["test-run"],
+            "evidence_references": ["repo://report"],
+            "authentication_required": False,
+            "authentication_algorithm": None,
+            "authentication_fingerprint": None,
+            "unavailable_reason": None,
+        }
+        return {
+            "schema": "agora/application/gate-decision-options-projection/v1",
+            "swarm_id": swarm,
+            "work_id": work,
+            "current_state": "verifying",
+            "operational_status": "active",
+            "terminal": False,
+            "reason": None,
+            "options": [
+                {**common, "decision": "approved", "evidence_required": True},
+                {
+                    **common,
+                    "decision": "rejected",
+                    "evidence_required": False,
+                    "required_evidence_types": [],
+                },
+            ],
+        }
+
+    def work_control(self, project: Path, swarm: str, work: str) -> dict[str, object]:
+        self._record("work_control", project, swarm, work)
+        detail = self.get_work_item(project, swarm, work)
+        return {
+            "schema": "agora/application/work-control-projection/v1",
+            "work": detail,
+            "lifecycle": self.lifecycle(project, swarm, work),
+            "artifacts": detail["artifacts"],
+            "evidence": detail["evidence"],
+            "approvals": detail["approvals"],
+            "traceability": self.traceability(project, swarm, work),
+            "specification_history": self.specification(project, swarm, work),
+            "gate_decision_options": self.gate_options(project, swarm, work),
         }

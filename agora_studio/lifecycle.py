@@ -77,11 +77,12 @@ def build_lifecycle(store: ProjectStore, query: Mapping[str, object] | None) -> 
         )
     swarm, work_id = normalized["swarm"], normalized["work"]
     try:
-        work = store.gateway.get_work_item(selection.path, swarm, work_id)
+        control = store.gateway.work_control(selection.path, swarm, work_id)
+        work = control["work"]
         method = store.gateway.get_method(selection.path, swarm)
-        lifecycle = store.gateway.lifecycle(selection.path, swarm, work_id)
-        traceability = store.gateway.traceability(selection.path, swarm, work_id)
-        specification = store.gateway.specification(selection.path, swarm, work_id)
+        lifecycle = control["lifecycle"]
+        traceability = control["traceability"]
+        specification = control["specification_history"]
     except CoreGatewayError as error:
         if error.code == "read.resource-not-found":
             raise LifecycleError("not_found", error.reason) from error
@@ -130,6 +131,7 @@ def build_lifecycle(store: ProjectStore, query: Mapping[str, object] | None) -> 
         "lifecycle": lifecycle,
         "specification": specification,
         "traceability": traceability,
+        "gate_decision_options": control["gate_decision_options"],
         "availability": {
             "method": True,
             "traceability": True,

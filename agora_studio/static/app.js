@@ -1,7 +1,7 @@
 "use strict";
 
 const API_ROOT = "/api/v1";
-const workTabs = ["summary", "spec", "lifecycle", "artifacts", "evidence", "approvals", "activity"];
+const workTabs = ControlModel.tabs;
 const viewNames = {
   overview: "Process overview",
   work: "Work control",
@@ -10,22 +10,46 @@ const viewNames = {
   activity: "Activity",
 };
 
+function newGateAction(key = null) {
+  return {
+    key,
+    optionKey: null,
+    reason: "",
+    phase: "edit",
+    prepared: null,
+    preparing: false,
+    submitting: false,
+    authentication: { algorithm: "", fingerprint: "", signature: "" },
+    error: "",
+    result: "",
+    refreshWarning: "",
+  };
+}
+
 const state = {
   overview: null,
   activity: null,
   activityError: "",
   activityLoading: false,
-  activityFilters: { type: "", actor: "", swarm_id: "" },
+  activityFilters: {
+    type: "",
+    actor: "",
+    swarm_id: "",
+    work_id: "",
+    session_id: "",
+    tool_run_id: "",
+  },
   details: {},
   detailRequests: new Map(),
   enrichmentLoading: false,
   generation: 0,
-  gateAction: { key: null, decision: null, reason: "", submitting: false, error: "", result: "" },
+  gateAction: newGateAction(),
   selectionPath: "",
   selectedWork: null,
   selectedTab: "summary",
   selectedRevision: null,
   revisionDetails: new Map(),
+  revisionRequest: null,
   view: "overview",
   loading: false,
   csrfToken: "",
@@ -192,6 +216,7 @@ function setLoading(loading, message) {
 }
 
 function resetProjectData() {
+  state.revisionRequest?.abort();
   state.generation += 1;
   state.activity = null;
   state.activityError = "";
@@ -199,9 +224,10 @@ function resetProjectData() {
   state.details = {};
   state.detailRequests = new Map();
   state.enrichmentLoading = false;
-  state.gateAction = { key: null, decision: null, reason: "", submitting: false, error: "", result: "" };
+  state.gateAction = newGateAction();
   state.revisionDetails = new Map();
   state.selectedRevision = null;
+  state.revisionRequest = null;
   state.selectedWork = null;
   state.selectedTab = "summary";
 }
@@ -273,7 +299,9 @@ function renderOverview() {
   const partialCount = Object.values(state.details).filter((detail) => detail.errors?.length).length;
   const detailPending = state.enrichmentLoading && detailCount < (overview.work || []).length;
   const methodPack = status.default_method || "Not recorded";
-  const activeWork = (overview.work || []).filter(DashboardModel.isWorkInProgress).slice(0, 4);
+  const activeWork = (overview.work || []).filter(
+    (work) => DashboardModel.isWorkInProgress(work, overview),
+  ).slice(0, 4);
 
   const healthRail = element("section", { className: "health-rail", "aria-label": "Process health" }, [
     element("div", { className: "method-card" }, [
@@ -284,7 +312,7 @@ function renderOverview() {
     metricCard("Active swarms", metrics.activeSwarms, `${(overview.swarms || []).length} total`, metrics.activeSwarms ? "accent" : "neutral"),
     metricCard("Work in progress", metrics.workInProgress, `${(overview.work || []).length} total`, metrics.workInProgress ? "accent" : "neutral"),
     metricCard("Blocked", metrics.blockedWork, "work items", metrics.blockedWork ? "danger" : "good"),
-    metricCard("Pending approvals", metrics.pendingApprovals, "required roles", metrics.pendingApprovals ? "danger" : "good", detailPending),
+    metricCard("Pending approvals", metrics.pendingApprovals, "Core options ready", metrics.pendingApprovals ? "danger" : "good", detailPending),
     metricCard("Evidence missing", metrics.missingEvidence, "work items", metrics.missingEvidence ? "danger" : "good", detailPending),
     metricCard("Failed sessions", metrics.failedSessions, "durable runs", metrics.failedSessions ? "danger" : "good"),
   ]);
@@ -300,12 +328,12 @@ function renderOverview() {
     ]),
     activeWork.length
       ? element("ol", { className: "focus-list" }, activeWork.map((work) => {
-        const assignment = DashboardModel.assignmentFor(work, overview.swarms);
+        const assignments = DashboardModel.swarmAssignments(work, overview.swarms);
         const open = element("button", { className: "focus-row", type: "button", "aria-label": `Open ${work.title}` }, [
           element("span", { className: "state-stripe", "data-state": work.state, "aria-hidden": "true" }),
           element("span", { className: "focus-copy" }, [element("strong", { text: work.title || work.id }), element("small", { text: `${work.swarm_id}/${work.id}` })]),
           statusPill(work.state),
-          element("span", { className: "focus-owner", text: assignment.actor || "Unassigned" }),
+          element("span", { className: "focus-owner", text: assignments.length ? `${assignments.length} governed role${assignments.length === 1 ? "" : "s"}` : "No swarm roles" }),
         ]);
         open.addEventListener("click", () => openWork(work));
         return element("li", {}, [open]);
@@ -332,10 +360,10 @@ function renderOverview() {
 
 function workCard(work) {
   const key = DashboardModel.workKey(work);
-  const assignment = DashboardModel.assignmentFor(work, state.overview.swarms);
+  const assignments = DashboardModel.swarmAssignments(work, state.overview.swarms);
   const detail = state.details[key];
-  const gates = DashboardModel.pendingGates(detail?.lifecycle);
-  const blocked = DashboardModel.isBlocked(work);
+  const gateCount = DashboardModel.gateCount(detail);
+  const blocked = DashboardModel.isBlocked(work, state.overview);
   const button = element("button", { className: `work-card${blocked ? " is-blocked" : ""}`, type: "button", "aria-label": `Open work item ${work.title || work.id}` }, [
     element("span", { className: "work-card-topline" }, [
       element("span", { className: "mono card-key", text: key }),
@@ -343,10 +371,10 @@ function workCard(work) {
     ]),
     element("strong", { className: "work-title", text: work.title || work.id }),
     element("span", { className: "assignment-line" }, [
-      element("span", { className: "avatar", text: (assignment.actor || "?").split(":").pop().slice(0, 2).toUpperCase(), "aria-hidden": "true" }),
+      element("span", { className: "avatar", text: String(assignments.length).padStart(2, "0"), "aria-hidden": "true" }),
       element("span", {}, [
-        element("b", { text: assignment.actor || "Unassigned" }),
-        element("small", { text: assignment.role ? `${assignment.role} · swarm scope` : "No role recorded" }),
+        element("b", { text: assignments.length ? `${assignments.length} swarm assignment${assignments.length === 1 ? "" : "s"}` : "No assignments" }),
+        element("small", { text: assignments.map((item) => `${item.role}: ${item.actor}`).join(" · ") || "No role recorded" }),
       ]),
     ]),
     element("span", { className: `block-line${blocked ? " is-alert" : ""}` }, [
@@ -354,7 +382,7 @@ function workCard(work) {
       element("span", { text: blocked ? work.status_reason || "Blocked" : "No operational block" }),
     ]),
     element("span", { className: "card-footer" }, [
-      element("span", { text: detail?.loading ? "Checking gates…" : gates.length ? `${gates.length} gate${gates.length === 1 ? "" : "s"} pending` : detail?.errors?.length ? "Gates unavailable" : "No pending gates" }),
+      element("span", { text: detail?.loading ? "Loading Core options…" : gateCount ? `${gateCount} governed gate${gateCount === 1 ? "" : "s"}` : detail?.errors?.length ? "Options unavailable" : "No gate options" }),
       element("time", { datetime: work.status_at, text: relativeTime(work.status_at), title: formatTime(work.status_at) }),
     ]),
   ]);
@@ -402,8 +430,9 @@ function definitionList(entries) {
 }
 
 function renderSummaryTab(work, detail) {
-  const assignment = DashboardModel.assignmentFor(work, state.overview.swarms);
-  const gates = DashboardModel.pendingGates(detail?.lifecycle);
+  const assignments = DashboardModel.swarmAssignments(work, state.overview.swarms);
+  const options = DashboardModel.decisionOptions(detail);
+  const blockers = options.flatMap((option) => option.blockers || []);
   const criteria = Object.entries(work.acceptance_criteria || {});
   return element("div", { className: "detail-grid" }, [
     element("section", { className: "detail-panel" }, [
@@ -413,8 +442,7 @@ function renderSummaryTab(work, detail) {
       definitionList([
         ["State", work.state],
         ["Operational", work.operational_status],
-        ["Swarm actor", assignment.actor],
-        ["Swarm role", assignment.role],
+        ["Swarm assignments", assignments.map((item) => `${item.role}: ${item.actor}`).join(", ")],
         ["Updated", formatTime(work.status_at)],
       ]),
     ]),
@@ -429,20 +457,106 @@ function renderSummaryTab(work, detail) {
           ]),
         ))
         : emptyState("CRT—00", "No criteria recorded", "This work item has no durable acceptance criteria."),
-      gates.length
+      options.length
         ? element("div", { className: "gate-alert" }, [
-          element("strong", { text: `${gates.length} pending gate${gates.length === 1 ? "" : "s"}` }),
-          ...gates.map((gate) => element("span", { text: `${gate.id} → ${gate.target}: ${gate.blockers.map(blockerText).join("; ")}` })),
+          element("strong", { text: `${options.length} Core decision option${options.length === 1 ? "" : "s"}` }),
+          element("span", { text: blockers.length ? blockers.map(blockerText).join("; ") : "At least one governed option is executable." }),
         ])
-        : element("p", { className: "quiet-success", text: detail?.loading ? "Checking current gates…" : "No pending gate blockers detected." }),
+        : element("p", { className: "quiet-success", text: detail?.loading ? "Loading Core decision options…" : detail?.control?.gate_decision_options?.reason || "No governed gate decisions are available." }),
     ]),
   ]);
 }
 
+function revisionKey(work, revisionId) {
+  return ControlModel.revisionToken(
+    state.selectionPath,
+    DashboardModel.workKey(work),
+    revisionId,
+  );
+}
+
+async function loadSpecificationRevision(work, revision) {
+  state.revisionRequest?.abort();
+  const controller = new AbortController();
+  const generation = state.generation;
+  const selectedWork = state.selectedWork;
+  const key = revisionKey(work, revision.id);
+  state.revisionRequest = controller;
+  state.selectedRevision = revision.id;
+  state.revisionDetails.set(key, { loading: true, error: "", data: null });
+  renderWorkDetail();
+  try {
+    const query = `swarm=${encodeURIComponent(work.swarm_id)}&work=${encodeURIComponent(work.id)}`;
+    const payload = await requestJson(
+      `${API_ROOT}/specification-revisions/${encodeURIComponent(revision.id)}?${query}`,
+      { signal: controller.signal },
+    );
+    if (generation !== state.generation || selectedWork !== state.selectedWork) return;
+    state.revisionDetails.set(key, { loading: false, error: "", data: payload.revision });
+    announce(`${revision.subject || revision.id} revision detail loaded.`);
+  } catch (error) {
+    if (error.name === "AbortError") return;
+    if (generation !== state.generation || selectedWork !== state.selectedWork) return;
+    state.revisionDetails.set(key, { loading: false, error: error.message, data: null });
+    announce(`Specification revision could not be loaded. ${error.message}`);
+  } finally {
+    if (state.revisionRequest === controller) state.revisionRequest = null;
+    if (generation === state.generation && selectedWork === state.selectedWork) renderWorkDetail();
+  }
+}
+
+function renderRevisionDetail(work) {
+  if (!state.selectedRevision) {
+    return element("section", { className: "detail-panel revision-detail" }, [
+      element("p", { className: "section-kicker", text: "Revision detail" }),
+      element("h3", { text: "Select a version" }),
+      element("p", { text: "Content and bounded diff are loaded on demand from Agora Core." }),
+    ]);
+  }
+  const record = state.revisionDetails.get(revisionKey(work, state.selectedRevision));
+  if (!record || record.loading) return loadingRows("Loading specification revision detail");
+  if (record.error) return notice("error", "Revision detail unavailable", record.error);
+  const revision = record.data;
+  if (!revision?.available) {
+    return emptyState("REV—NA", "Revision unavailable", revision?.reason || "Core could not return this revision.");
+  }
+  const back = element("button", { className: "back-button", type: "button", text: "← Back to revision list" });
+  back.addEventListener("click", () => {
+    state.selectedRevision = null;
+    renderWorkDetail();
+    document.querySelector(".revision-list button")?.focus();
+  });
+  return element("section", { className: "detail-panel revision-detail", "aria-labelledby": "revision-detail-title" }, [
+    back,
+    element("p", { className: "section-kicker", text: revision.kind === "working-tree" ? "Working tree / not committed" : "Committed specification" }),
+    element("h3", { id: "revision-detail-title", text: revision.subject || revision.revision_id }),
+    definitionList([
+      ["Revision", revision.revision_id],
+      ["Commit", revision.sha],
+      ["Previous", revision.previous_revision_id],
+      ["Author", revision.author],
+      ["Recorded", formatTime(revision.timestamp)],
+      ["Size", `${revision.size_bytes} bytes`],
+      ["Encoding", revision.encoding],
+    ]),
+    revision.content_truncated ? notice("partial", "Content truncated", "Core returned a bounded content extract.") : null,
+    revision.content === null
+      ? emptyState("TXT—NA", revision.binary ? "Binary specification" : "Content unavailable", revision.reason || "No text content is available.")
+      : element("pre", { className: "revision-diff revision-content", text: revision.content }),
+    revision.diff_truncated ? notice("partial", "Diff truncated", "Core returned a bounded diff extract.") : null,
+    revision.diff === null
+      ? null
+      : element("div", {}, [
+        element("h4", { text: "Diff" }),
+        element("pre", { className: "revision-diff", text: revision.diff }),
+      ]),
+  ]);
+}
+
 function renderSpecTab(work, detail) {
-  if (detail?.loading && !detail.lifecycle) return loadingRows("Loading specification history");
-  if (!detail?.lifecycle) return emptyState("SPC—ERR", "Specification unavailable", detail?.errors?.join(" ") || "The lifecycle read did not return specification data.");
-  const specification = detail.lifecycle.specification || {};
+  if (detail?.loading && !detail.control) return loadingRows("Loading specification history");
+  if (!detail?.control) return emptyState("SPC—ERR", "Specification unavailable", detail?.errors?.join(" ") || "Core did not return work control data.");
+  const specification = detail.control.specification_history || {};
   if (!specification.available) return emptyState("SPC—00", "No verified specification", specification.reason || "No single registered specification is available.");
   const revisions = specification.revisions || [];
   return element("div", { className: "detail-grid spec-grid" }, [
@@ -450,45 +564,45 @@ function renderSpecTab(work, detail) {
       element("p", { className: "section-kicker", text: "Registered specification" }),
       element("h3", { className: "mono wrap", text: specification.uri }),
       revisions.length
-        ? element("ol", { className: "revision-list" }, revisions.map((revision) =>
-          element("li", { className: "revision-button" }, [
+        ? element("ol", { className: "revision-list" }, revisions.map((revision) => {
+          const button = element("button", {
+            className: `revision-button${state.selectedRevision === revision.id ? " is-selected" : ""}`,
+            type: "button",
+            "aria-current": state.selectedRevision === revision.id ? "true" : null,
+          }, [
             element("strong", { className: "mono", text: revision.short_sha || revision.id }),
             element("span", { text: revision.subject || "Working tree" }),
-            element("small", { text: `${display(revision.author, "author unknown")} · ${formatTime(revision.timestamp)}` }),
-          ]),
-        ))
+            element("small", { text: `${revision.uncommitted ? "Working tree" : display(revision.author, "author unknown")} · ${formatTime(revision.timestamp)}` }),
+          ]);
+          button.addEventListener("click", () => loadSpecificationRevision(work, revision));
+          return element("li", {}, [button]);
+        }))
         : emptyState("REV—00", "No revisions", "The specification has no available Git history."),
     ]),
-    element("section", { className: "detail-panel revision-detail" }, [
-      element("p", { className: "section-kicker", text: "Core contract" }),
-      element("h3", { text: "Versioned specification history" }),
-      element("p", { text: "Revision metadata is supplied by Agora Core. Studio does not read Git objects or specification files directly." }),
-      definitionList([["Schema", specification.schema], ["History", specification.has_history ? "Available" : "Not recorded"], ["Working tree", specification.working_tree ? "Modified" : "Clean"]]),
-    ]),
+    renderRevisionDetail(work),
   ]);
 }
 
 function renderLifecycleTab(detail) {
-  if (detail?.loading && !detail.lifecycle) return loadingRows("Loading lifecycle");
-  if (!detail?.lifecycle?.method?.available) return emptyState("LFC—00", "Lifecycle unavailable", detail?.lifecycle?.diagnostics?.join(" ") || detail?.errors?.join(" ") || "Method topology is not available.");
-  const lifecycle = detail.lifecycle;
-  const states = lifecycle.method.states || [];
-  const traversed = new Set((lifecycle.actual_path?.traversals || []).map((item) => `${item.from}/${item.to}`));
+  if (detail?.loading && !detail.control) return loadingRows("Loading lifecycle");
+  if (!detail?.control?.lifecycle) return emptyState("LFC—00", "Lifecycle unavailable", detail?.errors?.join(" ") || "Core did not return lifecycle data.");
+  const lifecycle = detail.control.lifecycle;
+  const states = lifecycle.states || [];
   return element("div", { className: "lifecycle-panel" }, [
-    element("div", { className: "process-track", role: "list", "aria-label": `${lifecycle.method.name} lifecycle states` }, states.map((item, index) =>
-      element("div", { className: `process-node${item.current ? " is-current" : ""}${item.terminal ? " is-terminal" : ""}`, role: "listitem" }, [
+    element("div", { className: "process-track", role: "list", "aria-label": `${lifecycle.method} lifecycle states` }, states.map((item, index) =>
+      element("div", { className: `process-node${item.id === lifecycle.current_state ? " is-current" : ""}${item.terminal ? " is-terminal" : ""}`, role: "listitem" }, [
         element("span", { className: "node-number", text: String(index + 1).padStart(2, "0") }),
         element("strong", { text: titleCase(item.id) }),
-        element("small", { text: item.current ? "Current" : item.terminal ? "Terminal" : "Method state" }),
+        element("small", { text: item.id === lifecycle.current_state ? "Current" : item.terminal ? "Terminal" : "Method state" }),
       ]),
     )),
     element("section", { className: "detail-panel" }, [
       element("p", { className: "section-kicker", text: "Method transitions" }),
-      element("h3", { text: lifecycle.method.name }),
-      element("ul", { className: "transition-list" }, (lifecycle.method.transitions || []).map((transition) =>
-        element("li", { className: `${traversed.has(`${transition.from}/${transition.to}`) ? "is-traversed" : ""}${transition.blockers?.length ? " is-blocked" : ""}` }, [
-          element("span", { className: "transition-path mono", text: `${transition.from} → ${transition.to}` }),
-          element("span", { text: transition.gate || "No gate" }),
+      element("h3", { text: lifecycle.method }),
+      element("ul", { className: "transition-list" }, (lifecycle.transitions || []).map((transition) =>
+        element("li", { className: `${transition.source === lifecycle.current_state ? "is-traversed" : ""}${transition.blockers?.length ? " is-blocked" : ""}` }, [
+          element("span", { className: "transition-path mono", text: `${transition.source} → ${transition.target}` }),
+          element("span", { text: transition.gate_id || "No gate" }),
           transition.blockers?.length ? element("small", { text: transition.blockers.map(blockerText).join("; ") }) : element("small", { text: transition.available ? "Available now" : "Declared by method" }),
         ]),
       )),
@@ -505,9 +619,9 @@ function recordsTable(kind, records, columns, emptyMessage) {
 }
 
 function renderArtifactsTab(detail) {
-  if (detail?.loading && !detail.artifacts) return loadingRows("Loading artifacts");
-  if (!detail?.artifacts) return emptyState("ART—ERR", "Artifacts unavailable", detail?.errors?.join(" ") || "No artifact projection was returned.");
-  return recordsTable("Artifacts", detail.artifacts.artifacts, [
+  if (detail?.loading && !detail.control) return loadingRows("Loading artifacts");
+  if (!detail?.control) return emptyState("ART—ERR", "Artifacts unavailable", detail?.errors?.join(" ") || "No work control projection was returned.");
+  return recordsTable("Artifacts", detail.control.artifacts, [
     { label: "Kind", render: (record) => statusPill(record.kind) },
     { label: "URI", render: (record) => element("span", { className: "mono wrap", text: record.uri }) },
     { label: "Produced by", render: (record) => record.produced_by },
@@ -516,9 +630,9 @@ function renderArtifactsTab(detail) {
 }
 
 function renderEvidenceTab(detail) {
-  if (detail?.loading && !detail.artifacts) return loadingRows("Loading evidence");
-  if (!detail?.artifacts) return emptyState("EVD—ERR", "Evidence unavailable", detail?.errors?.join(" ") || "No evidence projection was returned.");
-  return recordsTable("Evidence", detail.artifacts.evidence, [
+  if (detail?.loading && !detail.control) return loadingRows("Loading evidence");
+  if (!detail?.control) return emptyState("EVD—ERR", "Evidence unavailable", detail?.errors?.join(" ") || "No work control projection was returned.");
+  return recordsTable("Evidence", detail.control.evidence, [
     { label: "Result", render: (record) => statusPill(record.result) },
     { label: "Type", render: (record) => record.type },
     { label: "Artifact refs", render: (record) => tags(record.artifact_references, "None") },
@@ -535,20 +649,68 @@ function gateErrorMessage(error) {
     "command.signature-required": "This actor requires a signed lifecycle action before the decision can be recorded.",
     "command.persistence-failed": "Core could not persist the complete decision; no partial result is shown.",
     "command.version-incompatible": "The installed Agora Core does not support this versioned command.",
+    "core.schema-incompatible": "Core returned a projection Studio cannot safely trust.",
   };
   return messages[error.code] || error.message;
 }
 
-function beginGateDecision(work, decision, reason) {
-  if (!reason.trim()) {
-    state.gateAction = { key: DashboardModel.workKey(work), decision: null, reason: "", submitting: false, error: "A reason is required for every gate decision.", result: "" };
-  } else {
-    state.gateAction = { key: DashboardModel.workKey(work), decision, reason: reason.trim(), submitting: false, error: "", result: "" };
+function gateCommand(option, reason, authentication = null) {
+  return ControlModel.command(option, reason, authentication);
+}
+
+async function prepareGateDecision(work, detail) {
+  const action = state.gateAction;
+  const option = DashboardModel.findOption(detail, action.optionKey);
+  if (!option || option.allowed !== true || !option.actor_id) {
+    action.error = "Select an enabled action supplied by Agora Core.";
+    renderWorkDetail();
+    return;
   }
+  if (!action.reason.trim()) {
+    action.error = "A reason is required for every gate decision.";
+    renderWorkDetail();
+    document.querySelector("#gate-reason")?.focus();
+    return;
+  }
+  action.reason = action.reason.trim();
+  action.preparing = true;
+  action.error = "";
   renderWorkDetail();
-  document.querySelector(
-    state.gateAction.decision ? ".gate-confirmation button" : "#gate-reason",
-  )?.focus();
+  try {
+    const payload = await requestJson(
+      `${API_ROOT}/work-items/${encodeURIComponent(work.swarm_id)}/${encodeURIComponent(work.id)}/approvals/prepare`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(gateCommand(option, action.reason)),
+      },
+    );
+    action.prepared = payload.preparation;
+    action.authentication = {
+      algorithm: payload.preparation.authentication_algorithm || "ed25519",
+      fingerprint: payload.preparation.authentication_fingerprint || "",
+      signature: "",
+    };
+    action.phase = payload.preparation.authentication_required ? "sign" : "confirm";
+    announce(
+      payload.preparation.authentication_required
+        ? "Canonical payload prepared. A detached signature is required."
+        : "Gate decision prepared and ready for confirmation.",
+    );
+  } catch (error) {
+    action.error = gateErrorMessage(error);
+    if (["command.stale-precondition", "command.gate-already-resolved"].includes(error.code)) {
+      try {
+        await refreshAfterGateDecision(work);
+      } catch {
+        action.error += " Studio could not refresh the durable projection.";
+      }
+    }
+  } finally {
+    action.preparing = false;
+    renderWorkDetail();
+    document.querySelector(action.phase === "sign" ? "#detached-signature" : ".gate-confirmation button")?.focus();
+  }
 }
 
 async function refreshAfterGateDecision(work) {
@@ -567,139 +729,237 @@ async function refreshAfterGateDecision(work) {
 
 async function submitGateDecision(work, detail) {
   if (state.gateAction.submitting) return;
-  const context = DashboardModel.gateDecisionContext(work, state.overview.swarms, detail);
-  if (!context.ready || !state.gateAction.decision) return;
+  const action = state.gateAction;
+  const option = DashboardModel.findOption(detail, action.optionKey);
+  if (!option || option.allowed !== true || !action.prepared) return;
+  const preparationIssue = ControlModel.preparationIssue(action.prepared, option, action.reason);
+  if (preparationIssue) {
+    resetGatePreparation(action);
+    action.error = preparationIssue;
+    renderWorkDetail();
+    document.querySelector("#gate-reason")?.focus();
+    return;
+  }
+  let authentication = null;
+  if (action.prepared.authentication_required) {
+    authentication = {
+      algorithm: action.authentication.algorithm.trim(),
+      fingerprint: action.authentication.fingerprint.trim(),
+      signature: action.authentication.signature.trim(),
+    };
+    const issue = ControlModel.authenticationIssue(action.prepared, authentication);
+    if (issue) {
+      action.error = issue;
+      renderWorkDetail();
+      document.querySelector("#detached-signature")?.focus();
+      return;
+    }
+  }
   state.gateAction.submitting = true;
   state.gateAction.error = "";
   renderWorkDetail();
-  const evidenceReferences = [...new Set(context.evidence.flatMap((item) => item.artifact_references || []))];
+  let response;
   try {
-    await requestJson(`${API_ROOT}/work-items/${encodeURIComponent(work.swarm_id)}/${encodeURIComponent(work.id)}/approvals`, {
+    response = await requestJson(`${API_ROOT}/work-items/${encodeURIComponent(work.swarm_id)}/${encodeURIComponent(work.id)}/approvals`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        schema: "agora/application/approve-gate-command/v1",
-        gate_id: context.gate.id,
-        actor_id: context.actor,
-        decision: state.gateAction.decision,
-        reason: state.gateAction.reason,
-        expected_state: work.state,
-        evidence_references: evidenceReferences,
-      }),
+      body: JSON.stringify(gateCommand(option, action.reason, authentication)),
     });
-    const decision = state.gateAction.decision;
-    await refreshAfterGateDecision(work);
-    state.gateAction = {
-      key: DashboardModel.workKey(work),
-      decision: null,
-      reason: "",
-      submitting: false,
-      error: "",
-      result: decision === "approved"
-        ? "Approval persisted. The gate projection and Activity log were refreshed."
-        : "Rejection persisted. The gate remains closed and Activity now shows the decision.",
-    };
-    announce(state.gateAction.result);
   } catch (error) {
-    state.gateAction.submitting = false;
-    state.gateAction.error = gateErrorMessage(error);
+    action.submitting = false;
+    action.error = gateErrorMessage(error);
     if (["command.stale-precondition", "command.gate-already-resolved"].includes(error.code)) {
       try {
         await refreshAfterGateDecision(work);
       } catch {
-        state.gateAction.error += " Studio could not refresh the durable projection.";
+        action.error += " Studio could not refresh the durable projection.";
       }
     }
-    announce(`Gate decision failed. ${state.gateAction.error}`);
+    announce(`Gate decision failed. ${action.error}`);
+    renderWorkDetail();
+    return;
+  }
+
+  action.submitting = false;
+  action.phase = "done";
+  action.result = option.decision === "approved"
+    ? "Approval was durably persisted by Agora Core."
+    : "Rejection was durably persisted by Agora Core.";
+  if (state.activity && response.projection?.activity) {
+    state.activity.events = [...state.activity.events, response.projection.activity];
+  }
+  if (detail.control && response.projection?.lifecycle) {
+    detail.control.lifecycle = response.projection.lifecycle;
+  }
+  renderWorkDetail();
+  announce(action.result);
+  try {
+    await refreshAfterGateDecision(work);
+  } catch {
+    action.refreshWarning = "The decision is durable, but the follow-up refresh failed. Refresh before another action.";
+    announce(`${action.result} ${action.refreshWarning}`);
   }
   renderWorkDetail();
 }
 
-function renderGateControl(work, detail) {
-  const context = DashboardModel.gateDecisionContext(work, state.overview.swarms, detail);
-  if (!context.gate) return null;
-  const action = state.gateAction.key === DashboardModel.workKey(work)
-    ? state.gateAction
-    : { decision: null, reason: "", submitting: false, error: "", result: "" };
+function resetGatePreparation(action) {
+  action.phase = "edit";
+  action.prepared = null;
+  action.authentication = { algorithm: "", fingerprint: "", signature: "" };
+  action.error = "";
+}
 
-  const evidence = context.evidence.length
-    ? element("ul", { className: "gate-evidence" }, context.evidence.map((record) => element("li", {}, [
-      statusPill(record.result),
-      element("span", {}, [element("strong", { text: record.type }), tags(record.artifact_references, "No artifact references")]),
-    ])))
-    : emptyState("EVD—REQ", "No evidence recorded", "Core will decide whether durable evidence is required for this gate.");
-
-  let controls;
-  if (action.decision) {
-    const effect = action.decision === "approved"
-      ? `Record ${context.role} approval by ${context.actor}; Core will then recompute gate ${context.gate.id}.`
-      : `Record a durable rejection by ${context.actor}; the approval stays unsatisfied and the gate remains closed.`;
-    const confirm = element("button", { className: `primary-button decision-${action.decision}`, type: "button", text: action.submitting ? "Persisting…" : `Confirm ${action.decision}`, disabled: action.submitting ? "disabled" : null });
-    confirm.addEventListener("click", () => submitGateDecision(work, detail));
-    const cancel = element("button", { className: "back-button", type: "button", text: "Cancel", disabled: action.submitting ? "disabled" : null });
-    cancel.addEventListener("click", () => {
-      state.gateAction = { key: DashboardModel.workKey(work), decision: null, reason: "", submitting: false, error: "", result: "" };
-      renderWorkDetail();
+function renderPreparedDecision(work, detail, action, option) {
+  const prepared = action.prepared;
+  const confirm = element("button", {
+    className: `primary-button decision-${option.decision}`,
+    type: "button",
+    text: action.submitting ? "Persisting…" : `Confirm ${option.decision}`,
+    disabled: action.submitting ? "disabled" : null,
+  });
+  confirm.addEventListener("click", () => submitGateDecision(work, detail));
+  const regenerate = element("button", { className: "back-button", type: "button", text: "Edit and regenerate", disabled: action.submitting ? "disabled" : null });
+  regenerate.addEventListener("click", () => {
+    resetGatePreparation(action);
+    renderWorkDetail();
+    document.querySelector("#gate-reason")?.focus();
+  });
+  const children = [
+    element("p", { className: "section-kicker", text: prepared.authentication_required ? "Detached signature required" : "Confirm governed mutation" }),
+    element("h3", { id: "gate-confirm-title", text: `${titleCase(option.decision)} / ${option.gate_id}` }),
+    definitionList([
+      ["Actor", prepared.actor_id],
+      ["Role", prepared.role_id],
+      ["Gate", prepared.gate_id],
+      ["Decision", prepared.decision],
+      ["Expected state", prepared.expected_state],
+      ["Target state", prepared.transition_target],
+      ["Fingerprint", prepared.authentication_fingerprint],
+      ["Digest", prepared.authorization_digest],
+      ["Freshness", prepared.freshness],
+    ]),
+    element("blockquote", { text: action.reason }),
+  ];
+  if (prepared.authentication_required) {
+    const payload = element("textarea", { id: "canonical-payload", rows: "8", readonly: "readonly", text: prepared.authorization_payload, "aria-label": "Canonical payload to sign" });
+    const copy = element("button", { className: "back-button", type: "button", text: "Copy payload" });
+    copy.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(prepared.authorization_payload);
+        announce("Canonical payload copied.");
+      } catch {
+        payload.focus();
+        payload.select();
+        announce("Clipboard access is unavailable. The canonical payload is selected for copying.");
+      }
     });
-    controls = element("div", { className: "gate-confirmation", role: "alertdialog", "aria-labelledby": "gate-confirm-title", "aria-describedby": "gate-confirm-effect" }, [
-      element("p", { className: "section-kicker", text: "Confirm governed mutation" }),
-      element("h3", { id: "gate-confirm-title", text: `${titleCase(action.decision)} ${context.gate.id}` }),
-      element("p", { id: "gate-confirm-effect", text: effect }),
-      element("blockquote", { text: action.reason }),
-      element("div", { className: "gate-actions" }, [confirm, cancel]),
+    const algorithm = element("input", { id: "signature-algorithm", value: action.authentication.algorithm, maxlength: "32", required: "required", autocomplete: "off" });
+    const fingerprint = element("input", { id: "signature-fingerprint", value: action.authentication.fingerprint, pattern: "[0-9a-f]{64}", maxlength: "64", required: "required", autocomplete: "off" });
+    const signature = element("textarea", { id: "detached-signature", rows: "5", maxlength: "8192", required: "required", autocomplete: "off", placeholder: "Paste the detached signature", text: action.authentication.signature });
+    algorithm.addEventListener("input", () => { action.authentication.algorithm = algorithm.value; });
+    fingerprint.addEventListener("input", () => { action.authentication.fingerprint = fingerprint.value; });
+    signature.addEventListener("input", () => { action.authentication.signature = signature.value; });
+    children.push(
+      element("div", { className: "signature-payload" }, [payload, copy]),
+      element("div", { className: "signature-fields" }, [
+        element("label", { for: "signature-algorithm" }, [element("span", { text: "Algorithm" }), algorithm]),
+        element("label", { for: "signature-fingerprint" }, [element("span", { text: "Fingerprint" }), fingerprint]),
+        element("label", { for: "detached-signature" }, [element("span", { text: "Detached signature" }), signature]),
+      ]),
+    );
+  }
+  children.push(element("div", { className: "gate-actions" }, [confirm, regenerate]));
+  return element("div", { className: "gate-confirmation", role: "alertdialog", "aria-labelledby": "gate-confirm-title" }, children);
+}
+
+function renderGateControl(work, detail) {
+  const projection = DashboardModel.decisionProjection(detail);
+  const options = DashboardModel.decisionOptions(detail);
+  if (!projection) return detail?.loading ? loadingRows("Loading governed actions") : null;
+  const key = DashboardModel.workKey(work);
+  const action = state.gateAction.key === key ? state.gateAction : newGateAction(key);
+  const selected = DashboardModel.findOption(detail, action.optionKey);
+  let controls;
+  if (action.phase === "done") {
+    controls = element("div", {}, [
+      notice("progress", "Durable response received", action.result),
+      action.refreshWarning ? notice("partial", "Refresh required", action.refreshWarning) : null,
     ]);
-  } else if (action.result) {
-    controls = element("p", { className: "quiet-success", text: "The durable response is visible above. Review Activity before making another decision." });
+  } else if (action.prepared && selected) {
+    controls = renderPreparedDecision(work, detail, action, selected);
   } else {
+    const optionsList = options.length
+      ? element("fieldset", { className: "gate-option-list" }, [
+        element("legend", { text: "Action calculated by Agora Core" }),
+        ...options.map((option, index) => {
+          const id = `gate-option-${index}`;
+          const input = element("input", {
+            id,
+            type: "radio",
+            name: "gate-option",
+            value: DashboardModel.optionKey(option),
+            checked: action.optionKey === DashboardModel.optionKey(option) ? "checked" : null,
+            disabled: option.allowed === true ? null : "disabled",
+          });
+          input.addEventListener("change", () => {
+            state.gateAction = newGateAction(key);
+            state.gateAction.optionKey = input.value;
+            state.gateAction.reason = action.reason;
+            renderWorkDetail();
+            document.querySelector("#gate-reason")?.focus();
+          });
+          return element("label", { className: `gate-option${option.allowed === true ? "" : " is-disabled"}`, for: id }, [
+            input,
+            element("span", {}, [
+              element("strong", { text: `${titleCase(option.decision)} ${option.gate_id}` }),
+              element("small", { text: `${option.transition_source} → ${option.transition_target} · ${option.role_id} · ${display(option.actor_id, "No authorized actor")}` }),
+              option.blockers?.length ? element("small", { className: "option-blockers", text: option.blockers.map(blockerText).join("; ") }) : null,
+            ]),
+          ]);
+        }),
+      ])
+      : emptyState("GATE—00", "No gate decisions available", projection.reason || "Core returned no governed options for this state.");
+    const reason = element("textarea", { id: "gate-reason", name: "reason", rows: "4", required: "required", maxlength: "4000", text: action.reason, placeholder: "Explain the durable basis for this exact action." });
+    reason.addEventListener("input", () => { action.reason = reason.value; });
     const form = element("form", { className: "gate-decision-form" }, [
-      element("label", { for: "gate-reason" }, [element("span", { text: "Decision reason" }), element("textarea", { id: "gate-reason", name: "reason", rows: "4", required: "required", maxlength: "4000", text: action.reason, placeholder: "Explain the durable basis for this decision." })]),
+      optionsList,
+      element("label", { for: "gate-reason" }, [element("span", { text: "Decision reason" }), reason]),
       element("div", { className: "gate-actions" }, [
-        element("button", { className: "primary-button decision-approved", type: "submit", value: "approved", text: "Approve gate", disabled: context.ready ? null : "disabled" }),
-        element("button", { className: "back-button decision-rejected", type: "submit", value: "rejected", text: "Reject gate", disabled: context.ready ? null : "disabled" }),
+        element("button", { className: "primary-button", type: "submit", text: action.preparing ? "Preparing…" : "Prepare exact action", disabled: selected && selected.allowed === true && !action.preparing ? null : "disabled" }),
       ]),
     ]);
     form.addEventListener("submit", (event) => {
       event.preventDefault();
-      const submitter = event.submitter?.value;
-      if (!submitter) return;
-      beginGateDecision(work, submitter, form.elements.reason.value);
+      prepareGateDecision(work, detail);
     });
     controls = form;
   }
-
   return element("section", { className: "gate-control", "aria-labelledby": "gate-control-title" }, [
     element("div", { className: "gate-control-heading" }, [
-      element("div", {}, [element("p", { className: "section-kicker", text: "Governed action" }), element("h3", { id: "gate-control-title", text: `Gate / ${context.gate.id}` })]),
-      statusPill("pending"),
+      element("div", {}, [element("p", { className: "section-kicker", text: "Governed action" }), element("h3", { id: "gate-control-title", text: "Core decision options" })]),
+      statusPill(projection.terminal ? "terminal" : projection.operational_status),
     ]),
-    definitionList([["Expected state", work.state], ["Actor", context.actor], ["Role", context.role], ["Target state", context.gate.target]]),
-    element("h4", { text: "Associated evidence" }),
-    evidence,
     action.error ? notice("error", "Decision not persisted", action.error) : null,
-    action.result ? notice("progress", "Durable response received", action.result) : null,
     controls,
   ]);
 }
 
 function renderApprovalsTab(work, detail) {
-  if (detail?.loading && !detail.artifacts) return loadingRows("Loading approvals");
-  if (!detail?.artifacts) return emptyState("APR—ERR", "Approvals unavailable", detail?.errors?.join(" ") || "No approval projection was returned.");
-  const projection = detail.artifacts.approvals;
-  if (!projection.required_roles?.length) return emptyState("APR—00", "No approvals required", "Core reports no approval roles for the current transition.");
-  const missing = new Set(projection.missing_roles || []);
-  const approvals = element("div", { className: "approval-grid" }, projection.required_roles.map((role) => {
-    const record = projection.records.find((candidate) => candidate.role === role);
-    const satisfied = !missing.has(role);
-    return element("article", { className: `approval-card${satisfied ? " is-satisfied" : " is-missing"}` }, [
-      element("span", { className: "approval-mark", "aria-hidden": "true", text: satisfied ? "✓" : "!" }),
+  if (detail?.loading && !detail.control) return loadingRows("Loading approvals");
+  if (!detail?.control) return emptyState("APR—ERR", "Approvals unavailable", detail?.errors?.join(" ") || "No work control projection was returned.");
+  const records = detail.control.approvals || [];
+  const approvals = records.length
+    ? element("div", { className: "approval-grid" }, records.map((record) =>
+      element("article", { className: `approval-card${record.decision === "approved" ? " is-satisfied" : " is-missing"}` }, [
+      element("span", { className: "approval-mark", "aria-hidden": "true", text: record.decision === "approved" ? "✓" : "!" }),
       element("div", {}, [
-        element("span", { className: "metric-label", text: satisfied ? "Approved" : "Pending" }),
-        element("h3", { text: role }),
-        element("p", { text: record ? `${record.approved_by} · ${record.note}` : "No durable approval record yet." }),
-        record ? element("time", { datetime: record.timestamp, text: formatTime(record.timestamp) }) : null,
+        element("span", { className: "metric-label", text: titleCase(record.decision) }),
+        element("h3", { text: record.role }),
+        element("p", { text: `${record.actor} · ${record.note}` }),
+        element("time", { datetime: record.timestamp, text: formatTime(record.timestamp) }),
       ]),
-    ]);
-  }));
+    ])))
+    : emptyState("APR—00", "No durable gate decisions", "Agora Core has not recorded an approval or rejection for this work item.");
   return element("div", { className: "approval-stack" }, [renderGateControl(work, detail), approvals]);
 }
 
@@ -741,9 +1001,11 @@ function renderWorkDetail() {
     return renderWork();
   }
   const detail = state.details[state.selectedWork] || { loading: true, errors: [] };
-  const assignment = DashboardModel.assignmentFor(work, state.overview.swarms);
+  const assignments = DashboardModel.swarmAssignments(work, state.overview.swarms);
   const back = element("button", { className: "back-button", type: "button", text: "← Back to board" });
   back.addEventListener("click", () => {
+    state.revisionRequest?.abort();
+    state.revisionRequest = null;
     state.selectedWork = null;
     state.selectedRevision = null;
     render();
@@ -762,13 +1024,8 @@ function renderWorkDetail() {
     });
     button.addEventListener("click", () => activateTab(tab));
     button.addEventListener("keydown", (event) => {
-      const index = workTabs.indexOf(tab);
-      let next = null;
-      if (event.key === "ArrowRight") next = workTabs[(index + 1) % workTabs.length];
-      if (event.key === "ArrowLeft") next = workTabs[(index - 1 + workTabs.length) % workTabs.length];
-      if (event.key === "Home") next = workTabs[0];
-      if (event.key === "End") next = workTabs.at(-1);
-      if (next) {
+      const next = ControlModel.nextTab(tab, event.key);
+      if (next !== tab) {
         event.preventDefault();
         activateTab(next, true);
       }
@@ -783,7 +1040,7 @@ function renderWorkDetail() {
         element("h2", { text: work.title || work.id }),
         element("p", { text: work.description || "No durable description is recorded." }),
       ]),
-      element("div", { className: "detail-status" }, [statusPill(work.state), element("span", { text: `${assignment.actor || "Unassigned"} / ${assignment.role || "No role"} · swarm assignment` })]),
+      element("div", { className: "detail-status" }, [statusPill(work.state), element("span", { text: assignments.map((item) => `${item.role}: ${item.actor}`).join(" · ") || "No swarm assignments recorded" })]),
     ]),
     detail.errors?.length ? notice("partial", "Partial work detail", detail.errors.join(" ")) : null,
     tabList,
@@ -858,10 +1115,13 @@ function renderActivity() {
   const events = DashboardModel.recentActivity(ActivityModel.filterEvents(state.activity.events || [], state.activityFilters), 500);
   replaceContent(
     sectionHeading("05 / Durable log", "Activity", "Filterable, bounded events with exact durable work and actor references."),
-    element("section", { className: "activity-toolbar", "aria-label": "Activity filters" }, [
+    element("section", { className: "activity-toolbar activity-toolbar-six", "aria-label": "Activity filters" }, [
       activityFilter("Event type", "type"),
       activityFilter("Actor", "actor"),
       activityFilter("Swarm", "swarm_id"),
+      activityFilter("Work", "work_id"),
+      activityFilter("Session", "session_id"),
+      activityFilter("Tool run", "tool_run_id"),
       element("div", { className: "filter-result" }, [element("strong", { text: events.length }), element("span", { text: "events" })]),
     ]),
     events.length
@@ -899,6 +1159,8 @@ function renderFatal(message) {
 }
 
 function switchView(view) {
+  state.revisionRequest?.abort();
+  state.revisionRequest = null;
   state.view = view;
   state.selectedWork = null;
   state.selectedRevision = null;
@@ -909,6 +1171,8 @@ function switchView(view) {
 }
 
 function openWork(work) {
+  state.revisionRequest?.abort();
+  state.revisionRequest = null;
   state.view = "work";
   state.selectedWork = DashboardModel.workKey(work);
   state.selectedTab = "summary";
@@ -947,22 +1211,22 @@ async function ensureWorkDetail(work) {
   if (state.details[key] && !state.details[key].loading) return state.details[key];
   const generation = state.generation;
   const request = (async () => {
-    state.details[key] = { loading: true, lifecycle: null, artifacts: null, errors: [] };
+    state.details[key] = { loading: true, control: null, errors: [] };
     if (state.view === "work" || state.view === "overview") render();
-    const query = `swarm=${encodeURIComponent(work.swarm_id)}&work=${encodeURIComponent(work.id)}`;
-    const [lifecycle, artifacts] = await Promise.allSettled([
-      requestJson(`${API_ROOT}/lifecycle?${query}`),
-      requestJson(`${API_ROOT}/artifacts?${query}`),
-    ]);
+    let payload;
+    let error = null;
+    try {
+      payload = await requestJson(
+        `${API_ROOT}/work-items/${encodeURIComponent(work.swarm_id)}/${encodeURIComponent(work.id)}`,
+      );
+    } catch (caught) {
+      error = caught;
+    }
     if (generation !== state.generation) return null;
-    const errors = [];
-    if (lifecycle.status === "rejected") errors.push(`Lifecycle: ${lifecycle.reason.message}`);
-    if (artifacts.status === "rejected") errors.push(`Provenance: ${artifacts.reason.message}`);
     state.details[key] = {
       loading: false,
-      lifecycle: lifecycle.status === "fulfilled" ? lifecycle.value : null,
-      artifacts: artifacts.status === "fulfilled" ? artifacts.value : null,
-      errors,
+      control: payload?.control || null,
+      errors: error ? [`Control projection: ${error.message}`] : [],
     };
     if (state.view === "work" || state.view === "overview") render();
     return state.details[key];
@@ -1017,6 +1281,8 @@ async function loadOverview(message = "Loading process status") {
 nodes.form.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (state.loading) return;
+  state.revisionRequest?.abort();
+  state.revisionRequest = null;
   nodes.error.textContent = "";
   nodes.input.removeAttribute("aria-invalid");
   setLoading(true, "Validating project path");

@@ -9,7 +9,12 @@ from typing import Protocol
 
 from .core import ProjectSelection
 
-APPROVE_GATE_SCHEMA = "agora/application/approve-gate-command/v1"
+APPROVE_GATE_SCHEMA = "agora/application/approve-gate-command/v2"
+AUTHORIZATION_SCHEMA = "agora/application/approve-gate-authorization/v2"
+PREPARED_GATE_SCHEMA = "agora/application/prepared-gate-decision/v1"
+GATE_PROJECTION_SCHEMA = "agora/application/gate-decision-projection/v1"
+LIFECYCLE_SCHEMA = "agora/application/lifecycle-projection/v2"
+ACTIVITY_SCHEMA = "agora/application/activity-entry/v1"
 _SLUG = re.compile(r"[a-z][a-z0-9-]*")
 _MAX_REASON = 4_000
 _MAX_REFERENCES = 100
@@ -32,11 +37,21 @@ class GateApprovalRequest:
     decision: str
     reason: str
     expected_state: str
+    transition_target: str
+    role_id: str
     evidence_references: tuple[str, ...]
     authentication: Mapping[str, str] | None
 
 
 class GateCommandGateway(Protocol):
+    def prepare_gate(
+        self,
+        selection: ProjectSelection,
+        swarm_id: str,
+        work_id: str,
+        request: GateApprovalRequest,
+    ) -> dict[str, object]: ...
+
     def approve_gate(
         self,
         selection: ProjectSelection,
@@ -56,6 +71,8 @@ def normalize_gate_approval(payload: object) -> GateApprovalRequest:
         "decision",
         "reason",
         "expected_state",
+        "transition_target",
+        "role_id",
         "evidence_references",
         "authentication",
     }
@@ -68,7 +85,15 @@ def normalize_gate_approval(payload: object) -> GateApprovalRequest:
             f"Studio requires command schema {APPROVE_GATE_SCHEMA}",
         )
     values: dict[str, str] = {}
-    for field in ("gate_id", "actor_id", "decision", "reason", "expected_state"):
+    for field in (
+        "gate_id",
+        "actor_id",
+        "decision",
+        "reason",
+        "expected_state",
+        "transition_target",
+        "role_id",
+    ):
         value = payload.get(field)
         if not isinstance(value, str) or not value.strip():
             raise CommandAdapterError("invalid_request", f"command field {field} is required")
@@ -76,7 +101,7 @@ def normalize_gate_approval(payload: object) -> GateApprovalRequest:
     if not _SLUG.fullmatch(values["gate_id"]):
         raise CommandAdapterError("invalid_request", "gate_id must be a safe Agora slug")
     if len(values["actor_id"]) > 256 or any(
-        character in values["actor_id"] for character in ("/", "\\", "\x00")
+        character in values["actor_id"] for character in ("/", "\\", "\x00", "\n", "\r")
     ):
         raise CommandAdapterError("invalid_request", "actor_id is invalid")
     if values["decision"] not in {"approved", "rejected"}:
@@ -85,6 +110,10 @@ def normalize_gate_approval(payload: object) -> GateApprovalRequest:
         raise CommandAdapterError("invalid_request", "reason is longer than 4000 characters")
     if not _SLUG.fullmatch(values["expected_state"]):
         raise CommandAdapterError("invalid_request", "expected_state must be a safe Agora slug")
+    if not _SLUG.fullmatch(values["transition_target"]):
+        raise CommandAdapterError("invalid_request", "transition_target must be a safe Agora slug")
+    if not _SLUG.fullmatch(values["role_id"]):
+        raise CommandAdapterError("invalid_request", "role_id must be a safe Agora slug")
 
     references = payload.get("evidence_references", [])
     if not isinstance(references, list) or len(references) > _MAX_REFERENCES:
@@ -95,7 +124,7 @@ def normalize_gate_approval(payload: object) -> GateApprovalRequest:
         not isinstance(reference, str)
         or not reference.strip()
         or len(reference) > _MAX_REFERENCE_LENGTH
-        or "\x00" in reference
+        or any(ord(character) < 32 for character in reference)
         for reference in references
     ):
         raise CommandAdapterError("invalid_request", "evidence_references are invalid")
@@ -111,6 +140,16 @@ def normalize_gate_approval(payload: object) -> GateApprovalRequest:
             raise CommandAdapterError("invalid_request", "authentication material is invalid")
         if set(authentication) != {"algorithm", "fingerprint", "signature"}:
             raise CommandAdapterError("invalid_request", "authentication material is incomplete")
+        if re.fullmatch(r"[a-z0-9][a-z0-9._-]{0,31}", authentication["algorithm"]) is None:
+            raise CommandAdapterError("invalid_request", "authentication algorithm is invalid")
+        if re.fullmatch(r"[0-9a-f]{64}", authentication["fingerprint"]) is None:
+            raise CommandAdapterError(
+                "invalid_request", "authentication fingerprint must be lowercase SHA-256"
+            )
+        if len(authentication["signature"]) > 8_192 or any(
+            ord(character) < 32 for character in authentication["signature"]
+        ):
+            raise CommandAdapterError("invalid_request", "detached signature is invalid")
 
     return GateApprovalRequest(
         gate_id=values["gate_id"],
@@ -118,6 +157,8 @@ def normalize_gate_approval(payload: object) -> GateApprovalRequest:
         decision=values["decision"],
         reason=values["reason"],
         expected_state=values["expected_state"],
+        transition_target=values["transition_target"],
+        role_id=values["role_id"],
         evidence_references=tuple(reference.strip() for reference in references),
         authentication=authentication,
     )
@@ -126,13 +167,8 @@ def normalize_gate_approval(payload: object) -> GateApprovalRequest:
 class CoreCommandGateway:
     """Invoke Agora Core application services without terminal-command indirection."""
 
-    def approve_gate(
-        self,
-        selection: ProjectSelection,
-        swarm_id: str,
-        work_id: str,
-        request: GateApprovalRequest,
-    ) -> dict[str, object]:
+    @staticmethod
+    def _bindings() -> tuple[type[Exception], object, object]:
         try:
             from agora.application import (
                 AgoraApplicationError,
@@ -145,7 +181,19 @@ class CoreCommandGateway:
                 "Agora Core with AgoraCommandService is not available in this environment",
             ) from error
 
-        command = ApproveGateCommand(
+        return AgoraApplicationError, AgoraCommandService, ApproveGateCommand
+
+    @staticmethod
+    def _command(
+        command_type: object,
+        selection: ProjectSelection,
+        swarm_id: str,
+        work_id: str,
+        request: GateApprovalRequest,
+        *,
+        include_authentication: bool,
+    ) -> object:
+        return command_type(  # type: ignore[operator]
             project_identity=selection.project,
             swarm_id=swarm_id,
             work_id=work_id,
@@ -154,17 +202,242 @@ class CoreCommandGateway:
             decision=request.decision,
             reason=request.reason,
             expected_state=request.expected_state,
+            transition_target=request.transition_target,
+            role_id=request.role_id,
             evidence_references=request.evidence_references,
-            authentication=request.authentication,
+            authentication=request.authentication if include_authentication else None,
+        )
+
+    @staticmethod
+    def _dto(value: object, expected_schema: str) -> dict[str, object]:
+        try:
+            payload = value.to_dict()  # type: ignore[attr-defined]
+        except (AttributeError, TypeError) as error:
+            raise CommandAdapterError(
+                "command.version-incompatible",
+                f"Agora Core did not return {expected_schema}",
+            ) from error
+        if not isinstance(payload, dict) or payload.get("schema") != expected_schema:
+            found = payload.get("schema") if isinstance(payload, dict) else None
+            raise CommandAdapterError(
+                "command.version-incompatible",
+                f"Studio requires schema {expected_schema}; found {found!r}",
+            )
+        return payload
+
+    @staticmethod
+    def _require_string(payload: Mapping[str, object], field: str) -> str:
+        value = payload.get(field)
+        if not isinstance(value, str) or not value:
+            raise CommandAdapterError(
+                "core.schema-incompatible", f"Core response field {field} must be a string"
+            )
+        return value
+
+    @staticmethod
+    def _require_array(payload: Mapping[str, object], field: str) -> list[object]:
+        value = payload.get(field)
+        if not isinstance(value, list):
+            raise CommandAdapterError(
+                "core.schema-incompatible", f"Core response field {field} must be an array"
+            )
+        return value
+
+    @staticmethod
+    def _require_object(payload: Mapping[str, object], field: str) -> dict[str, object]:
+        value = payload.get(field)
+        if not isinstance(value, dict):
+            raise CommandAdapterError(
+                "core.schema-incompatible", f"Core response field {field} must be an object"
+            )
+        return value
+
+    def _validate_identity(
+        self,
+        payload: Mapping[str, object],
+        selection: ProjectSelection,
+        swarm_id: str,
+        work_id: str,
+        request: GateApprovalRequest,
+    ) -> None:
+        expected = {
+            "project_identity": selection.project,
+            "swarm_id": swarm_id,
+            "work_id": work_id,
+            "gate_id": request.gate_id,
+            "actor_id": request.actor_id,
+            "role_id": request.role_id,
+            "decision": request.decision,
+        }
+        for field, value in expected.items():
+            if self._require_string(payload, field) != value:
+                raise CommandAdapterError(
+                    "core.schema-incompatible", f"Core response field {field} changed identity"
+                )
+
+    def prepare_gate(
+        self,
+        selection: ProjectSelection,
+        swarm_id: str,
+        work_id: str,
+        request: GateApprovalRequest,
+    ) -> dict[str, object]:
+        if request.authentication is not None:
+            raise CommandAdapterError(
+                "invalid_request", "gate preparation must not include authentication material"
+            )
+        application_error, service_type, command_type = self._bindings()
+        command = self._command(
+            command_type, selection, swarm_id, work_id, request, include_authentication=False
         )
         try:
-            projection = AgoraCommandService.from_path(selection.path).approve_gate(command)
-        except AgoraApplicationError as error:
-            safe = error.to_dict()
+            prepared = service_type.from_path(selection.path).prepare_gate_decision(command)  # type: ignore[attr-defined]
+        except application_error as error:
+            safe = error.to_dict()  # type: ignore[attr-defined]
+            raise CommandAdapterError(str(safe["code"]), str(safe["message"])) from error
+        except Exception as error:
+            raise CommandAdapterError(
+                "command.persistence-failed", "Agora Core could not prepare the gate decision"
+            ) from error
+        payload = self._dto(prepared, PREPARED_GATE_SCHEMA)
+        self._validate_identity(payload, selection, swarm_id, work_id, request)
+        for field in (
+            "command_schema",
+            "authorization_schema",
+            "authorization_payload",
+            "authorization_digest",
+            "expected_state",
+            "transition_target",
+            "reason",
+            "freshness",
+        ):
+            self._require_string(payload, field)
+        if payload["command_schema"] != APPROVE_GATE_SCHEMA:
+            raise CommandAdapterError(
+                "command.version-incompatible", "Core prepared an incompatible gate command"
+            )
+        if payload["authorization_schema"] != AUTHORIZATION_SCHEMA:
+            raise CommandAdapterError(
+                "command.version-incompatible",
+                "Core prepared an incompatible authorization payload",
+            )
+        expected = {
+            "expected_state": request.expected_state,
+            "transition_target": request.transition_target,
+            "reason": request.reason,
+        }
+        for field, value in expected.items():
+            if payload[field] != value:
+                raise CommandAdapterError(
+                    "core.schema-incompatible", f"Core response field {field} changed the command"
+                )
+        evidence_references = self._require_array(payload, "evidence_references")
+        if evidence_references != list(request.evidence_references) or any(
+            not isinstance(reference, str) for reference in evidence_references
+        ):
+            raise CommandAdapterError(
+                "core.schema-incompatible",
+                "Core response field evidence_references changed the command",
+            )
+        if re.fullmatch(r"[0-9a-f]{64}", str(payload["authorization_digest"])) is None:
+            raise CommandAdapterError(
+                "core.schema-incompatible", "Core response field authorization_digest is invalid"
+            )
+        if not isinstance(payload.get("authentication_required"), bool):
+            raise CommandAdapterError(
+                "core.schema-incompatible",
+                "Core response field authentication_required must be boolean",
+            )
+        for field in (
+            "authentication_algorithm",
+            "authentication_fingerprint",
+            "authentication_public_key",
+            "expires_at",
+        ):
+            if payload.get(field) is not None and not isinstance(payload[field], str):
+                raise CommandAdapterError(
+                    "core.schema-incompatible", f"Core response field {field} must be text or null"
+                )
+        fingerprint = payload.get("authentication_fingerprint")
+        if fingerprint is not None and re.fullmatch(r"[0-9a-f]{64}", fingerprint) is None:
+            raise CommandAdapterError(
+                "core.schema-incompatible",
+                "Core response field authentication_fingerprint is invalid",
+            )
+        return payload
+
+    def approve_gate(
+        self,
+        selection: ProjectSelection,
+        swarm_id: str,
+        work_id: str,
+        request: GateApprovalRequest,
+    ) -> dict[str, object]:
+        application_error, service_type, command_type = self._bindings()
+
+        command = self._command(
+            command_type, selection, swarm_id, work_id, request, include_authentication=True
+        )
+        try:
+            projection = service_type.from_path(selection.path).approve_gate(command)  # type: ignore[attr-defined]
+        except application_error as error:
+            safe = error.to_dict()  # type: ignore[attr-defined]
             raise CommandAdapterError(str(safe["code"]), str(safe["message"])) from error
         except Exception as error:
             raise CommandAdapterError(
                 "command.persistence-failed",
                 "Agora Core could not complete the gate decision",
             ) from error
-        return projection.to_dict()
+        payload = self._dto(projection, GATE_PROJECTION_SCHEMA)
+        self._validate_identity(payload, selection, swarm_id, work_id, request)
+        if self._require_string(payload, "reason") != request.reason:
+            raise CommandAdapterError(
+                "core.schema-incompatible", "Core response field reason changed the command"
+            )
+        lifecycle = payload.get("lifecycle")
+        activity = payload.get("activity")
+        if not isinstance(lifecycle, dict) or lifecycle.get("schema") != LIFECYCLE_SCHEMA:
+            raise CommandAdapterError(
+                "core.schema-incompatible", "Core returned an incompatible lifecycle projection"
+            )
+        if lifecycle.get("swarm_id") != swarm_id or lifecycle.get("work_id") != work_id:
+            raise CommandAdapterError(
+                "core.schema-incompatible", "Core lifecycle projection changed command identity"
+            )
+        for field in (
+            "method",
+            "current_state",
+            "operational_status",
+            "terminal_state",
+        ):
+            self._require_string(lifecycle, field)
+        for field in (
+            "available_transitions",
+            "satisfied_criteria",
+            "required_artifacts",
+            "artifact_kinds",
+            "evidence_results",
+            "approval_roles",
+            "states",
+            "transitions",
+            "gates",
+        ):
+            self._require_array(lifecycle, field)
+        self._require_object(lifecycle, "acceptance_criteria")
+        self._require_object(lifecycle, "criterion_statuses")
+        if not isinstance(activity, dict) or activity.get("schema") != ACTIVITY_SCHEMA:
+            raise CommandAdapterError(
+                "core.schema-incompatible", "Core returned an incompatible Activity projection"
+            )
+        if activity.get("swarm_id") != swarm_id or activity.get("work_id") != work_id:
+            raise CommandAdapterError(
+                "core.schema-incompatible", "Core Activity projection changed command identity"
+            )
+        for field in ("timestamp", "type", "summary", "source"):
+            self._require_string(activity, field)
+        for field in ("actor", "session_id", "tool_run_id"):
+            if activity.get(field) is not None and not isinstance(activity[field], str):
+                raise CommandAdapterError(
+                    "core.schema-incompatible", f"Core Activity field {field} must be text or null"
+                )
+        return payload

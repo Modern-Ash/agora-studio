@@ -1,91 +1,67 @@
 "use strict";
 
 (function exposeDashboardModel(root) {
-
   function workKey(work) {
     return `${work.swarm_id}/${work.id}`;
   }
 
-  function isWorkInProgress(work, detail = null) {
-    const state = (detail?.lifecycle?.method?.states || []).find(
-      (candidate) => candidate.id === work?.state,
-    );
-    return state ? state.terminal !== true : true;
+  function attentionKeys(overview, name) {
+    const values = overview?.status?.attention?.[name];
+    return new Set(Array.isArray(values) ? values : []);
   }
 
-  function isBlocked(work) {
-    return String(work.operational_status || "").toLowerCase() === "blocked";
+  function isWorkInProgress(work, overview) {
+    return attentionKeys(overview, "active-work").has(workKey(work));
   }
 
-  function activeSwarms(swarms) {
-    return (swarms || []).filter((swarm) => swarm.status === "active");
+  function isBlocked(work, overview) {
+    return attentionKeys(overview, "blocked-work").has(workKey(work));
   }
 
-  function assignmentFor(work, swarms) {
-    const swarm = (swarms || []).find((candidate) => candidate.id === work.swarm_id);
-    const entries = Object.entries(swarm?.assignments || {});
-    if (!entries.length) return { role: null, actor: null, additional: 0 };
-    const [role, actor] = entries[0];
-    return { role, actor, additional: Math.max(0, entries.length - 1) };
-  }
-
-  function currentTransitions(lifecycle) {
-    const current = lifecycle?.method?.current_state;
-    return (lifecycle?.method?.transitions || []).filter(
-      (transition) => transition.from === current,
-    );
-  }
-
-  function pendingGates(lifecycle) {
-    return currentTransitions(lifecycle)
-      .filter((transition) => transition.gate && (transition.blockers || []).length)
-      .map((transition) => ({
-        id: transition.gate,
-        target: transition.to,
-        blockers: transition.blockers || [],
-        required_approval_roles: transition.required_approval_roles || [],
-      }));
-  }
-
-  function pendingApprovals(artifacts, lifecycle = null) {
-    const missing = currentTransitions(lifecycle).flatMap((transition) =>
-      (transition.blockers || [])
-        .filter((blocker) => blocker?.category === "approval")
-        .flatMap((blocker) => blocker.references || []));
-    return [...new Set(missing)].map((role) => ({ role, satisfied: false }));
-  }
-
-  function gateDecisionContext(work, swarms, detail) {
-    const gate = pendingGates(detail?.lifecycle)[0] || null;
-    const role = (gate?.blockers || [])
-      .filter((blocker) => blocker?.category === "approval")
-      .flatMap((blocker) => blocker.references || [])[0] || null;
+  function swarmAssignments(work, swarms) {
     const swarm = (swarms || []).find((candidate) => candidate.id === work?.swarm_id);
-    const actor = role ? swarm?.assignments?.[role] || null : null;
-    const evidence = detail?.artifacts?.evidence || [];
-    return {
-      gate,
-      role,
-      actor,
-      evidence,
-      ready: Boolean(gate && role && actor),
-    };
+    return Object.entries(swarm?.assignments || {}).map(([role, actor]) => ({ role, actor }));
   }
 
-  function evidenceMissing(work, detail) {
-    if (!isWorkInProgress(work, detail)) return false;
-    const blockers = currentTransitions(detail?.lifecycle).flatMap(
-      (transition) => transition.blockers || [],
-    );
-    return blockers.some((blocker) => blocker?.category === "evidence");
+  function decisionProjection(detail) {
+    return detail?.control?.gate_decision_options || null;
+  }
+
+  function decisionOptions(detail) {
+    const options = decisionProjection(detail)?.options;
+    return Array.isArray(options) ? options : [];
+  }
+
+  function optionKey(option) {
+    return [
+      option.transition_source,
+      option.transition_target,
+      option.gate_id,
+      option.decision,
+      option.role_id,
+      option.actor_id || "unassigned",
+    ].join("/");
+  }
+
+  function findOption(detail, key) {
+    return decisionOptions(detail).find((option) => optionKey(option) === key) || null;
+  }
+
+  function gateCount(detail) {
+    return new Set(decisionOptions(detail).map((option) => option.gate_id)).size;
+  }
+
+  function hasEvidenceBlocker(detail) {
+    return decisionOptions(detail).some((option) =>
+      (option.blockers || []).some((blocker) => blocker?.category === "evidence"));
   }
 
   function stateOrder(work, details) {
     const ordered = [];
     const seen = new Set();
     (work || []).forEach((item) => {
-      const lifecycle = details?.[workKey(item)]?.lifecycle;
-      (lifecycle?.method?.states || []).forEach((state) => {
+      const lifecycle = details?.[workKey(item)]?.control?.lifecycle;
+      (lifecycle?.states || []).forEach((state) => {
         if (!seen.has(state.id)) {
           seen.add(state.id);
           ordered.push(state.id);
@@ -110,21 +86,17 @@
   }
 
   function metrics(overview, details) {
-    const work = overview?.work || [];
     const detailValues = Object.values(details || {});
-    const failedSessions = (overview?.sessions || []).filter(
-      (session) => String(session.status || "").toLowerCase() === "failed",
+    const readyApprovals = detailValues.flatMap(decisionOptions).filter(
+      (option) => option.decision === "approved" && option.allowed === true,
     ).length;
     return {
-      activeSwarms: overview?.status?.swarm_statuses?.active ?? activeSwarms(overview?.swarms).length,
-      workInProgress: work.filter((item) => isWorkInProgress(item, details?.[workKey(item)])).length,
-      blockedWork: work.filter(isBlocked).length,
-      pendingApprovals: detailValues.reduce(
-        (total, detail) => total + pendingApprovals(detail.artifacts, detail.lifecycle).length,
-        0,
-      ),
-      missingEvidence: work.filter((item) => evidenceMissing(item, details?.[workKey(item)])).length,
-      failedSessions,
+      activeSwarms: overview?.status?.swarm_statuses?.active || 0,
+      workInProgress: attentionKeys(overview, "active-work").size,
+      blockedWork: attentionKeys(overview, "blocked-work").size,
+      pendingApprovals: readyApprovals,
+      missingEvidence: detailValues.filter(hasEvidenceBlocker).length,
+      failedSessions: attentionKeys(overview, "failed-sessions").size,
     };
   }
 
@@ -135,18 +107,18 @@
   }
 
   root.DashboardModel = {
-    activeSwarms,
-    assignmentFor,
     boardColumns,
-    currentTransitions,
-    evidenceMissing,
-    gateDecisionContext,
+    decisionOptions,
+    decisionProjection,
+    findOption,
+    gateCount,
+    hasEvidenceBlocker,
     isBlocked,
     isWorkInProgress,
     metrics,
-    pendingApprovals,
-    pendingGates,
+    optionKey,
     recentActivity,
+    swarmAssignments,
     workKey,
   };
 }(globalThis));

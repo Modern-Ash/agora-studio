@@ -9,11 +9,29 @@ ROOT = Path(__file__).parents[1] / "agora_studio"
 FORBIDDEN = (
     "AgoraCliBoundary",
     "subprocess",
+    "child_process",
+    "os.system",
+    "Popen(",
+    "execFile(",
+    "spawn(",
     "._cli",
+    "agora.cli",
     "_gate_blockers",
     "parse_front_matter",
+    "front_matter",
+    '".agora"',
+    "'.agora'",
+    ".agora/",
     'Path(".agora")',
     "shell=True",
+)
+
+DASHBOARD_HEURISTICS = (
+    "pendingGates",
+    "gateDecisionContext",
+    "currentTransitions",
+    "ready: Boolean",
+    "gate.approvals-missing",
 )
 
 
@@ -26,6 +44,12 @@ def main() -> int:
         for token in FORBIDDEN:
             if token in text:
                 failures.append(f"{path.relative_to(ROOT.parent)}: forbidden token {token!r}")
+        if path.name == "dashboard-model.js":
+            for token in DASHBOARD_HEURISTICS:
+                if token in text:
+                    failures.append(
+                        f"{path.relative_to(ROOT.parent)}: forbidden readiness heuristic {token!r}"
+                    )
     if failures:
         raise SystemExit("\n".join(failures))
     print("Application-service boundary check passed")

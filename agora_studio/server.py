@@ -20,7 +20,7 @@ from .commands import (
     normalize_gate_approval,
 )
 from .core import ActivityQueryError, CoreGatewayError, ProjectStore, SelectionError
-from .lifecycle import LifecycleError, build_lifecycle
+from .lifecycle import LifecycleError, build_lifecycle, normalize_lifecycle_query
 
 
 class StartupError(Exception):
@@ -53,6 +53,7 @@ _ASSETS = {
     "lifecycle-model.js": (_STATIC_ROOT / "lifecycle-model.js", "text/javascript; charset=utf-8"),
     "artifacts-model.js": (_STATIC_ROOT / "artifacts-model.js", "text/javascript; charset=utf-8"),
     "dashboard-model.js": (_STATIC_ROOT / "dashboard-model.js", "text/javascript; charset=utf-8"),
+    "control-model.js": (_STATIC_ROOT / "control-model.js", "text/javascript; charset=utf-8"),
     "app.js": (_STATIC_ROOT / "app.js", "text/javascript; charset=utf-8"),
     "agora-logo.png": (_STATIC_ROOT / "agora-mark.png", "image/png"),
 }
@@ -61,6 +62,10 @@ _WORK_ROUTE = re.compile(
     r"(?P<work>[a-z0-9][a-z0-9._-]{0,127})"
 )
 _APPROVAL_ROUTE = re.compile(_WORK_ROUTE.pattern + r"/approvals")
+_PREPARE_APPROVAL_ROUTE = re.compile(_APPROVAL_ROUTE.pattern + r"/prepare")
+_REVISION_ROUTE = re.compile(
+    r"/api/v1/specification-revisions/(?P<revision>[A-Za-z0-9][A-Za-z0-9._-]{0,127})"
+)
 _MAX_JSON_BODY = 65_536
 _CSP = (
     "default-src 'self'; base-uri 'none'; connect-src 'self'; "
@@ -76,6 +81,7 @@ _COMMAND_STATUS = {
     "command.signature-required": 428,
     "command.persistence-failed": 503,
     "command.version-incompatible": 426,
+    "core.schema-incompatible": 426,
     "command.project-identity-mismatch": 409,
     "command.invalid": 400,
     "invalid_request": 400,
@@ -134,6 +140,30 @@ def handle_api(
     csrf_token: str | None = None,
 ) -> tuple[int, object]:
     """Handle Studio semantics independently from the network security adapter."""
+    prepare_match = _PREPARE_APPROVAL_ROUTE.fullmatch(route)
+    if method == "POST" and prepare_match is not None:
+        required = _require_selection(
+            store, "Select a local Agora project before preparing a gate decision."
+        )
+        if required is not None:
+            return required
+        selection = store.selection
+        assert selection is not None
+        try:
+            request = normalize_gate_approval(payload)
+            prepared = (commands or CoreCommandGateway()).prepare_gate(
+                selection,
+                prepare_match.group("swarm"),
+                prepare_match.group("work"),
+                request,
+            )
+        except CommandAdapterError as error:
+            return _COMMAND_STATUS.get(error.code, 500), _error(error.code, error.reason)
+        return 200, {
+            "schema": "agora-studio/api/prepared-gate-decision/v1",
+            "preparation": prepared,
+        }
+
     approval_match = _APPROVAL_ROUTE.fullmatch(route)
     if method == "POST" and approval_match is not None:
         required = _require_selection(
@@ -228,17 +258,37 @@ def handle_api(
                 "scope": lifecycle["scope"],
                 "specification": lifecycle["specification"],
             }
+        revision_match = _REVISION_ROUTE.fullmatch(route)
+        if revision_match is not None:
+            normalized = normalize_lifecycle_query(query)
+            selection = store.selection
+            assert selection is not None
+            revision = store.gateway.specification_revision(
+                selection.path,
+                normalized["swarm"],
+                normalized["work"],
+                revision_match.group("revision"),
+            )
+            return 200, {
+                "schema": "agora-studio/api/specification-revision-detail/v1",
+                "selection": selection.as_dict(),
+                "scope": {
+                    "swarm_id": normalized["swarm"],
+                    "work_id": normalized["work"],
+                },
+                "revision": revision,
+            }
         work_match = _WORK_ROUTE.fullmatch(route)
         if work_match is not None:
             selection = store.selection
             assert selection is not None
-            detail = store.gateway.get_work_item(
+            control = store.gateway.work_control(
                 selection.path, work_match.group("swarm"), work_match.group("work")
             )
             return 200, {
-                "schema": "agora-studio/api/work-item-detail/v1",
+                "schema": "agora-studio/api/work-item-detail/v2",
                 "selection": selection.as_dict(),
-                "work_item": detail,
+                "control": control,
             }
     except ActivityQueryError as error:
         return 400, _error("invalid_activity_query", str(error))
@@ -318,7 +368,11 @@ def _handler() -> type[BaseHTTPRequestHandler]:
             if not self._secure_request():
                 return
             route = urlsplit(self.path).path
-            if route != "/api/v1/projects/select" and _APPROVAL_ROUTE.fullmatch(route) is None:
+            if (
+                route != "/api/v1/projects/select"
+                and _APPROVAL_ROUTE.fullmatch(route) is None
+                and _PREPARE_APPROVAL_ROUTE.fullmatch(route) is None
+            ):
                 self._send_json(404, _error("not_found", "the requested API route does not exist"))
                 return
             if not self._origin_allowed():
@@ -356,7 +410,10 @@ def _handler() -> type[BaseHTTPRequestHandler]:
                     400, _error("invalid_request", "the request body is not valid JSON")
                 )
                 return
-            if _APPROVAL_ROUTE.fullmatch(route) is not None:
+            if (
+                _APPROVAL_ROUTE.fullmatch(route) is not None
+                or _PREPARE_APPROVAL_ROUTE.fullmatch(route) is not None
+            ):
                 with self.server.command_lock:
                     status, response = handle_api(
                         self.server.store,
