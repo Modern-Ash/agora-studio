@@ -4,92 +4,90 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <title>Agora Studio</title>
+  <meta name="theme-color" content="#121b22">
+  <title>Agora Studio — Process control</title>
   <link rel="icon" href="/assets/agora-logo.png" type="image/png">
   <link rel="stylesheet" href="/assets/styles.css">
   <script src="/assets/activity-model.js" defer></script>
   <script src="/assets/lifecycle-model.js" defer></script>
   <script src="/assets/artifacts-model.js" defer></script>
+  <script src="/assets/dashboard-model.js" defer></script>
   <script src="/assets/app.js" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#main-content">Skip to project content</a>
+  <a class="skip-link" href="#main-content">Skip to process status</a>
   <div class="app-shell">
-    <aside class="sidebar" aria-label="Application sidebar">
+    <aside class="sidebar" aria-label="Agora Studio">
       <a class="brand" href="/" aria-label="Agora Studio home">
-        <img src="/assets/agora-logo.png" width="176" height="66" alt="">
-        <span class="brand-product">Studio</span>
+        <img src="/assets/agora-logo.png" width="44" height="44" alt="">
+        <span>
+          <strong>Agora</strong>
+          <small>Studio / Control</small>
+        </span>
       </a>
 
-      <nav class="primary-nav" aria-label="Project views">
+      <nav class="primary-nav" aria-label="Process views">
         <button class="nav-item is-active" type="button" data-view="overview" disabled>
-          <span aria-hidden="true">⌂</span><span>Overview</span>
-        </button>
-        <button class="nav-item" type="button" data-view="actors" disabled>
-          <span aria-hidden="true">◎</span><span>Actors</span>
-        </button>
-        <button class="nav-item" type="button" data-view="swarms" disabled>
-          <span aria-hidden="true">⌘</span><span>Swarms</span>
+          <span class="nav-index" aria-hidden="true">01</span><span>Overview</span>
         </button>
         <button class="nav-item" type="button" data-view="work" disabled>
-          <span aria-hidden="true">□</span><span>Work</span>
+          <span class="nav-index" aria-hidden="true">02</span><span>Work</span>
         </button>
-        <button class="nav-item" type="button" data-view="sessions" disabled>
-          <span aria-hidden="true">↯</span><span>Sessions</span>
+        <button class="nav-item" type="button" data-view="swarms" disabled>
+          <span class="nav-index" aria-hidden="true">03</span><span>Swarms</span>
+        </button>
+        <button class="nav-item" type="button" data-view="actors" disabled>
+          <span class="nav-index" aria-hidden="true">04</span><span>Actors</span>
         </button>
         <button class="nav-item" type="button" data-view="activity" disabled>
-          <span aria-hidden="true">≋</span><span>Activity</span>
-        </button>
-        <button class="nav-item" type="button" data-view="lifecycle" disabled>
-          <span aria-hidden="true">⌁</span><span>Lifecycle</span>
-        </button>
-        <button class="nav-item" type="button" data-view="artifacts" disabled>
-          <span aria-hidden="true">▤</span><span>Artifacts</span>
+          <span class="nav-index" aria-hidden="true">05</span><span>Activity</span>
         </button>
       </nav>
 
       <div class="sidebar-foot">
-        <span class="read-only-dot" aria-hidden="true"></span>
-        <span><strong>Read-only</strong><small>No project mutations</small></span>
+        <span class="system-light" aria-hidden="true"></span>
+        <span><strong>Local / governed</strong><small>Core-owned mutations</small></span>
       </div>
     </aside>
 
     <div class="workspace">
       <header class="topbar">
-        <div>
-          <p class="eyebrow">Local operations console</p>
-          <h1 id="view-title">Select a project</h1>
+        <div class="topbar-title">
+          <p class="eyebrow">Process control plane</p>
+          <h1 id="view-title">Open a project</h1>
         </div>
-        <button id="refresh-button" class="icon-button" type="button" aria-label="Refresh project data" title="Refresh project data" disabled>
-          <span aria-hidden="true">↻</span>
-        </button>
+        <div class="topbar-actions">
+          <span id="method-badge" class="method-badge" hidden></span>
+          <button id="refresh-button" class="icon-button" type="button" disabled>
+            <span aria-hidden="true">↻</span><span class="button-label">Refresh</span>
+          </button>
+        </div>
       </header>
 
       <main id="main-content" tabindex="-1">
-        <section class="project-rail" aria-labelledby="project-path-label">
+        <section class="project-bar" aria-labelledby="project-path-label">
           <form id="project-form" novalidate>
-            <div class="field-copy">
-              <label id="project-path-label" for="project-path">Local Agora project</label>
-              <span id="project-path-help">Use an absolute directory path containing .agora/project.md</span>
+            <label id="project-path-label" for="project-path">Project directory</label>
+            <div class="project-control">
+              <input id="project-path" name="path" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="/home/you/dev/agora-project" aria-describedby="project-path-help project-path-error" required>
+              <button id="open-button" class="primary-button" type="submit">Open</button>
             </div>
-            <div class="field-control">
-              <input id="project-path" name="path" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="/home/you/dev/project" aria-describedby="project-path-help project-path-error" required>
-              <button id="open-button" class="primary-button" type="submit">Open project</button>
-            </div>
-            <p id="project-path-error" class="field-error" role="alert"></p>
+            <span id="project-path-help" class="field-help">Local path with .agora/project.md</span>
+            <span id="project-path-error" class="field-error" role="alert"></span>
           </form>
           <div id="selected-project" class="selection-chip" hidden>
-            <span class="selection-status" aria-hidden="true"></span>
-            <span><small>Selected</small><strong id="selected-project-name"></strong></span>
+            <span class="system-light" aria-hidden="true"></span>
+            <span><small>Connected</small><strong id="selected-project-name"></strong></span>
           </div>
         </section>
 
         <div id="live-status" class="sr-only" role="status" aria-live="polite"></div>
-        <section id="content" class="content-view" aria-label="Project view">
-          <div class="empty-state">
-            <span class="empty-index">00 / READY</span>
-            <h2>Open the durable state.</h2>
-            <p>Select a local Agora project to inspect its actors, delivery swarms, work, and sessions from one calm, read-only surface.</p>
+        <section id="content" class="content-view" aria-label="Process view" aria-busy="false">
+          <div class="welcome-state">
+            <div class="welcome-code" aria-hidden="true">00—READY</div>
+            <p class="section-kicker">Read the process, not the noise</p>
+            <h2>Operational truth in one pass.</h2>
+            <p>Open a local Agora project to see method state, delivery pressure, blocked work, gates, evidence, approvals, and recent execution history.</p>
           </div>
         </section>
       </main>

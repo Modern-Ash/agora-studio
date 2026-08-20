@@ -2,13 +2,20 @@
 
 from __future__ import annotations
 
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
+import re
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Mapping
 from urllib.parse import parse_qs, urlsplit
 
 from .artifacts import ArtifactsError, build_artifacts
+from .commands import (
+    CommandAdapterError,
+    CoreCommandGateway,
+    GateCommandGateway,
+    normalize_gate_approval,
+)
 from .core import ActivityQueryError, ProjectStore, SelectionError
 from .git_history import GitReadError
 from .lifecycle import LifecycleError, build_lifecycle, build_revision_detail
@@ -21,20 +28,55 @@ class StartupError(Exception):
 class StudioServer(ThreadingHTTPServer):
     daemon_threads = True
 
-    def __init__(self, server_address: tuple[str, int], handler: type[BaseHTTPRequestHandler], store: ProjectStore):
+    def __init__(
+        self,
+        server_address: tuple[str, int],
+        handler: type[BaseHTTPRequestHandler],
+        store: ProjectStore,
+        commands: GateCommandGateway,
+    ):
         self.store = store
+        self.commands = commands
         super().__init__(server_address, handler)
 
 
 _STATIC_ROOT = Path(__file__).with_name("static")
-_REPOSITORY_ROOT = Path(__file__).resolve().parent.parent
 _ASSETS = {
     "styles.css": (_STATIC_ROOT / "styles.css", "text/css; charset=utf-8"),
     "activity-model.js": (_STATIC_ROOT / "activity-model.js", "text/javascript; charset=utf-8"),
     "lifecycle-model.js": (_STATIC_ROOT / "lifecycle-model.js", "text/javascript; charset=utf-8"),
     "artifacts-model.js": (_STATIC_ROOT / "artifacts-model.js", "text/javascript; charset=utf-8"),
+    "dashboard-model.js": (_STATIC_ROOT / "dashboard-model.js", "text/javascript; charset=utf-8"),
     "app.js": (_STATIC_ROOT / "app.js", "text/javascript; charset=utf-8"),
-    "agora-logo.png": (_REPOSITORY_ROOT / "agora-logo.png", "image/png"),
+    "agora-logo.png": (_STATIC_ROOT / "agora-mark.png", "image/png"),
+}
+
+_API_V1_ROUTES = {
+    "/api/v1/project": "/api/project",
+    "/api/v1/overview": "/api/overview",
+    "/api/v1/activity": "/api/activity",
+    "/api/v1/lifecycle": "/api/lifecycle",
+    "/api/v1/lifecycle/revision": "/api/lifecycle/revision",
+    "/api/v1/artifacts": "/api/artifacts",
+    "/api/v1/projects/select": "/api/projects/select",
+}
+_APPROVAL_ROUTE = re.compile(
+    r"/api/v1/work-items/(?P<swarm>[a-z][a-z0-9-]*)/"
+    r"(?P<work>[a-z][a-z0-9-]*)/approvals"
+)
+_MAX_JSON_BODY = 65_536
+
+_COMMAND_STATUS = {
+    "command.actor-unauthorized": 403,
+    "command.gate-already-resolved": 409,
+    "command.stale-precondition": 409,
+    "command.evidence-missing": 422,
+    "command.signature-required": 428,
+    "command.persistence-failed": 503,
+    "command.version-incompatible": 426,
+    "command.project-identity-mismatch": 409,
+    "command.invalid": 400,
+    "invalid_request": 400,
 }
 
 
@@ -64,8 +106,33 @@ def handle_api(
     route: str,
     payload: object | None = None,
     query: Mapping[str, object] | None = None,
+    commands: GateCommandGateway | None = None,
 ) -> tuple[int, object]:
     """Handle Studio semantics independently from the network adapter."""
+    approval_match = _APPROVAL_ROUTE.fullmatch(route)
+    if method == "POST" and approval_match is not None:
+        selection = store.selection
+        if selection is None:
+            return 409, {
+                "error": "project_required",
+                "reason": "Select a local Agora project before recording a gate decision.",
+            }
+        try:
+            request = normalize_gate_approval(payload)
+            projection = (commands or CoreCommandGateway()).approve_gate(
+                selection,
+                approval_match.group("swarm"),
+                approval_match.group("work"),
+                request,
+            )
+        except CommandAdapterError as error:
+            return _COMMAND_STATUS.get(error.code, 500), {
+                "error": error.code,
+                "reason": error.reason,
+            }
+        return 200, {"status": "persisted", "projection": projection}
+
+    route = _API_V1_ROUTES.get(route, route)
     selection = store.selection
     if method == "GET" and route == "/":
         return 200, {
@@ -112,7 +179,11 @@ def handle_api(
                 "reason": "Select a local Agora project before loading lifecycle data.",
             }
         try:
-            payload = build_revision_detail(store, query) if route.endswith("/revision") else build_lifecycle(store, query)
+            payload = (
+                build_revision_detail(store, query)
+                if route.endswith("/revision")
+                else build_lifecycle(store, query)
+            )
             return 200, payload
         except LifecycleError as error:
             status = 404 if error.kind == "not_found" else 400
@@ -186,24 +257,60 @@ def _handler() -> type[BaseHTTPRequestHandler]:
 
         def do_POST(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler API
             route = urlsplit(self.path).path
-            if route != "/api/projects/select":
-                status, payload = handle_api(self.server.store, "POST", route)
+            is_selection = route in ("/api/projects/select", "/api/v1/projects/select")
+            if not is_selection and _APPROVAL_ROUTE.fullmatch(route) is None:
+                status, payload = handle_api(
+                    self.server.store, "POST", route, commands=self.server.commands
+                )
                 self._send_json(status, payload)
+                return
+            content_type = self.headers.get("Content-Type", "")
+            media_type = content_type.split(";", 1)[0].strip().lower()
+            if media_type != "application/json":
+                self._send_json(
+                    415,
+                    {
+                        "error": "invalid_request",
+                        "reason": "Content-Type must be application/json",
+                    },
+                )
                 return
             try:
                 length = int(self.headers.get("Content-Length", "0"))
             except ValueError:
-                self._send_json(400, {"error": "invalid_request", "reason": "invalid content length"})
+                self._send_json(
+                    400, {"error": "invalid_request", "reason": "invalid content length"}
+                )
                 return
-            if length <= 0 or length > 1_048_576:
-                self._send_json(400, {"error": "invalid_request", "reason": "a JSON request body is required"})
+            if length <= 0:
+                self._send_json(
+                    400, {"error": "invalid_request", "reason": "a JSON request body is required"}
+                )
+                return
+            if length > _MAX_JSON_BODY:
+                self._send_json(
+                    413,
+                    {
+                        "error": "invalid_request",
+                        "reason": "the JSON request body is too large",
+                    },
+                )
                 return
             try:
                 payload = json.loads(self.rfile.read(length))
             except (json.JSONDecodeError, UnicodeDecodeError):
-                self._send_json(400, {"error": "invalid_request", "reason": "the request body is not valid JSON"})
+                self._send_json(
+                    400,
+                    {"error": "invalid_request", "reason": "the request body is not valid JSON"},
+                )
                 return
-            status, response = handle_api(self.server.store, "POST", route, payload)
+            status, response = handle_api(
+                self.server.store,
+                "POST",
+                route,
+                payload,
+                commands=self.server.commands,
+            )
             self._send_json(status, response)
 
         def log_message(self, format: str, *args: object) -> None:
@@ -212,13 +319,24 @@ def _handler() -> type[BaseHTTPRequestHandler]:
     return StudioHandler
 
 
-def create_server(port: int = 7357, store: ProjectStore | None = None) -> StudioServer:
+def create_server(
+    port: int = 7357,
+    store: ProjectStore | None = None,
+    commands: GateCommandGateway | None = None,
+) -> StudioServer:
     if not 0 <= port <= 65535:
         raise StartupError(f"could not bind the local server: invalid port {port}")
     try:
-        return StudioServer(("127.0.0.1", port), _handler(), store or ProjectStore())
+        return StudioServer(
+            ("127.0.0.1", port),
+            _handler(),
+            store or ProjectStore(),
+            commands or CoreCommandGateway(),
+        )
     except OSError as error:
-        raise StartupError(f"could not bind the local server on 127.0.0.1:{port}: {error}") from error
+        raise StartupError(
+            f"could not bind the local server on 127.0.0.1:{port}: {error}"
+        ) from error
 
 
 def server_url(server: StudioServer) -> str:

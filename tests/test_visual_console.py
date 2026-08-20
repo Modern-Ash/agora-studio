@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from pathlib import Path
 import json
 import struct
 import subprocess
 import tempfile
 import unittest
+from pathlib import Path
 
 from agora_studio.core import AgoraCliBoundary, ProjectStore, SelectionError
 from agora_studio.server import handle_api, static_response
@@ -145,20 +145,40 @@ class AssetAndUiContractTests(unittest.TestCase):
         javascript = (self.static / "app.js").read_text(encoding="utf-8")
 
         self.assertEqual(1, html.count("<h1"))
-        for contract in ("<main", "<nav", "<aside", "skip-link", 'aria-live="polite"', "project-path-label"):
+        for contract in (
+            "<main",
+            "<nav",
+            "<aside",
+            "skip-link",
+            'aria-live="polite"',
+            "project-path-label",
+        ):
             self.assertIn(contract, html)
         self.assertIn("/assets/agora-logo.png", html)
         self.assertNotIn("https://", html)
         self.assertIn(":focus-visible", css)
-        self.assertIn("@media (max-width: 760px)", css)
-        self.assertIn("@media (max-width: 480px)", css)
+        self.assertIn("@media (max-width: 720px)", css)
+        self.assertIn("@media (max-width: 460px)", css)
         self.assertIn("@media (prefers-reduced-motion: reduce)", css)
         self.assertNotIn("innerHTML", javascript)
         self.assertIn("textContent", javascript)
         self.assertIn("replaceChildren", javascript)
 
-    def test_logo_asset_uses_the_repository_root_logo(self) -> None:
-        path = Path(__file__).parents[1] / "agora-logo.png"
+        nav_items = [
+            'data-view="overview"',
+            'data-view="work"',
+            'data-view="swarms"',
+            'data-view="actors"',
+            'data-view="activity"',
+        ]
+        for nav_item in nav_items:
+            self.assertIn(nav_item, html)
+        self.assertEqual(5, html.count("data-view="))
+        self.assertIn('const API_ROOT = "/api/v1"', javascript)
+        self.assertNotRegex(javascript, r'["`]\/api\/(?!v1)')
+
+    def test_logo_asset_is_bundled_with_the_python_package(self) -> None:
+        path = self.static / "agora-mark.png"
         payload = path.read_bytes()
         served, content_type, cache = static_response("/assets/agora-logo.png")
 
@@ -168,9 +188,24 @@ class AssetAndUiContractTests(unittest.TestCase):
         self.assertEqual(b"\x89PNG\r\n\x1a\n", payload[:8])
         self.assertEqual(b"IHDR", payload[12:16])
         width, height, bit_depth, color_type = struct.unpack(">IIBB", payload[16:26])
-        self.assertEqual((2048, 768), (width, height))
+        self.assertEqual((192, 192), (width, height))
         self.assertEqual(8, bit_depth)
-        self.assertEqual(2, color_type, "the repository logo must use RGB color")
+        self.assertEqual(6, color_type, "the package mark must use RGBA color")
+
+    def test_overview_rejects_cli_json_below_the_minimum_compatibility_shape(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            project = make_project(Path(directory), "visual-test")
+            runner = OverviewRunner()
+            runner.fixtures = {**runner.fixtures, ("actor", "list"): [{"name": "Agent"}]}
+            store = ProjectStore(AgoraCliBoundary(runner=runner))
+            store.select(str(project))
+
+            status, payload = handle_api(store, "GET", "/api/overview")
+
+        self.assertEqual(502, status)
+        self.assertEqual("project_overview_failed", payload["error"])
+        self.assertEqual("actors", payload["operation"])
+        self.assertIn("minimum compatibility shape", payload["reason"])
 
 
 if __name__ == "__main__":

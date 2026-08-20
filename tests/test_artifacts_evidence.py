@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import hashlib
 import json
-from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from pathlib import Path
 
 from agora_studio.artifacts import ArtifactsError, build_artifacts, normalize_artifacts_query
 from agora_studio.core import ACTIVITY_FIELDS, AgoraCliBoundary, ProjectStore
@@ -13,24 +13,30 @@ from agora_studio.server import handle_api, static_response
 from tests.test_foundation import make_project
 
 
-def activity(event_type: str, summary: str, timestamp: str, **overrides: object) -> dict[str, object]:
+def activity(
+    event_type: str, summary: str, timestamp: str, **overrides: object
+) -> dict[str, object]:
     record: dict[str, object] = {field: None for field in ACTIVITY_FIELDS}
-    record.update({
-        "timestamp": timestamp,
-        "type": event_type,
-        "summary": summary,
-        "actor": "project:agent",
-        "swarm_id": "delivery",
-        "work_id": "widget",
-        "source": "repo://.agora/events.md",
-        "path": "/private/project/.agora/activity.md",
-    })
+    record.update(
+        {
+            "timestamp": timestamp,
+            "type": event_type,
+            "summary": summary,
+            "actor": "project:agent",
+            "swarm_id": "delivery",
+            "work_id": "widget",
+            "source": "repo://.agora/events.md",
+            "path": "/private/project/.agora/activity.md",
+        }
+    )
     record.update(overrides)
     return record
 
 
 class ArtifactsRunner:
-    def __init__(self, events: list[dict[str, object]] | None = None, approval_roles: list[str] | None = None) -> None:
+    def __init__(
+        self, events: list[dict[str, object]] | None = None, approval_roles: list[str] | None = None
+    ) -> None:
         self.events = events or []
         self.approval_roles = approval_roles if approval_roles is not None else ["spec-owner"]
         self.calls: list[list[str]] = []
@@ -41,10 +47,14 @@ class ArtifactsRunner:
         if operation == ["status"]:
             data: object = {"project": "artifacts-test"}
         elif operation == ["work", "list"]:
-            data = [{
-                "id": "widget", "swarm_id": "delivery", "title": "Widget",
-                "approval_roles": self.approval_roles,
-            }]
+            data = [
+                {
+                    "id": "widget",
+                    "swarm_id": "delivery",
+                    "title": "Widget",
+                    "approval_roles": self.approval_roles,
+                }
+            ]
         elif operation[:2] == ["activity", "list"]:
             data = self.events
         else:
@@ -52,12 +62,25 @@ class ArtifactsRunner:
         return subprocess.CompletedProcess(command, 0, json.dumps(data), "")
 
 
-def write_table(path: Path, front_matter: dict[str, object], heading: str, columns: list[str], rows: list[list[str]]) -> None:
+def write_table(
+    path: Path,
+    front_matter: dict[str, object],
+    heading: str,
+    columns: list[str],
+    rows: list[list[str]],
+) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     lines = ["---"]
     for key, value in front_matter.items():
         lines.append(f"{key}: {json.dumps(value)}")
-    lines += ["---", "", f"# {heading}", "", f"| {' | '.join(columns)} |", f"| {' | '.join(['---'] * len(columns))} |"]
+    lines += [
+        "---",
+        "",
+        f"# {heading}",
+        "",
+        f"| {' | '.join(columns)} |",
+        f"| {' | '.join(['---'] * len(columns))} |",
+    ]
     for row in rows:
         lines.append(f"| {' | '.join(row)} |")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -66,19 +89,60 @@ def write_table(path: Path, front_matter: dict[str, object], heading: str, colum
 def make_artifacts_project(root: Path, *, with_records: bool = True) -> Path:
     project = make_project(root, "artifacts-test")
     work = project / ".agora" / "swarms" / "delivery" / "work" / "widget"
-    rows_artifacts = [
-        ["spec", "repo://docs/spec.md", "project:owner", "2026-01-01T00:00:00Z"],
-        ["verification-report", "repo://docs/report.md", "project:agent", "2026-01-02T00:00:00Z"],
-    ] if with_records else []
-    rows_evidence = [
-        ["automated-verification", "success", "repo://docs/report.md", "project:agent", "2026-01-02T00:05:00Z"],
-    ] if with_records else []
-    rows_approvals = [
-        ["spec-owner", "project:owner", "Accepted", "2026-01-02T01:00:00Z"],
-    ] if with_records else []
-    write_table(work / "artifacts.md", {"schema": "agora/artifacts/v1"}, "Artifacts", ["Kind", "URI", "Produced by", "Timestamp"], rows_artifacts)
-    write_table(work / "evidence.md", {"schema": "agora/evidence/v1"}, "Evidence", ["Type", "Result", "Artifact references", "Produced by", "Timestamp"], rows_evidence)
-    write_table(work / "approvals.md", {"schema": "agora/approvals/v1"}, "Approvals", ["Role", "Approved by", "Note", "Timestamp"], rows_approvals)
+    rows_artifacts = (
+        [
+            ["spec", "repo://docs/spec.md", "project:owner", "2026-01-01T00:00:00Z"],
+            [
+                "verification-report",
+                "repo://docs/report.md",
+                "project:agent",
+                "2026-01-02T00:00:00Z",
+            ],
+        ]
+        if with_records
+        else []
+    )
+    rows_evidence = (
+        [
+            [
+                "automated-verification",
+                "success",
+                "repo://docs/report.md",
+                "project:agent",
+                "2026-01-02T00:05:00Z",
+            ],
+        ]
+        if with_records
+        else []
+    )
+    rows_approvals = (
+        [
+            ["spec-owner", "project:owner", "Accepted", "2026-01-02T01:00:00Z"],
+        ]
+        if with_records
+        else []
+    )
+    write_table(
+        work / "artifacts.md",
+        {"schema": "agora/artifacts/v1"},
+        "Artifacts",
+        ["Kind", "URI", "Produced by", "Timestamp"],
+        rows_artifacts,
+    )
+    write_table(
+        work / "evidence.md",
+        {"schema": "agora/evidence/v1"},
+        "Evidence",
+        ["Type", "Result", "Artifact references", "Produced by", "Timestamp"],
+        rows_evidence,
+    )
+    write_table(
+        work / "approvals.md",
+        {"schema": "agora/approvals/v1"},
+        "Approvals",
+        ["Role", "Approved by", "Note", "Timestamp"],
+        rows_approvals,
+    )
     return project
 
 
@@ -95,7 +159,10 @@ class ArtifactsQueryTests(unittest.TestCase):
                 normalize_artifacts_query(query)
 
     def test_valid_query_normalizes(self) -> None:
-        self.assertEqual({"swarm": "delivery", "work": "widget"}, normalize_artifacts_query({"swarm": "delivery", "work": "widget"}))
+        self.assertEqual(
+            {"swarm": "delivery", "work": "widget"},
+            normalize_artifacts_query({"swarm": "delivery", "work": "widget"}),
+        )
 
 
 class ArtifactsProjectionTests(unittest.TestCase):
@@ -116,12 +183,16 @@ class ArtifactsProjectionTests(unittest.TestCase):
     def test_approvals_report_required_roles_and_satisfaction_including_none_required(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             project = make_artifacts_project(Path(directory))
-            store = ProjectStore(AgoraCliBoundary(runner=ArtifactsRunner(approval_roles=["spec-owner"])))
+            store = ProjectStore(
+                AgoraCliBoundary(runner=ArtifactsRunner(approval_roles=["spec-owner"]))
+            )
             store.select(str(project))
             payload = build_artifacts(store, {"swarm": "delivery", "work": "widget"})
 
         self.assertEqual(["spec-owner"], payload["approvals"]["required_roles"])
-        self.assertEqual([{"role": "spec-owner", "satisfied": True}], payload["approvals"]["satisfaction"])
+        self.assertEqual(
+            [{"role": "spec-owner", "satisfied": True}], payload["approvals"]["satisfaction"]
+        )
 
         with tempfile.TemporaryDirectory() as directory:
             project = make_artifacts_project(Path(directory), with_records=False)
@@ -137,17 +208,36 @@ class ArtifactsProjectionTests(unittest.TestCase):
     def test_missing_approval_role_reports_unsatisfied(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             project = make_artifacts_project(Path(directory), with_records=False)
-            store = ProjectStore(AgoraCliBoundary(runner=ArtifactsRunner(approval_roles=["reviewer"])))
+            store = ProjectStore(
+                AgoraCliBoundary(runner=ArtifactsRunner(approval_roles=["reviewer"]))
+            )
             store.select(str(project))
             payload = build_artifacts(store, {"swarm": "delivery", "work": "widget"})
 
-        self.assertEqual([{"role": "reviewer", "satisfied": False}], payload["approvals"]["satisfaction"])
+        self.assertEqual(
+            [{"role": "reviewer", "satisfied": False}], payload["approvals"]["satisfaction"]
+        )
 
     def test_traceability_present_only_with_exact_matching_durable_event(self) -> None:
         events = [
-            activity("artifact.added", "kind=spec uri=repo://docs/spec.md actor=project:owner", "2026-01-01T00:00:01Z", session_id="run-session-1"),
-            activity("evidence.added", "type=automated-verification result=success actor=project:agent", "2026-01-02T00:06:00Z", tool_run_id="tool-run-9"),
-            activity("approval.added", "role=spec-owner actor=project:owner delegation=none", "2026-01-02T01:00:01Z", session_id="run-session-2"),
+            activity(
+                "artifact.added",
+                "kind=spec uri=repo://docs/spec.md actor=project:owner",
+                "2026-01-01T00:00:01Z",
+                session_id="run-session-1",
+            ),
+            activity(
+                "evidence.added",
+                "type=automated-verification result=success actor=project:agent",
+                "2026-01-02T00:06:00Z",
+                tool_run_id="tool-run-9",
+            ),
+            activity(
+                "approval.added",
+                "role=spec-owner actor=project:owner delegation=none",
+                "2026-01-02T01:00:01Z",
+                session_id="run-session-2",
+            ),
         ]
         with tempfile.TemporaryDirectory() as directory:
             project = make_artifacts_project(Path(directory))
@@ -158,12 +248,23 @@ class ArtifactsProjectionTests(unittest.TestCase):
         self.assertEqual("run-session-1", payload["artifacts"][0]["traceability"]["session_id"])
         self.assertIsNone(payload["artifacts"][1]["traceability"])
         self.assertEqual("tool-run-9", payload["evidence"][0]["traceability"]["tool_run_id"])
-        self.assertEqual("run-session-2", payload["approvals"]["records"][0]["traceability"]["session_id"])
+        self.assertEqual(
+            "run-session-2", payload["approvals"]["records"][0]["traceability"]["session_id"]
+        )
 
     def test_traceability_is_absent_without_exact_durable_identifier(self) -> None:
         events = [
-            activity("artifact.added", "kind=spec uri=repo://docs/spec.md actor=project:owner", "2026-01-01T00:00:01Z"),
-            activity("work.transitioned", "from=draft to=review actor=project:agent", "2026-01-01T00:00:02Z", session_id="run-unrelated"),
+            activity(
+                "artifact.added",
+                "kind=spec uri=repo://docs/spec.md actor=project:owner",
+                "2026-01-01T00:00:01Z",
+            ),
+            activity(
+                "work.transitioned",
+                "from=draft to=review actor=project:agent",
+                "2026-01-01T00:00:02Z",
+                session_id="run-unrelated",
+            ),
         ]
         with tempfile.TemporaryDirectory() as directory:
             project = make_artifacts_project(Path(directory))
@@ -193,9 +294,17 @@ class ArtifactsProjectionTests(unittest.TestCase):
             runner = ArtifactsRunner()
             store = ProjectStore(AgoraCliBoundary(runner=runner))
             store.select(str(project))
-            before = {str(path.relative_to(project)): hashlib.sha256(path.read_bytes()).hexdigest() for path in project.rglob("*") if path.is_file()}
+            before = {
+                str(path.relative_to(project)): hashlib.sha256(path.read_bytes()).hexdigest()
+                for path in project.rglob("*")
+                if path.is_file()
+            }
             build_artifacts(store, {"swarm": "delivery", "work": "widget"})
-            after = {str(path.relative_to(project)): hashlib.sha256(path.read_bytes()).hexdigest() for path in project.rglob("*") if path.is_file()}
+            after = {
+                str(path.relative_to(project)): hashlib.sha256(path.read_bytes()).hexdigest()
+                for path in project.rglob("*")
+                if path.is_file()
+            }
 
         self.assertEqual(before, after)
         for call in runner.calls:
@@ -228,9 +337,20 @@ class ArtifactsProjectionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             project = make_artifacts_project(Path(directory))
             work = project / ".agora" / "swarms" / "delivery" / "work" / "widget"
-            write_table(work / "artifacts.md", {"schema": "agora/artifacts/v1"}, "Artifacts", ["Kind", "URI", "Produced by", "Timestamp"], [
-                ["spec", "https://example.invalid/spec.md", "project:owner", "2026-01-01T00:00:00Z"],
-            ])
+            write_table(
+                work / "artifacts.md",
+                {"schema": "agora/artifacts/v1"},
+                "Artifacts",
+                ["Kind", "URI", "Produced by", "Timestamp"],
+                [
+                    [
+                        "spec",
+                        "https://example.invalid/spec.md",
+                        "project:owner",
+                        "2026-01-01T00:00:00Z",
+                    ],
+                ],
+            )
             store = ProjectStore(AgoraCliBoundary(runner=ArtifactsRunner()))
             store.select(str(project))
             payload = build_artifacts(store, {"swarm": "delivery", "work": "widget"})
@@ -240,7 +360,9 @@ class ArtifactsProjectionTests(unittest.TestCase):
 
 class ArtifactsApiTests(unittest.TestCase):
     def test_api_requires_project_selection(self) -> None:
-        status, payload = handle_api(ProjectStore(), "GET", "/api/artifacts", query={"swarm": "delivery", "work": "widget"})
+        status, payload = handle_api(
+            ProjectStore(), "GET", "/api/artifacts", query={"swarm": "delivery", "work": "widget"}
+        )
         self.assertEqual(409, status)
         self.assertEqual("project_required", payload["error"])
 
@@ -249,7 +371,9 @@ class ArtifactsApiTests(unittest.TestCase):
             project = make_artifacts_project(Path(directory))
             store = ProjectStore(AgoraCliBoundary(runner=ArtifactsRunner()))
             store.select(str(project))
-            status, payload = handle_api(store, "GET", "/api/artifacts", query={"swarm": "delivery"})
+            status, payload = handle_api(
+                store, "GET", "/api/artifacts", query={"swarm": "delivery"}
+            )
         self.assertEqual(400, status)
         self.assertEqual("invalid_query", payload["error"])
 
@@ -258,7 +382,9 @@ class ArtifactsApiTests(unittest.TestCase):
             project = make_artifacts_project(Path(directory))
             store = ProjectStore(AgoraCliBoundary(runner=ArtifactsRunner()))
             store.select(str(project))
-            status, payload = handle_api(store, "GET", "/api/artifacts", query={"swarm": "delivery", "work": "unknown"})
+            status, payload = handle_api(
+                store, "GET", "/api/artifacts", query={"swarm": "delivery", "work": "unknown"}
+            )
         self.assertEqual(404, status)
         self.assertEqual("not_found", payload["error"])
 
@@ -267,23 +393,31 @@ class ArtifactsApiTests(unittest.TestCase):
             project = make_artifacts_project(Path(directory))
             store = ProjectStore(AgoraCliBoundary(runner=ArtifactsRunner()))
             store.select(str(project))
-            status, payload = handle_api(store, "GET", "/api/artifacts", query={"swarm": "delivery", "work": "widget"})
+            status, payload = handle_api(
+                store, "GET", "/api/artifacts", query={"swarm": "delivery", "work": "widget"}
+            )
         self.assertEqual(200, status)
         self.assertEqual(2, len(payload["artifacts"]))
         self.assertIn("approvals", payload)
 
     def test_query_failure_returns_502_when_cli_fails(self) -> None:
-        def failing_runner(command: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        def failing_runner(
+            command: list[str], **kwargs: object
+        ) -> subprocess.CompletedProcess[str]:
             operation = command[3:]
             if operation == ["status"]:
-                return subprocess.CompletedProcess(command, 0, json.dumps({"project": "artifacts-test"}), "")
+                return subprocess.CompletedProcess(
+                    command, 0, json.dumps({"project": "artifacts-test"}), ""
+                )
             return subprocess.CompletedProcess(command, 1, "", "denied")
 
         with tempfile.TemporaryDirectory() as directory:
             project = make_artifacts_project(Path(directory))
             store = ProjectStore(AgoraCliBoundary(runner=failing_runner))
             store.select(str(project))
-            status, payload = handle_api(store, "GET", "/api/artifacts", query={"swarm": "delivery", "work": "widget"})
+            status, payload = handle_api(
+                store, "GET", "/api/artifacts", query={"swarm": "delivery", "work": "widget"}
+            )
         self.assertEqual(502, status)
         self.assertEqual("artifacts_read_failed", payload["error"])
 
@@ -327,9 +461,18 @@ process.stdout.write(JSON.stringify({{
         self.assertEqual("text/javascript; charset=utf-8", content_type)
         self.assertTrue(cache)
         self.assertTrue(body)
-        self.assertIn('data-view="artifacts"', html)
-        for contract in ("renderArtifacts", "loadArtifacts", "artifactsSelect", "keyboardSelect", "traceabilityNote"):
+        self.assertIn('data-view="work"', html)
+        for contract in (
+            '"artifacts"',
+            '"evidence"',
+            '"approvals"',
+            "renderArtifactsTab",
+            "renderEvidenceTab",
+            "renderApprovalsTab",
+            "pendingApprovals",
+        ):
             self.assertIn(contract, javascript)
+        self.assertIn('role: "tablist"', javascript)
         self.assertNotIn("innerHTML", javascript)
         self.assertIn("min-width: 320px", css)
         self.assertIn("@media (prefers-reduced-motion: reduce)", css)

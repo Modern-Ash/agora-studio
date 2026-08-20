@@ -4,9 +4,32 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agora-studio"
-version = "0.1.0"
-description = "Local, read-only browser for Agora projects"
+dynamic = ["version"]
+description = "Experimental local-first web control plane for Agora projects"
+readme = "README.md"
 requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Agora contributors" }]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: Web Environment",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "build>=1.2,<2",
+    "ruff>=0.12,<1",
+]
+
+[project.urls]
+Repository = "https://github.com/Modern-Ash/agora-studio"
+Issues = "https://github.com/Modern-Ash/agora-studio/issues"
 
 [project.scripts]
 agora-studio = "agora_studio.__main__:main"
@@ -14,5 +37,15 @@ agora-studio = "agora_studio.__main__:main"
 [tool.setuptools.packages.find]
 include = ["agora_studio*"]
 
+[tool.setuptools.dynamic]
+version = { attr = "agora_studio.__version__" }
+
 [tool.setuptools.package-data]
 agora_studio = ["static/*"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
