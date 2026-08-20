@@ -5,11 +5,15 @@ from __future__ import annotations
 import argparse
 import sys
 
+from . import __version__
 from .server import StartupError, create_server, server_url
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Run the local, read-only Agora Studio server")
+    parser = argparse.ArgumentParser(
+        prog="agora-studio", description="Run the local-first Agora Studio control plane"
+    )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("--port", type=int, default=7357, help="loopback port (default: 7357)")
     return parser
 

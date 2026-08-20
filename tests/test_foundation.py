@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import hashlib
 import json
-from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 from agora_studio.core import AgoraCliBoundary, ProjectStore, SelectionError
@@ -13,7 +13,9 @@ from agora_studio.server import StartupError, create_server, handle_api
 
 
 class RecordingRunner:
-    def __init__(self, project: str = "test-project", returncode: int = 0, stderr: str = "") -> None:
+    def __init__(
+        self, project: str = "test-project", returncode: int = 0, stderr: str = ""
+    ) -> None:
         self.project = project
         self.returncode = returncode
         self.stderr = stderr
@@ -61,7 +63,9 @@ class CliBoundaryTests(unittest.TestCase):
         with self.assertRaisesRegex(SelectionError, "invalid project"):
             failed.project_identity(Path("/tmp/project"))
 
-        def invalid_runner(command: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        def invalid_runner(
+            command: list[str], **kwargs: object
+        ) -> subprocess.CompletedProcess[str]:
             return subprocess.CompletedProcess(command, 0, "not-json", "")
 
         with self.assertRaisesRegex(SelectionError, "invalid JSON"):
@@ -155,8 +159,12 @@ class ServerTests(unittest.TestCase):
 
     def test_occupied_port_has_clear_startup_failure(self) -> None:
         port = 7357
-        with patch("agora_studio.server.StudioServer", side_effect=OSError(98, "Address already in use")):
-            with self.assertRaisesRegex(StartupError, rf"127\.0\.0\.1:{port}.*Address already in use"):
+        with patch(
+            "agora_studio.server.StudioServer", side_effect=OSError(98, "Address already in use")
+        ):
+            with self.assertRaisesRegex(
+                StartupError, rf"127\.0\.0\.1:{port}.*Address already in use"
+            ):
                 create_server(port)
 
     def test_end_to_end_selection_and_reads_do_not_mutate_project_or_git(self) -> None:
@@ -167,7 +175,9 @@ class ServerTests(unittest.TestCase):
             before_git = self._git_status(project)
             runner = RecordingRunner()
             store = ProjectStore(AgoraCliBoundary(runner=runner))
-            status, opened = handle_api(store, "POST", "/api/projects/select", {"path": str(project)})
+            status, opened = handle_api(
+                store, "POST", "/api/projects/select", {"path": str(project)}
+            )
             self.assertEqual(200, status)
             self.assertEqual("opened", opened["status"])
             status, current = handle_api(store, "GET", "/api/project")
@@ -176,7 +186,9 @@ class ServerTests(unittest.TestCase):
 
             self.assertEqual(before_files, self._snapshot(project))
             self.assertEqual(before_git, self._git_status(project))
-            self.assertEqual([["agora", "--project", str(project.resolve()), "status"]], runner.calls)
+            self.assertEqual(
+                [["agora", "--project", str(project.resolve()), "status"]], runner.calls
+            )
 
     @staticmethod
     def _snapshot(project: Path) -> dict[str, str]:

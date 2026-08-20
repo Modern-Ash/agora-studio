@@ -1,52 +1,48 @@
 "use strict";
 
-const activityFilters = {
-  type: "Event type",
-  actor: "Actor",
-  swarm_id: "Swarm",
-  work_id: "Work",
-  session_id: "Session",
-  tool_run_id: "Tool run",
+const API_ROOT = "/api/v1";
+const workTabs = ["summary", "spec", "lifecycle", "artifacts", "evidence", "approvals", "activity"];
+const viewNames = {
+  overview: "Process overview",
+  work: "Work control",
+  swarms: "Swarms",
+  actors: "Actors",
+  activity: "Activity",
 };
+
 const state = {
   overview: null,
-  view: "overview",
-  loading: false,
-  activityLoading: false,
   activity: null,
   activityError: "",
-  activityFilters: Object.fromEntries(Object.keys(activityFilters).map((key) => [key, ""])),
-  selectedEvent: null,
-  lifecycleLoading: false,
-  lifecycle: null,
-  lifecycleError: "",
-  lifecycleWork: null,
-  selectedLifecycleItem: null,
-  revisionDetails: new Map(),
-  lifecycleLayers: { topology: true, path: true, revisions: true },
-  lifecycleScale: 1,
-  artifactsLoading: false,
-  artifacts: null,
-  artifactsError: "",
-  artifactsWork: null,
-  selectedArtifactsItem: null,
-  requestSerial: 0,
+  activityLoading: false,
+  activityFilters: { type: "", actor: "", swarm_id: "" },
+  details: {},
+  detailRequests: new Map(),
+  enrichmentLoading: false,
+  generation: 0,
+  gateAction: { key: null, decision: null, reason: "", submitting: false, error: "", result: "" },
   selectionPath: "",
+  selectedWork: null,
+  selectedTab: "summary",
+  selectedRevision: null,
+  revisionDetails: new Map(),
+  view: "overview",
+  loading: false,
 };
-const viewNames = { overview: "Project overview", actors: "Actors", swarms: "Swarms", work: "Work", sessions: "Sessions", activity: "Activity", lifecycle: "Lifecycle", artifacts: "Artifacts" };
 
 const nodes = {
+  content: document.querySelector("#content"),
+  error: document.querySelector("#project-path-error"),
   form: document.querySelector("#project-form"),
   input: document.querySelector("#project-path"),
-  error: document.querySelector("#project-path-error"),
+  live: document.querySelector("#live-status"),
+  method: document.querySelector("#method-badge"),
+  nav: [...document.querySelectorAll("[data-view]")],
   open: document.querySelector("#open-button"),
   refresh: document.querySelector("#refresh-button"),
-  title: document.querySelector("#view-title"),
-  content: document.querySelector("#content"),
-  live: document.querySelector("#live-status"),
   selection: document.querySelector("#selected-project"),
   selectionName: document.querySelector("#selected-project-name"),
-  nav: [...document.querySelectorAll("[data-view]")],
+  title: document.querySelector("#view-title"),
 };
 
 function element(tag, options = {}, children = []) {
@@ -57,70 +53,152 @@ function element(tag, options = {}, children = []) {
     else if (name === "className") node.className = value;
     else node.setAttribute(name, String(value));
   }
-  for (const child of children.flat()) {
+  for (const child of children.flat(Infinity)) {
+    if (child === null || child === undefined || child === false) continue;
     node.append(child instanceof Node ? child : document.createTextNode(String(child)));
   }
   return node;
 }
 
-function svgElement(tag, options = {}, children = []) {
-  const node = document.createElementNS("http://www.w3.org/2000/svg", tag);
-  for (const [name, value] of Object.entries(options)) {
-    if (value === undefined || value === null) continue;
-    if (name === "text") node.textContent = String(value);
-    else if (name === "className") node.setAttribute("class", value);
-    else node.setAttribute(name, String(value));
-  }
-  for (const child of children.flat()) node.append(child);
-  return node;
-}
-
 function replaceContent(...children) {
   nodes.content.replaceChildren(...children);
-  nodes.content.style.animation = "none";
-  requestAnimationFrame(() => { nodes.content.style.animation = ""; });
+  nodes.content.setAttribute("aria-busy", "false");
 }
 
-function announce(message) { nodes.live.textContent = message; }
+function announce(message) {
+  nodes.live.textContent = message;
+}
+
+function display(value, fallback = "Not recorded") {
+  return value === undefined || value === null || value === "" ? fallback : String(value);
+}
+
+function titleCase(value) {
+  return display(value, "Unknown").replaceAll("-", " ").replaceAll("_", " ");
+}
+
+function formatTime(timestamp) {
+  const parsed = new Date(timestamp);
+  if (Number.isNaN(parsed.valueOf())) return display(timestamp);
+  return parsed.toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
+}
+
+function relativeTime(timestamp) {
+  const parsed = new Date(timestamp);
+  if (Number.isNaN(parsed.valueOf())) return display(timestamp);
+  const seconds = Math.round((parsed.valueOf() - Date.now()) / 1000);
+  const ranges = [
+    [60, "second"],
+    [60, "minute"],
+    [24, "hour"],
+    [7, "day"],
+    [4.345, "week"],
+    [12, "month"],
+    [Infinity, "year"],
+  ];
+  let value = seconds;
+  for (const [boundary, unit] of ranges) {
+    if (Math.abs(value) < boundary) {
+      return new Intl.RelativeTimeFormat([], { numeric: "auto" }).format(Math.round(value), unit);
+    }
+    value /= boundary;
+  }
+  return formatTime(timestamp);
+}
 
 async function requestJson(path, options) {
+  if (!path.startsWith(`${API_ROOT}/`)) throw new Error("Studio rejected an unversioned API route.");
   const response = await fetch(path, options);
   let payload;
-  try { payload = await response.json(); }
-  catch { throw new Error("Studio returned an unreadable response."); }
-  if (!response.ok) throw new Error(payload.reason || "Studio could not complete the request.");
+  try {
+    payload = await response.json();
+  } catch {
+    throw new Error("Studio returned an unreadable response.");
+  }
+  if (!response.ok) {
+    const error = new Error(payload.reason || "Studio could not complete the request.");
+    error.code = payload.error || "request_failed";
+    throw error;
+  }
   return payload;
+}
+
+function statusPill(value) {
+  const normalized = String(value || "unknown").toLowerCase();
+  const tone = ["active", "running", "ready", "completed", "success"].includes(normalized)
+    ? "good"
+    : ["blocked", "failed", "error", "missing"].includes(normalized)
+      ? "danger"
+      : "neutral";
+  return element("span", { className: `status-pill tone-${tone}`, text: titleCase(value) });
+}
+
+function tags(values, empty = "None") {
+  const wrapper = element("div", { className: "tag-list" });
+  const items = (values || []).filter(Boolean);
+  if (!items.length) wrapper.append(element("span", { className: "muted", text: empty }));
+  items.forEach((item) => wrapper.append(element("span", { className: "tag", text: item })));
+  return wrapper;
+}
+
+function sectionHeading(kicker, title, description, action = null) {
+  return element("header", { className: "section-heading" }, [
+    element("div", {}, [
+      element("p", { className: "section-kicker", text: kicker }),
+      element("h2", { text: title }),
+      description ? element("p", { className: "section-description", text: description }) : null,
+    ]),
+    action,
+  ]);
+}
+
+function notice(kind, title, message) {
+  return element("div", { className: `notice notice-${kind}`, role: kind === "error" ? "alert" : "status" }, [
+    element("strong", { text: title }),
+    element("span", { text: message }),
+  ]);
+}
+
+function emptyState(code, title, message) {
+  return element("div", { className: "empty-state" }, [
+    element("span", { className: "empty-code", text: code }),
+    element("h3", { text: title }),
+    element("p", { text: message }),
+  ]);
+}
+
+function loadingRows(label = "Loading durable records") {
+  return element("div", { className: "loading-stack", "aria-label": label, "aria-busy": "true" }, [
+    ...[0, 1, 2].map(() => element("div", { className: "skeleton-line" }, [element("span"), element("span")])),
+  ]);
 }
 
 function setLoading(loading, message) {
   state.loading = loading;
   nodes.open.disabled = loading;
-  nodes.refresh.disabled = loading || state.activityLoading || state.lifecycleLoading || state.artifactsLoading || !state.overview;
+  nodes.refresh.disabled = loading || !state.overview;
   nodes.input.setAttribute("aria-busy", String(loading));
   nodes.refresh.classList.toggle("is-loading", loading);
   if (message) announce(message);
 }
 
+function resetProjectData() {
+  state.generation += 1;
+  state.activity = null;
+  state.activityError = "";
+  state.activityLoading = false;
+  state.details = {};
+  state.detailRequests = new Map();
+  state.enrichmentLoading = false;
+  state.gateAction = { key: null, decision: null, reason: "", submitting: false, error: "", result: "" };
+  state.revisionDetails = new Map();
+  state.selectedRevision = null;
+  state.selectedWork = null;
+  state.selectedTab = "summary";
+}
+
 function setSelection(selection) {
-  if (state.selectionPath && state.selectionPath !== selection.path) {
-    state.requestSerial += 1;
-    state.activityLoading = false;
-    state.activity = null;
-    state.activityError = "";
-    state.selectedEvent = null;
-    state.lifecycleLoading = false;
-    state.lifecycle = null;
-    state.lifecycleError = "";
-    state.lifecycleWork = null;
-    state.selectedLifecycleItem = null;
-    state.revisionDetails = new Map();
-    state.activityFilters = Object.fromEntries(Object.keys(activityFilters).map((key) => [key, ""]));
-    state.artifactsLoading = false;
-    state.artifacts = null;
-    state.artifactsError = "";
-    state.artifactsWork = null;
-    state.selectedArtifactsItem = null;
-  }
+  if (state.selectionPath && state.selectionPath !== selection.path) resetProjectData();
   state.selectionPath = selection.path;
   nodes.selection.hidden = false;
   nodes.selectionName.textContent = selection.project;
@@ -128,1035 +206,830 @@ function setSelection(selection) {
   nodes.input.value = selection.path;
 }
 
-function syncNavigation() {
+function syncChrome() {
   nodes.nav.forEach((button) => {
-    button.disabled = !state.overview;
     const active = button.dataset.view === state.view;
+    button.disabled = !state.overview;
     button.classList.toggle("is-active", active);
     button.setAttribute("aria-current", active ? "page" : "false");
   });
-  nodes.refresh.disabled = state.loading || state.activityLoading || state.lifecycleLoading || !state.overview;
+  nodes.refresh.disabled = state.loading || !state.overview;
+  const method = state.overview?.status?.default_method;
+  nodes.method.hidden = !method;
+  nodes.method.textContent = method ? `Method / ${method}` : "";
+  nodes.title.textContent = state.selectedWork
+    ? state.overview?.work?.find((work) => DashboardModel.workKey(work) === state.selectedWork)?.title || "Work detail"
+    : viewNames[state.view];
 }
 
-function display(value, fallback = "—") {
-  if (value === undefined || value === null || value === "") return fallback;
-  return String(value);
+function detailSnapshot() {
+  return state.details;
 }
 
-function tags(values) {
-  const wrapper = element("div", { className: "tag-list" });
-  const items = Array.isArray(values) ? values : [];
-  if (!items.length) wrapper.append(element("span", { className: "muted", text: "None" }));
-  else items.forEach((value) => wrapper.append(element("span", { className: "tag", text: value })));
-  return wrapper;
-}
-
-function statusPill(value) {
-  const healthy = ["active", "running", "ready", "completed", "success"].includes(String(value).toLowerCase());
-  return element("span", { className: `status-pill ${healthy ? "is-good" : "is-alert"}`, text: display(value) });
-}
-
-function viewHeading(kicker, title, description) {
-  return element("div", { className: "view-heading" }, [
-    element("div", {}, [element("p", { className: "section-kicker", text: kicker }), element("h2", { text: title })]),
-    element("p", { text: description }),
+function metricCard(label, value, note, tone = "neutral", pending = false) {
+  return element("article", { className: `metric-card metric-${tone}${pending ? " is-pending" : ""}` }, [
+    element("span", { className: "metric-label", text: label }),
+    element("strong", { text: pending ? "··" : value }),
+    element("small", { text: note }),
   ]);
+}
+
+function renderRecentActivity(limit = 7) {
+  if (state.activityLoading && !state.activity) return loadingRows("Loading recent activity");
+  if (!state.activity) {
+    return emptyState("ACT—00", "Activity unavailable", state.activityError || "No durable activity was returned.");
+  }
+  const events = DashboardModel.recentActivity(state.activity.events, limit);
+  if (!events.length) return emptyState("ACT—00", "No activity yet", "No durable events match this project.");
+  return element("ol", { className: "activity-list", "aria-label": "Recent activity" }, events.map((event) =>
+    element("li", { className: "activity-row" }, [
+      element("span", { className: `event-mark family-${String(event.type || "other").split(".")[0]}`, "aria-hidden": "true" }),
+      element("div", { className: "activity-copy" }, [
+        element("div", { className: "activity-head" }, [
+          element("strong", { className: "mono", text: event.type }),
+          element("time", { datetime: event.timestamp, text: relativeTime(event.timestamp), title: formatTime(event.timestamp) }),
+        ]),
+        element("p", { text: event.summary }),
+        element("span", { className: "activity-scope", text: [event.actor, event.swarm_id, event.work_id].filter(Boolean).join(" / ") || "Project event" }),
+      ]),
+    ]),
+  ));
 }
 
 function renderOverview() {
-  const data = state.overview;
-  const status = data.status || {};
-  const counts = status.counts || {};
-  const identity = [
-    ["Project", status.project || data.selection.project],
-    ["Branch", status.branch],
-    ["Method", status.default_method],
-    ["Integration", status.integration],
-  ];
-  const countItems = ["actors", "swarms", "work", "sessions", "tool-runs"];
+  const overview = state.overview;
+  const status = overview.status || {};
+  const metrics = DashboardModel.metrics(overview, detailSnapshot());
+  const detailCount = Object.values(state.details).filter((detail) => !detail.loading).length;
+  const partialCount = Object.values(state.details).filter((detail) => detail.errors?.length).length;
+  const detailPending = state.enrichmentLoading && detailCount < (overview.work || []).length;
+  const methodPack = status.default_method || "Not recorded";
+  const activeWork = (overview.work || []).filter(DashboardModel.isWorkInProgress).slice(0, 4);
 
-  const identityStrip = element("div", { className: "identity-strip" }, identity.map(([label, value]) =>
-    element("article", { className: "identity-item" }, [
-      element("span", { className: "panel-label", text: label }),
-      element("strong", { text: display(value) }),
-    ])
-  ));
+  const healthRail = element("section", { className: "health-rail", "aria-label": "Process health" }, [
+    element("div", { className: "method-card" }, [
+      element("span", { className: "metric-label", text: "Active Method Pack" }),
+      element("strong", { text: methodPack }),
+      element("small", { text: `${display(status.branch, "No branch")} · ${display(status.integration, "No integration")}` }),
+    ]),
+    metricCard("Active swarms", metrics.activeSwarms, `${(overview.swarms || []).length} total`, metrics.activeSwarms ? "accent" : "neutral"),
+    metricCard("Work in progress", metrics.workInProgress, `${(overview.work || []).length} total`, metrics.workInProgress ? "accent" : "neutral"),
+    metricCard("Blocked", metrics.blockedWork, "work items", metrics.blockedWork ? "danger" : "good"),
+    metricCard("Pending approvals", metrics.pendingApprovals, "required roles", metrics.pendingApprovals ? "danger" : "good", detailPending),
+    metricCard("Evidence missing", metrics.missingEvidence, "work items", metrics.missingEvidence ? "danger" : "good", detailPending),
+    metricCard("Failed sessions", metrics.failedSessions, "durable runs", metrics.failedSessions ? "danger" : "good"),
+  ]);
 
-  const metricGrid = element("div", { className: "metric-grid" }, countItems.map((key) =>
-    element("article", { className: "metric" }, [
-      element("span", { className: "panel-label", text: key }),
-      element("strong", { text: display(counts[key], "0") }),
-    ])
-  ));
+  const alerts = [];
+  if (state.enrichmentLoading) alerts.push(notice("progress", "Checking gates and provenance", `${detailCount} of ${(overview.work || []).length} work items enriched.`));
+  if (partialCount || state.activityError) alerts.push(notice("partial", "Partial data", `${partialCount + (state.activityError ? 1 : 0)} read ${partialCount + (state.activityError ? 1 : 0) === 1 ? "area is" : "areas are"} unavailable; verified data remains visible.`));
 
-  const distributions = element("div", { className: "distribution" });
-  const groups = [["Swarm status", status.swarm_statuses], ["Work state", status.work_states]];
-  groups.forEach(([label, values]) => {
-    const entries = Object.entries(values || {});
-    const total = Math.max(1, entries.reduce((sum, [, amount]) => sum + Number(amount || 0), 0));
-    distributions.append(element("div", { className: "distribution-row" }, [
-      element("span", { className: "panel-label", text: label }),
-      ...entries.map(([name, amount]) => element("div", {}, [
-        element("div", { className: "distribution-head" }, [element("span", { text: name }), element("strong", { text: amount })]),
-        element("div", { className: "distribution-track" }, [element("div", { className: "distribution-fill", style: `width:${Math.max(3, Number(amount) / total * 100)}%` })]),
-      ])),
-      ...(!entries.length ? [element("span", { className: "healthy", text: "No lifecycle records" })] : []),
-    ]));
-  });
+  const queue = element("section", { className: "control-panel", "aria-labelledby": "focus-title" }, [
+    element("header", { className: "panel-heading" }, [
+      element("div", {}, [element("p", { className: "section-kicker", text: "Immediate focus" }), element("h3", { id: "focus-title", text: "Work in progress" })]),
+      element("span", { className: "panel-count", text: String(activeWork.length) }),
+    ]),
+    activeWork.length
+      ? element("ol", { className: "focus-list" }, activeWork.map((work) => {
+        const assignment = DashboardModel.assignmentFor(work, overview.swarms);
+        const open = element("button", { className: "focus-row", type: "button", "aria-label": `Open ${work.title}` }, [
+          element("span", { className: "state-stripe", "data-state": work.state, "aria-hidden": "true" }),
+          element("span", { className: "focus-copy" }, [element("strong", { text: work.title || work.id }), element("small", { text: `${work.swarm_id}/${work.id}` })]),
+          statusPill(work.state),
+          element("span", { className: "focus-owner", text: assignment.actor || "Unassigned" }),
+        ]);
+        open.addEventListener("click", () => openWork(work));
+        return element("li", {}, [open]);
+      }))
+      : emptyState("WIP—00", "No work in progress", "All durable work is terminal or no work has been registered."),
+  ]);
 
-  const attentionList = element("ul", { className: "attention-list" });
-  const attentionEntries = Object.entries(status.attention || {});
-  const populated = attentionEntries.filter(([, values]) => Array.isArray(values) && values.length);
-  if (!populated.length) attentionList.append(element("li", {}, [element("span", { className: "healthy", text: "No items need attention" })]));
-  populated.forEach(([name, values]) => attentionList.append(element("li", {}, [
-    element("strong", { text: name.replaceAll("-", " ") }),
-    element("span", { text: values.join(" · "), title: values.join(" · ") }),
-  ])));
+  const activity = element("section", { className: "control-panel", "aria-labelledby": "recent-title" }, [
+    element("header", { className: "panel-heading" }, [
+      element("div", {}, [element("p", { className: "section-kicker", text: "Durable signal" }), element("h3", { id: "recent-title", text: "Recent activity" })]),
+      element("button", { className: "text-button", type: "button", text: "View all →", "data-go": "activity" }),
+    ]),
+    renderRecentActivity(),
+  ]);
+  activity.querySelector("[data-go]").addEventListener("click", () => switchView("activity"));
 
   replaceContent(
-    viewHeading("01 / Snapshot", "Delivery at a glance", "A current read from Agora's durable project records."),
-    identityStrip,
-    metricGrid,
-    element("div", { className: "dashboard-grid" }, [
-      element("section", { className: "panel", "aria-labelledby": "lifecycle-title" }, [element("h3", { id: "lifecycle-title", text: "Lifecycle distribution" }), distributions]),
-      element("section", { className: "panel", "aria-labelledby": "attention-title" }, [element("h3", { id: "attention-title", text: "Attention queue" }), attentionList]),
-    ])
+    sectionHeading("01 / Control surface", "Process status", `A read-only operational view of ${overview.selection.project}.`),
+    ...alerts,
+    healthRail,
+    element("div", { className: "overview-grid" }, [queue, activity]),
   );
 }
 
-function renderTable(config) {
-  const rows = Array.isArray(state.overview[config.key]) ? state.overview[config.key] : [];
-  const table = element("table", { className: "data-table" });
-  const headRow = element("tr");
-  config.columns.forEach((column) => headRow.append(element("th", { scope: "col", text: column.label })));
-  table.append(element("thead", {}, [headRow]));
-  const body = element("tbody");
-  rows.forEach((record) => {
-    const row = element("tr");
-    config.columns.forEach((column) => {
-      const rendered = column.render(record);
-      const cell = element("td", { "data-label": column.label });
-      cell.append(rendered instanceof Node ? rendered : document.createTextNode(display(rendered)));
-      row.append(cell);
-    });
-    body.append(row);
-  });
-  table.append(body);
-  const frameChildren = rows.length ? [table] : [element("p", { className: "empty-table", text: `No ${config.title.toLowerCase()} are registered.` })];
+function workCard(work) {
+  const key = DashboardModel.workKey(work);
+  const assignment = DashboardModel.assignmentFor(work, state.overview.swarms);
+  const detail = state.details[key];
+  const gates = DashboardModel.pendingGates(detail?.lifecycle);
+  const blocked = DashboardModel.isBlocked(work);
+  const button = element("button", { className: `work-card${blocked ? " is-blocked" : ""}`, type: "button", "aria-label": `Open work item ${work.title || work.id}` }, [
+    element("span", { className: "work-card-topline" }, [
+      element("span", { className: "mono card-key", text: key }),
+      statusPill(work.state),
+    ]),
+    element("strong", { className: "work-title", text: work.title || work.id }),
+    element("span", { className: "assignment-line" }, [
+      element("span", { className: "avatar", text: (assignment.actor || "?").split(":").pop().slice(0, 2).toUpperCase(), "aria-hidden": "true" }),
+      element("span", {}, [
+        element("b", { text: assignment.actor || "Unassigned" }),
+        element("small", { text: assignment.role ? `${assignment.role} · swarm scope` : "No role recorded" }),
+      ]),
+    ]),
+    element("span", { className: `block-line${blocked ? " is-alert" : ""}` }, [
+      element("span", { "aria-hidden": "true", text: blocked ? "!" : "✓" }),
+      element("span", { text: blocked ? work.status_reason || "Blocked" : "No operational block" }),
+    ]),
+    element("span", { className: "card-footer" }, [
+      element("span", { text: detail?.loading ? "Checking gates…" : gates.length ? `${gates.length} gate${gates.length === 1 ? "" : "s"} pending` : detail?.errors?.length ? "Gates unavailable" : "No pending gates" }),
+      element("time", { datetime: work.status_at, text: relativeTime(work.status_at), title: formatTime(work.status_at) }),
+    ]),
+  ]);
+  button.addEventListener("click", () => openWork(work));
+  return button;
+}
+
+function renderBoard() {
+  const columns = DashboardModel.boardColumns(state.overview.work, detailSnapshot());
+  if (!columns.length) return emptyState("WRK—00", "No work registered", "The selected project has no durable work items.");
+  return element("div", { className: "board", role: "region", "aria-label": "Work grouped by Method Pack state", tabindex: "0" }, columns.map((column, index) =>
+    element("section", { className: "board-column", "aria-labelledby": `board-state-${index}` }, [
+      element("header", { className: "column-heading" }, [
+        element("span", { className: "column-index", text: String(index + 1).padStart(2, "0") }),
+        element("h3", { id: `board-state-${index}`, text: titleCase(column.state) }),
+        element("span", { className: "column-count", text: column.items.length }),
+      ]),
+      column.items.length
+        ? element("div", { className: "card-stack" }, column.items.map(workCard))
+        : element("p", { className: "column-empty", text: "No work in this state" }),
+    ]),
+  ));
+}
+
+function renderWork() {
+  if (state.selectedWork) return renderWorkDetail();
+  const method = state.overview.status?.default_method || "unavailable";
+  const partial = Object.values(state.details).filter((detail) => detail.errors?.length).length;
   replaceContent(
-    viewHeading(config.kicker, config.title, config.description),
-    element("div", { className: "data-frame" }, frameChildren)
+    sectionHeading("02 / Governed delivery", "Work board", `Read-only board grouped by the ordered states available from Method Pack ${method}.`, statusPill("Read-only")),
+    state.enrichmentLoading ? notice("progress", "Board enrichment in progress", "Gate, evidence, and approval state is loading without blocking the board.") : null,
+    partial ? notice("partial", "Some cards are partial", `${partial} work item ${partial === 1 ? "read is" : "reads are"} incomplete.`) : null,
+    renderBoard(),
   );
 }
 
-const tableViews = {
-  actors: {
-    key: "actors", kicker: "02 / Participants", title: "Actors", description: "Identities and capabilities admitted to this project.",
-    columns: [
-      { label: "Actor", render: (r) => element("strong", { text: r.name }) },
-      { label: "Reference", render: (r) => element("span", { className: "mono", text: r.reference, title: r.reference }) },
-      { label: "Kind", render: (r) => statusPill(r.kind) },
-      { label: "Capabilities", render: (r) => tags(r.capabilities) },
-      { label: "Authentication", render: (r) => r.authentication_required ? "Required" : "Not required" },
-    ],
-  },
-  swarms: {
-    key: "swarms", kicker: "03 / Delivery", title: "Swarms", description: "Active delivery structures, methods, and role ownership.",
-    columns: [
-      { label: "Swarm", render: (r) => element("strong", { className: "mono", text: r.id, title: r.id }) },
-      { label: "Method", render: (r) => r.method },
-      { label: "Status", render: (r) => statusPill(r.status) },
-      { label: "Branch", render: (r) => element("span", { className: "mono", text: r.branch, title: r.branch }) },
-      { label: "Objective", render: (r) => r.objective },
-      { label: "Assignments", render: (r) => tags(Object.entries(r.assignments || {}).map(([role, actor]) => `${role}: ${actor}`)) },
-    ],
-  },
-  work: {
-    key: "work", kicker: "04 / Lifecycle", title: "Work", description: "Governed increments and their artifact, evidence, and criteria readiness.",
-    columns: [
-      { label: "Work", render: (r) => element("strong", { className: "mono", text: `${r.swarm_id}/${r.id}`, title: `${r.swarm_id}/${r.id}` }) },
-      { label: "Title", render: (r) => r.title },
-      { label: "State", render: (r) => statusPill(r.state) },
-      { label: "Operational", render: (r) => statusPill(r.operational_status) },
-      { label: "Criteria", render: (r) => `${(r.satisfied_criteria || []).length} / ${Object.keys(r.acceptance_criteria || {}).length}` },
-      { label: "Readiness", render: (r) => tags([`${(r.artifact_kinds || []).length} artifacts`, `${(r.evidence_results || []).filter((v) => v === "success").length} successful evidence`]) },
-    ],
-  },
-  sessions: {
-    key: "sessions", kicker: "05 / Runtime", title: "Sessions", description: "Bounded agent and human executions recorded by Agora.",
-    columns: [
-      { label: "Session", render: (r) => element("span", { className: "mono", text: r.id, title: r.id }) },
-      { label: "Actor", render: (r) => r.actor },
-      { label: "Context", render: (r) => `${display(r.swarm_id)} / ${display(r.work_id)}` },
-      { label: "Status", render: (r) => statusPill(r.status) },
-      { label: "Created", render: (r) => element("time", { datetime: r.created_at, text: display(r.created_at) }) },
-    ],
-  },
-};
-
-function activityKey(event) {
-  return ActivityModel.stableKey(event);
+function selectedWorkRecord() {
+  return state.overview.work.find((work) => DashboardModel.workKey(work) === state.selectedWork) || null;
 }
 
-function activityFamily(type) {
-  const family = String(type || "").split(".")[0];
-  return ["project", "actor", "swarm", "work", "session", "tool", "artifact", "evidence", "approval"].includes(family) ? family : "other";
+function definitionList(entries) {
+  return element("dl", { className: "definition-list" }, entries.map(([term, value]) =>
+    element("div", {}, [element("dt", { text: term }), element("dd", { text: display(value) })]),
+  ));
 }
 
-function localTime(timestamp) {
-  const parsed = new Date(timestamp);
-  return Number.isNaN(parsed.valueOf()) ? display(timestamp) : parsed.toLocaleString([], { dateStyle: "medium", timeStyle: "medium" });
-}
-
-function definitionList(entries, className = "detail-facts") {
-  const list = element("dl", { className });
-  entries.forEach(([label, value]) => {
-    list.append(element("div", {}, [
-      element("dt", { text: label }),
-      element("dd", { className: "mono wrap-anywhere", text: display(value, "Not recorded"), title: display(value, "Not recorded") }),
-    ]));
-  });
-  return list;
-}
-
-function relatedActivity(event) {
-  const related = [];
-  if (event.swarm_id && event.work_id) {
-    const matches = ActivityModel.relatedWork(state.activity.events, event);
-    if (matches.length) {
-      const list = element("ul", { className: "related-list" });
-      matches.forEach((match) => list.append(element("li", {}, [
-        element("strong", { text: match.type }),
-        element("span", { text: match.summary }),
-        match.source
-          ? element("a", { href: match.source, className: "source-link mono", text: "Durable source" })
-          : element("span", { className: "muted", text: "Durable source not recorded" }),
-      ])));
-      related.push(element("section", { "aria-labelledby": "related-work-title" }, [
-        element("h4", { id: "related-work-title", text: "Loaded work records" }), list,
-      ]));
-    }
-  }
-  if (event.session_id) {
-    const session = ActivityModel.matchingSession(state.overview.sessions || [], event);
-    if (session) {
-      related.push(element("section", { "aria-labelledby": "related-session-title" }, [
-        element("h4", { id: "related-session-title", text: "Loaded session summary" }),
-        definitionList([
-          ["Status", session.status],
-          ["Actor", session.actor],
-          ["Created", session.created_at],
-        ], "session-facts"),
-      ]));
-    }
-  }
-  return related.length ? related : [element("p", { className: "muted", text: "No related artifact, evidence, or session summary is available in the loaded records." })];
-}
-
-function eventDetail(event) {
-  const titleId = `event-detail-${Math.abs(activityKey(event).split("").reduce((value, character) => ((value * 31) + character.charCodeAt(0)) | 0, 0))}`;
-  return element("article", { className: "event-detail", "aria-labelledby": titleId }, [
-    element("div", { className: "detail-heading" }, [
-      element("p", { className: "section-kicker", text: "Selected durable event" }),
-      element("h3", { id: titleId, text: event.type }),
-      element("p", { className: "detail-summary", text: event.summary }),
+function renderSummaryTab(work, detail) {
+  const assignment = DashboardModel.assignmentFor(work, state.overview.swarms);
+  const gates = DashboardModel.pendingGates(detail?.lifecycle);
+  const criteria = Object.entries(work.acceptance_criteria || {});
+  return element("div", { className: "detail-grid" }, [
+    element("section", { className: "detail-panel" }, [
+      element("p", { className: "section-kicker", text: "Operating context" }),
+      element("h3", { text: "Summary" }),
+      element("p", { className: "detail-lead", text: work.description || "No durable description is recorded." }),
+      definitionList([
+        ["State", work.state],
+        ["Operational", work.operational_status],
+        ["Swarm actor", assignment.actor],
+        ["Swarm role", assignment.role],
+        ["Updated", formatTime(work.status_at)],
+      ]),
     ]),
-    definitionList([
-      ["Exact time", event.timestamp],
-      ["Actor", event.actor || "Unattributed"],
-      ["Swarm", event.swarm_id],
-      ["Work", event.work_id],
-      ["Session", event.session_id],
-      ["Tool run", event.tool_run_id],
-    ]),
-    element("div", { className: "source-block" }, [
-      element("span", { className: "panel-label", text: "Durable source" }),
-      event.source
-        ? element("a", { href: event.source, className: "source-link mono wrap-anywhere", text: event.source })
-        : element("span", { className: "mono muted", text: "Not recorded" }),
-    ]),
-    element("div", { className: "related-block" }, [
-      element("h3", { text: "Related loaded records" }),
-      ...relatedActivity(event),
+    element("section", { className: "detail-panel" }, [
+      element("p", { className: "section-kicker", text: "Readiness" }),
+      element("h3", { text: "Criteria and gates" }),
+      criteria.length
+        ? element("ul", { className: "check-list" }, criteria.map(([id, description]) =>
+          element("li", { className: (work.satisfied_criteria || []).includes(id) ? "is-done" : "" }, [
+            element("span", { "aria-hidden": "true", text: (work.satisfied_criteria || []).includes(id) ? "✓" : "○" }),
+            element("span", {}, [element("strong", { text: id }), element("small", { text: description })]),
+          ]),
+        ))
+        : emptyState("CRT—00", "No criteria recorded", "This work item has no durable acceptance criteria."),
+      gates.length
+        ? element("div", { className: "gate-alert" }, [
+          element("strong", { text: `${gates.length} pending gate${gates.length === 1 ? "" : "s"}` }),
+          ...gates.map((gate) => element("span", { text: `${gate.id} → ${gate.target}: ${gate.blockers.join("; ")}` })),
+        ])
+        : element("p", { className: "quiet-success", text: detail?.loading ? "Checking current gates…" : "No pending gate blockers detected." }),
     ]),
   ]);
 }
 
-function activityFilterOptions(events, key) {
-  return ActivityModel.options(events, key);
+function renderSpecTab(work, detail) {
+  if (detail?.loading && !detail.lifecycle) return loadingRows("Loading specification history");
+  if (!detail?.lifecycle) return emptyState("SPC—ERR", "Specification unavailable", detail?.errors?.join(" ") || "The lifecycle read did not return specification data.");
+  const specification = detail.lifecycle.specification || {};
+  if (!specification.available) return emptyState("SPC—00", "No verified specification", specification.reason || "No single registered specification is available.");
+  const revisions = specification.revisions || [];
+  const revisionKey = state.selectedRevision ? `${DashboardModel.workKey(work)}:${state.selectedRevision}` : null;
+  const revisionDetail = revisionKey ? state.revisionDetails.get(revisionKey) : null;
+  return element("div", { className: "detail-grid spec-grid" }, [
+    element("section", { className: "detail-panel" }, [
+      element("p", { className: "section-kicker", text: "Registered specification" }),
+      element("h3", { className: "mono wrap", text: specification.uri }),
+      revisions.length
+        ? element("ol", { className: "revision-list" }, revisions.map((revision) => {
+          const button = element("button", { className: `revision-button${state.selectedRevision === revision.id ? " is-selected" : ""}`, type: "button" }, [
+            element("strong", { className: "mono", text: revision.short_sha || revision.id }),
+            element("span", { text: revision.subject || "Working tree" }),
+            element("small", { text: `${display(revision.work_state, "state unknown")} · ${formatTime(revision.timestamp)}` }),
+          ]);
+          button.addEventListener("click", () => loadRevision(work, revision.id));
+          return element("li", {}, [button]);
+        }))
+        : emptyState("REV—00", "No revisions", "The specification has no available Git history."),
+    ]),
+    element("section", { className: "detail-panel revision-detail" }, [
+      element("p", { className: "section-kicker", text: "Revision detail" }),
+      !state.selectedRevision
+        ? emptyState("REV—SELECT", "Select a revision", "Choose a verified revision to inspect its bounded diff.")
+        : revisionDetail === "loading"
+          ? loadingRows("Loading revision detail")
+          : revisionDetail?.error
+            ? emptyState("REV—ERR", "Revision unavailable", revisionDetail.error)
+            : revisionDetail
+              ? [element("h3", { className: "mono", text: revisionDetail.detail.revision }), tags(revisionDetail.detail.changed_headings, "No changed headings"), element("pre", { className: "revision-diff", text: revisionDetail.detail.text || "No textual diff." })]
+              : loadingRows("Loading revision detail"),
+    ]),
+  ]);
 }
 
-function filteredActivity(events) {
-  return ActivityModel.filterEvents(events, state.activityFilters);
+function renderLifecycleTab(detail) {
+  if (detail?.loading && !detail.lifecycle) return loadingRows("Loading lifecycle");
+  if (!detail?.lifecycle?.method?.available) return emptyState("LFC—00", "Lifecycle unavailable", detail?.lifecycle?.diagnostics?.join(" ") || detail?.errors?.join(" ") || "Method topology is not available.");
+  const lifecycle = detail.lifecycle;
+  const states = lifecycle.method.states || [];
+  const traversed = new Set((lifecycle.actual_path?.traversals || []).map((item) => `${item.from}/${item.to}`));
+  return element("div", { className: "lifecycle-panel" }, [
+    element("div", { className: "process-track", role: "list", "aria-label": `${lifecycle.method.name} lifecycle states` }, states.map((item, index) =>
+      element("div", { className: `process-node${item.current ? " is-current" : ""}${item.terminal ? " is-terminal" : ""}`, role: "listitem" }, [
+        element("span", { className: "node-number", text: String(index + 1).padStart(2, "0") }),
+        element("strong", { text: titleCase(item.id) }),
+        element("small", { text: item.current ? "Current" : item.terminal ? "Terminal" : "Method state" }),
+      ]),
+    )),
+    element("section", { className: "detail-panel" }, [
+      element("p", { className: "section-kicker", text: "Method transitions" }),
+      element("h3", { text: lifecycle.method.name }),
+      element("ul", { className: "transition-list" }, (lifecycle.method.transitions || []).map((transition) =>
+        element("li", { className: `${traversed.has(`${transition.from}/${transition.to}`) ? "is-traversed" : ""}${transition.blockers?.length ? " is-blocked" : ""}` }, [
+          element("span", { className: "transition-path mono", text: `${transition.from} → ${transition.to}` }),
+          element("span", { text: transition.gate || "No gate" }),
+          transition.blockers?.length ? element("small", { text: transition.blockers.join("; ") }) : element("small", { text: traversed.has(`${transition.from}/${transition.to}`) ? "Traversed" : "Available by method" }),
+        ]),
+      )),
+    ]),
+  ]);
 }
 
-function renderActivitySkeleton() {
+function recordsTable(kind, records, columns, emptyMessage) {
+  if (!records?.length) return emptyState(`${kind.slice(0, 3).toUpperCase()}—00`, `No ${kind.toLowerCase()}`, emptyMessage);
+  const table = element("table", { className: "records-table" });
+  table.append(element("thead", {}, [element("tr", {}, columns.map((column) => element("th", { scope: "col", text: column.label }))) ]));
+  table.append(element("tbody", {}, records.map((record) => element("tr", {}, columns.map((column) => element("td", { "data-label": column.label }, [column.render(record)]))))));
+  return element("div", { className: "table-frame" }, [table]);
+}
+
+function renderArtifactsTab(detail) {
+  if (detail?.loading && !detail.artifacts) return loadingRows("Loading artifacts");
+  if (!detail?.artifacts) return emptyState("ART—ERR", "Artifacts unavailable", detail?.errors?.join(" ") || "No artifact projection was returned.");
+  return recordsTable("Artifacts", detail.artifacts.artifacts, [
+    { label: "Kind", render: (record) => statusPill(record.kind) },
+    { label: "URI", render: (record) => element("span", { className: "mono wrap", text: record.uri }) },
+    { label: "Produced by", render: (record) => record.produced_by },
+    { label: "Recorded", render: (record) => formatTime(record.timestamp) },
+  ], "No artifacts are durably registered for this work item.");
+}
+
+function renderEvidenceTab(detail) {
+  if (detail?.loading && !detail.artifacts) return loadingRows("Loading evidence");
+  if (!detail?.artifacts) return emptyState("EVD—ERR", "Evidence unavailable", detail?.errors?.join(" ") || "No evidence projection was returned.");
+  return recordsTable("Evidence", detail.artifacts.evidence, [
+    { label: "Result", render: (record) => statusPill(record.result) },
+    { label: "Type", render: (record) => record.type },
+    { label: "Artifact refs", render: (record) => tags(record.artifact_references, "None") },
+    { label: "Produced by", render: (record) => record.produced_by },
+  ], "No evidence is durably registered for this work item.");
+}
+
+function gateErrorMessage(error) {
+  const messages = {
+    "command.actor-unauthorized": "This actor does not hold the role or authority required by the Method Pack.",
+    "command.gate-already-resolved": "This gate decision was already recorded. Refresh before continuing.",
+    "command.stale-precondition": "The work state changed after this view loaded. The projection has been refreshed.",
+    "command.evidence-missing": "Required durable evidence is missing or no longer satisfies the gate.",
+    "command.signature-required": "This actor requires a signed lifecycle action before the decision can be recorded.",
+    "command.persistence-failed": "Core could not persist the complete decision; no partial result is shown.",
+    "command.version-incompatible": "The installed Agora Core does not support this versioned command.",
+  };
+  return messages[error.code] || error.message;
+}
+
+function beginGateDecision(work, decision, reason) {
+  if (!reason.trim()) {
+    state.gateAction = { key: DashboardModel.workKey(work), decision: null, reason: "", submitting: false, error: "A reason is required for every gate decision.", result: "" };
+  } else {
+    state.gateAction = { key: DashboardModel.workKey(work), decision, reason: reason.trim(), submitting: false, error: "", result: "" };
+  }
+  renderWorkDetail();
+  document.querySelector(
+    state.gateAction.decision ? ".gate-confirmation button" : "#gate-reason",
+  )?.focus();
+}
+
+async function refreshAfterGateDecision(work) {
+  const key = DashboardModel.workKey(work);
+  const [overview, activity] = await Promise.all([
+    requestJson(`${API_ROOT}/overview`),
+    requestJson(`${API_ROOT}/activity?limit=500`),
+  ]);
+  state.overview = overview;
+  state.activity = activity;
+  delete state.details[key];
+  state.detailRequests.delete(key);
+  const current = state.overview.work.find((item) => DashboardModel.workKey(item) === key);
+  if (current) await ensureWorkDetail(current);
+}
+
+async function submitGateDecision(work, detail) {
+  if (state.gateAction.submitting) return;
+  const context = DashboardModel.gateDecisionContext(work, state.overview.swarms, detail);
+  if (!context.ready || !state.gateAction.decision) return;
+  state.gateAction.submitting = true;
+  state.gateAction.error = "";
+  renderWorkDetail();
+  const evidenceReferences = [...new Set(context.evidence.flatMap((item) => item.artifact_references || []))];
+  try {
+    await requestJson(`${API_ROOT}/work-items/${encodeURIComponent(work.swarm_id)}/${encodeURIComponent(work.id)}/approvals`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        schema: "agora/application/approve-gate-command/v1",
+        gate_id: context.gate.id,
+        actor_id: context.actor,
+        decision: state.gateAction.decision,
+        reason: state.gateAction.reason,
+        expected_state: work.state,
+        evidence_references: evidenceReferences,
+      }),
+    });
+    const decision = state.gateAction.decision;
+    await refreshAfterGateDecision(work);
+    state.gateAction = {
+      key: DashboardModel.workKey(work),
+      decision: null,
+      reason: "",
+      submitting: false,
+      error: "",
+      result: decision === "approved"
+        ? "Approval persisted. The gate projection and Activity log were refreshed."
+        : "Rejection persisted. The gate remains closed and Activity now shows the decision.",
+    };
+    announce(state.gateAction.result);
+  } catch (error) {
+    state.gateAction.submitting = false;
+    state.gateAction.error = gateErrorMessage(error);
+    if (["command.stale-precondition", "command.gate-already-resolved"].includes(error.code)) {
+      try {
+        await refreshAfterGateDecision(work);
+      } catch {
+        state.gateAction.error += " Studio could not refresh the durable projection.";
+      }
+    }
+    announce(`Gate decision failed. ${state.gateAction.error}`);
+  }
+  renderWorkDetail();
+}
+
+function renderGateControl(work, detail) {
+  const context = DashboardModel.gateDecisionContext(work, state.overview.swarms, detail);
+  if (!context.gate) return null;
+  const action = state.gateAction.key === DashboardModel.workKey(work)
+    ? state.gateAction
+    : { decision: null, reason: "", submitting: false, error: "", result: "" };
+
+  const evidence = context.evidence.length
+    ? element("ul", { className: "gate-evidence" }, context.evidence.map((record) => element("li", {}, [
+      statusPill(record.result),
+      element("span", {}, [element("strong", { text: record.type }), tags(record.artifact_references, "No artifact references")]),
+    ])))
+    : emptyState("EVD—REQ", "Evidence required", "No successful durable evidence is associated with this gate.");
+
+  let controls;
+  if (action.decision) {
+    const effect = action.decision === "approved"
+      ? `Record ${context.role} approval by ${context.actor}; Core will then recompute gate ${context.gate.id}.`
+      : `Record a durable rejection by ${context.actor}; the approval stays unsatisfied and the gate remains closed.`;
+    const confirm = element("button", { className: `primary-button decision-${action.decision}`, type: "button", text: action.submitting ? "Persisting…" : `Confirm ${action.decision}`, disabled: action.submitting ? "disabled" : null });
+    confirm.addEventListener("click", () => submitGateDecision(work, detail));
+    const cancel = element("button", { className: "back-button", type: "button", text: "Cancel", disabled: action.submitting ? "disabled" : null });
+    cancel.addEventListener("click", () => {
+      state.gateAction = { key: DashboardModel.workKey(work), decision: null, reason: "", submitting: false, error: "", result: "" };
+      renderWorkDetail();
+    });
+    controls = element("div", { className: "gate-confirmation", role: "alertdialog", "aria-labelledby": "gate-confirm-title", "aria-describedby": "gate-confirm-effect" }, [
+      element("p", { className: "section-kicker", text: "Confirm governed mutation" }),
+      element("h3", { id: "gate-confirm-title", text: `${titleCase(action.decision)} ${context.gate.id}` }),
+      element("p", { id: "gate-confirm-effect", text: effect }),
+      element("blockquote", { text: action.reason }),
+      element("div", { className: "gate-actions" }, [confirm, cancel]),
+    ]);
+  } else if (action.result) {
+    controls = element("p", { className: "quiet-success", text: "The durable response is visible above. Review Activity before making another decision." });
+  } else {
+    const form = element("form", { className: "gate-decision-form" }, [
+      element("label", { for: "gate-reason" }, [element("span", { text: "Decision reason" }), element("textarea", { id: "gate-reason", name: "reason", rows: "4", required: "required", maxlength: "4000", text: action.reason, placeholder: "Explain the durable basis for this decision." })]),
+      element("div", { className: "gate-actions" }, [
+        element("button", { className: "primary-button decision-approved", type: "submit", value: "approved", text: "Approve gate", disabled: context.ready ? null : "disabled" }),
+        element("button", { className: "back-button decision-rejected", type: "submit", value: "rejected", text: "Reject gate", disabled: context.ready ? null : "disabled" }),
+      ]),
+    ]);
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const submitter = event.submitter?.value;
+      if (!submitter) return;
+      beginGateDecision(work, submitter, form.elements.reason.value);
+    });
+    controls = form;
+  }
+
+  return element("section", { className: "gate-control", "aria-labelledby": "gate-control-title" }, [
+    element("div", { className: "gate-control-heading" }, [
+      element("div", {}, [element("p", { className: "section-kicker", text: "Governed action" }), element("h3", { id: "gate-control-title", text: `Gate / ${context.gate.id}` })]),
+      statusPill("pending"),
+    ]),
+    definitionList([["Expected state", work.state], ["Actor", context.actor], ["Role", context.role], ["Target state", context.gate.target]]),
+    element("h4", { text: "Associated evidence" }),
+    evidence,
+    action.error ? notice("error", "Decision not persisted", action.error) : null,
+    action.result ? notice("progress", "Durable response received", action.result) : null,
+    controls,
+  ]);
+}
+
+function renderApprovalsTab(work, detail) {
+  if (detail?.loading && !detail.artifacts) return loadingRows("Loading approvals");
+  if (!detail?.artifacts) return emptyState("APR—ERR", "Approvals unavailable", detail?.errors?.join(" ") || "No approval projection was returned.");
+  const projection = detail.artifacts.approvals;
+  if (!projection.satisfaction?.length) return emptyState("APR—00", "No approvals required", "This work item has no durable required approval roles.");
+  const approvals = element("div", { className: "approval-grid" }, projection.satisfaction.map((item) => {
+    const record = projection.records.find((candidate) => candidate.role === item.role);
+    return element("article", { className: `approval-card${item.satisfied ? " is-satisfied" : " is-missing"}` }, [
+      element("span", { className: "approval-mark", "aria-hidden": "true", text: item.satisfied ? "✓" : "!" }),
+      element("div", {}, [
+        element("span", { className: "metric-label", text: item.satisfied ? "Approved" : "Pending" }),
+        element("h3", { text: item.role }),
+        element("p", { text: record ? `${record.approved_by} · ${record.note}` : "No durable approval record yet." }),
+        record ? element("time", { datetime: record.timestamp, text: formatTime(record.timestamp) }) : null,
+      ]),
+    ]);
+  }));
+  return element("div", { className: "approval-stack" }, [renderGateControl(work, detail), approvals]);
+}
+
+function renderWorkActivityTab(work) {
+  if (state.activityLoading && !state.activity) return loadingRows("Loading work activity");
+  if (!state.activity) return emptyState("ACT—ERR", "Activity unavailable", state.activityError || "No activity projection was returned.");
+  const events = DashboardModel.recentActivity((state.activity.events || []).filter((event) => event.swarm_id === work.swarm_id && event.work_id === work.id), 100);
+  if (!events.length) return emptyState("ACT—00", "No linked activity", "No durable activity references this exact work item.");
+  return element("ol", { className: "activity-list detail-activity" }, events.map((event) => element("li", { className: "activity-row" }, [
+    element("span", { className: "event-mark", "aria-hidden": "true" }),
+    element("div", { className: "activity-copy" }, [
+      element("div", { className: "activity-head" }, [element("strong", { className: "mono", text: event.type }), element("time", { datetime: event.timestamp, text: formatTime(event.timestamp) })]),
+      element("p", { text: event.summary }),
+      element("span", { className: "activity-scope", text: event.actor || "Actor not recorded" }),
+    ]),
+  ])));
+}
+
+function renderWorkTab(work, detail) {
+  if (state.selectedTab === "summary") return renderSummaryTab(work, detail);
+  if (state.selectedTab === "spec") return renderSpecTab(work, detail);
+  if (state.selectedTab === "lifecycle") return renderLifecycleTab(detail);
+  if (state.selectedTab === "artifacts") return renderArtifactsTab(detail);
+  if (state.selectedTab === "evidence") return renderEvidenceTab(detail);
+  if (state.selectedTab === "approvals") return renderApprovalsTab(work, detail);
+  return renderWorkActivityTab(work);
+}
+
+function activateTab(tabName, focus = false) {
+  state.selectedTab = tabName;
+  renderWorkDetail();
+  if (focus) document.querySelector(`[data-tab="${tabName}"]`)?.focus();
+}
+
+function renderWorkDetail() {
+  const work = selectedWorkRecord();
+  if (!work) {
+    state.selectedWork = null;
+    return renderWork();
+  }
+  const detail = state.details[state.selectedWork] || { loading: true, errors: [] };
+  const assignment = DashboardModel.assignmentFor(work, state.overview.swarms);
+  const back = element("button", { className: "back-button", type: "button", text: "← Back to board" });
+  back.addEventListener("click", () => {
+    state.selectedWork = null;
+    state.selectedRevision = null;
+    render();
+  });
+  const tabList = element("div", { className: "detail-tabs", role: "tablist", "aria-label": "Work item detail" }, workTabs.map((tab) => {
+    const button = element("button", {
+      className: `detail-tab${state.selectedTab === tab ? " is-active" : ""}`,
+      type: "button",
+      role: "tab",
+      id: `tab-${tab}`,
+      "data-tab": tab,
+      "aria-controls": "work-tab-panel",
+      "aria-selected": state.selectedTab === tab ? "true" : "false",
+      tabindex: state.selectedTab === tab ? "0" : "-1",
+      text: titleCase(tab),
+    });
+    button.addEventListener("click", () => activateTab(tab));
+    button.addEventListener("keydown", (event) => {
+      const index = workTabs.indexOf(tab);
+      let next = null;
+      if (event.key === "ArrowRight") next = workTabs[(index + 1) % workTabs.length];
+      if (event.key === "ArrowLeft") next = workTabs[(index - 1 + workTabs.length) % workTabs.length];
+      if (event.key === "Home") next = workTabs[0];
+      if (event.key === "End") next = workTabs.at(-1);
+      if (next) {
+        event.preventDefault();
+        activateTab(next, true);
+      }
+    });
+    return button;
+  }));
   replaceContent(
-    viewHeading("06 / Chronicle", "Durable activity", "Loading the governed Activity Ledger."),
-    element("section", { className: "activity-loading", "aria-busy": "true", "aria-label": "Loading activity" }, [
-      ...[0, 1, 2, 3].map(() => element("div", { className: "skeleton-row" }, [element("span"), element("span"), element("span")])),
-    ])
+    back,
+    element("header", { className: "work-detail-header" }, [
+      element("div", {}, [
+        element("p", { className: "mono detail-key", text: DashboardModel.workKey(work) }),
+        element("h2", { text: work.title || work.id }),
+        element("p", { text: work.description || "No durable description is recorded." }),
+      ]),
+      element("div", { className: "detail-status" }, [statusPill(work.state), element("span", { text: `${assignment.actor || "Unassigned"} / ${assignment.role || "No role"} · swarm assignment` })]),
+    ]),
+    detail.errors?.length ? notice("partial", "Partial work detail", detail.errors.join(" ")) : null,
+    tabList,
+    element("section", { id: "work-tab-panel", className: "tab-panel", role: "tabpanel", "aria-labelledby": `tab-${state.selectedTab}`, tabindex: "0" }, [renderWorkTab(work, detail)]),
   );
+  syncChrome();
+}
+
+function renderDataTable(config) {
+  const records = state.overview[config.key] || [];
+  const content = records.length
+    ? recordsTable(config.title, records, config.columns, config.empty)
+    : emptyState(`${config.code}—00`, `No ${config.title.toLowerCase()}`, config.empty);
+  replaceContent(sectionHeading(config.kicker, config.title, config.description), content);
+}
+
+function renderSwarms() {
+  renderDataTable({
+    key: "swarms",
+    code: "SWR",
+    kicker: "03 / Delivery topology",
+    title: "Swarms",
+    description: "Method ownership, branch, status, and durable role assignments.",
+    empty: "No delivery swarms are registered.",
+    columns: [
+      { label: "Swarm", render: (record) => element("strong", { className: "mono", text: record.id }) },
+      { label: "Method", render: (record) => record.method },
+      { label: "Status", render: (record) => statusPill(record.status) },
+      { label: "Objective", render: (record) => record.objective },
+      { label: "Assignments", render: (record) => tags(Object.entries(record.assignments || {}).map(([role, actor]) => `${role}: ${actor}`)) },
+    ],
+  });
+}
+
+function renderActors() {
+  renderDataTable({
+    key: "actors",
+    code: "ACTR",
+    kicker: "04 / Participants",
+    title: "Actors",
+    description: "Identities and capabilities admitted to the selected process.",
+    empty: "No actors are registered.",
+    columns: [
+      { label: "Actor", render: (record) => element("strong", { text: record.name }) },
+      { label: "Reference", render: (record) => element("span", { className: "mono wrap", text: record.reference }) },
+      { label: "Kind", render: (record) => statusPill(record.kind) },
+      { label: "Capabilities", render: (record) => tags(record.capabilities) },
+      { label: "Authentication", render: (record) => record.authentication_required ? "Required" : "Not required" },
+    ],
+  });
+}
+
+function activityFilter(label, field) {
+  const select = element("select", { id: `filter-${field}`, "data-filter": field });
+  select.append(element("option", { value: "", text: `All ${label.toLowerCase()}` }));
+  ActivityModel.options(state.activity?.events || [], field).forEach((value) => select.append(element("option", { value, text: value })));
+  select.value = state.activityFilters[field];
+  select.addEventListener("change", () => {
+    state.activityFilters[field] = select.value;
+    renderActivity();
+  });
+  return element("label", { className: "filter-field" }, [element("span", { text: label }), select]);
 }
 
 function renderActivity() {
   if (state.activityLoading && !state.activity) {
-    renderActivitySkeleton();
-    return;
-  }
-  if (!state.activity && state.activityError) {
-    const retry = element("button", { className: "primary-button", type: "button", text: "Retry" });
-    retry.addEventListener("click", () => loadActivity());
-    replaceContent(
-      viewHeading("06 / Chronicle", "Durable activity", "A chronological account of governed project actions."),
-      element("div", { className: "error-panel", role: "alert" }, [
-        element("p", { className: "section-kicker", text: "Activity read interrupted" }),
-        element("h2", { text: "The project stayed selected." }),
-        element("p", { text: state.activityError }),
-        retry,
-      ])
-    );
-    return;
+    return replaceContent(sectionHeading("05 / Durable log", "Activity", "Loading bounded process events."), loadingRows("Loading activity"));
   }
   if (!state.activity) {
-    replaceContent(
-      viewHeading("06 / Chronicle", "Durable activity", "A chronological account of governed project actions."),
-      element("div", { className: "empty-state compact-empty" }, [
-        element("span", { className: "empty-index", text: "06 / WAITING" }),
-        element("h2", { text: "Activity is ready to load." }),
-        element("button", { className: "primary-button", type: "button", id: "activity-load", text: "Load activity" }),
-      ])
-    );
-    document.querySelector("#activity-load").addEventListener("click", () => loadActivity());
-    return;
+    return replaceContent(sectionHeading("05 / Durable log", "Activity", "A bounded timeline from Agora records."), notice("error", "Activity read failed", state.activityError || "No activity data is available."));
   }
-
-  const events = state.activity.events;
-  const visible = filteredActivity(events);
-  const activeCount = Object.values(state.activityFilters).filter(Boolean).length;
-  const controls = element("div", { className: "filter-grid" });
-  Object.entries(activityFilters).forEach(([key, label]) => {
-    const select = element("select", { id: `activity-filter-${key}`, "data-activity-filter": key });
-    select.append(element("option", { value: "", text: "All" }));
-    activityFilterOptions(events, key).forEach((value) => select.append(element("option", { value, text: value, title: value })));
-    select.value = state.activityFilters[key];
-    select.addEventListener("change", () => {
-      state.activityFilters[key] = select.value;
-      renderActivity();
-      announce(`${filteredActivity(events).length} activity events match the current filters.`);
-    });
-    controls.append(element("label", { className: "filter-field", for: select.id }, [
-      element("span", { text: label }), select,
-    ]));
-  });
-  const clear = element("button", { className: "secondary-button", type: "button", text: "Clear filters" });
-  clear.disabled = activeCount === 0;
-  clear.addEventListener("click", () => {
-    state.activityFilters = Object.fromEntries(Object.keys(activityFilters).map((key) => [key, ""]));
-    renderActivity();
-    announce(`${events.length} activity events visible. Filters cleared.`);
-  });
-
-  const toolbar = element("section", { className: "activity-toolbar", "aria-labelledby": "activity-filter-title" }, [
-    element("div", { className: "toolbar-heading" }, [
-      element("div", {}, [element("h3", { id: "activity-filter-title", text: "Filter the ledger" }), element("p", { text: "Dimensions combine with AND semantics." })]),
-      element("div", { className: "result-summary", "aria-live": "polite" }, [
-        element("strong", { text: `${visible.length} / ${events.length}` }),
-        element("span", { text: `events · ${activeCount} active ${activeCount === 1 ? "filter" : "filters"}` }),
-      ]),
-    ]),
-    controls,
-    element("div", { className: "toolbar-actions" }, [clear]),
-  ]);
-
-  const heading = viewHeading("06 / Chronicle", "Durable activity", "Oldest to newest, attributed to Agora's recorded actors and governed scope.");
-  const children = [heading];
-  if (state.activityError) {
-    const retry = element("button", { className: "secondary-button", type: "button", text: "Retry" });
-    retry.addEventListener("click", () => loadActivity());
-    children.push(element("div", { className: "inline-error", role: "alert" }, [
-      element("span", { text: state.activityError }), retry,
-    ]));
-  }
-  children.push(toolbar);
-  if (state.activity.meta.limit_reached) {
-    children.push(element("p", { className: "bounded-notice", text: `Showing a bounded recent slice of ${state.activity.meta.limit} events; earlier durable activity may exist.` }));
-  }
-  if (!events.length) {
-    children.push(element("div", { className: "empty-state compact-empty" }, [
-      element("span", { className: "empty-index", text: "06 / EMPTY" }),
-      element("h2", { text: "No durable activity yet." }),
-      element("p", { text: "Agora has not recorded Activity Ledger events for this selected project." }),
-    ]));
-  } else if (!visible.length) {
-    const noMatchClear = element("button", { className: "primary-button", type: "button", text: "Clear filters" });
-    noMatchClear.addEventListener("click", () => {
-      state.activityFilters = Object.fromEntries(Object.keys(activityFilters).map((key) => [key, ""]));
-      renderActivity();
-      announce(`${events.length} activity events visible. Filters cleared.`);
-    });
-    children.push(element("div", { className: "no-matches" }, [
-      element("h3", { text: "No loaded events match." }),
-      element("p", { text: "The Activity Ledger is available, but this filter combination has no results." }), noMatchClear,
-    ]));
-  } else {
-    const selected = visible.find((event) => activityKey(event) === state.selectedEvent) || null;
-    if (!selected && state.selectedEvent) state.selectedEvent = null;
-    const timeline = element("ol", { className: "timeline-list", "aria-label": "Durable activity, oldest to newest" });
-    visible.forEach((event, index) => {
-      const key = activityKey(event);
-      const active = key === state.selectedEvent;
-      const button = element("button", {
-        className: `event-button family-${activityFamily(event.type)}${active ? " is-selected" : ""}`,
-        type: "button",
-        "aria-current": active ? "true" : "false",
-        "aria-label": `${event.type}, ${event.timestamp}, ${event.actor || "Unattributed"}`,
-      }, [
-        element("span", { className: "event-index", text: String(index + 1).padStart(2, "0") }),
-        element("span", { className: "event-copy" }, [
-          element("span", { className: "event-head" }, [
-            element("strong", { text: event.type }),
-            element("time", { datetime: event.timestamp, title: event.timestamp, text: localTime(event.timestamp) }),
-          ]),
-          element("span", { className: "event-summary", text: event.summary }),
-          element("span", { className: "event-meta" }, [
-            element("span", { text: event.actor || "Unattributed" }),
-            ...[["swarm", event.swarm_id], ["work", event.work_id], ["session", event.session_id], ["tool", event.tool_run_id]]
-              .filter(([, value]) => value)
-              .map(([label, value]) => element("span", { className: "scope-chip", text: `${label}: ${value}`, title: value })),
-          ]),
-        ]),
-      ]);
-      button.addEventListener("click", () => {
-        state.selectedEvent = key;
-        renderActivity();
-        announce(`${event.type} selected. Event details updated.`);
-      });
-      timeline.append(element("li", { className: "timeline-item" }, [button, ...(active ? [eventDetail(event)] : [])]));
-    });
-    children.push(timeline);
-  }
-  replaceContent(...children);
-}
-
-async function loadActivity(message = "Loading durable activity") {
-  if (!state.overview || state.activityLoading) return;
-  const request = ++state.requestSerial;
-  const projectPath = state.selectionPath;
-  const previousSelection = state.selectedEvent;
-  state.activityLoading = true;
-  state.activityError = "";
-  nodes.refresh.disabled = true;
-  if (!state.activity) renderActivitySkeleton();
-  announce(message);
-  try {
-    const payload = await requestJson("/api/activity?limit=500");
-    if (request !== state.requestSerial || projectPath !== state.selectionPath) return;
-    const ordered = ActivityModel.sortChronologically(payload.events);
-    state.activity = { ...payload, events: ordered };
-    state.selectedEvent = previousSelection && ordered.some((event) => activityKey(event) === previousSelection) ? previousSelection : null;
-    state.activityLoading = false;
-    renderActivity();
-    announce(`${ordered.length} durable activity events loaded in chronological order.${state.selectedEvent ? " The selected event was preserved." : previousSelection ? " The previous selection is no longer available." : ""}`);
-  } catch (error) {
-    if (request !== state.requestSerial || projectPath !== state.selectionPath) return;
-    state.activityError = error.message;
-    state.activityLoading = false;
-    renderActivity();
-    announce(`Activity could not be loaded. ${error.message}`);
-  } finally {
-    if (request === state.requestSerial) {
-      state.activityLoading = false;
-      syncNavigation();
-    }
-  }
-}
-
-function lifecycleWorkPicker() {
-  const select = element("select", { id: "lifecycle-work-select", "aria-label": "Work item" });
-  select.append(element("option", { value: "", text: "Select work…" }));
-  (state.overview.work || []).forEach((work) => {
-    const value = `${work.swarm_id}/${work.id}`;
-    select.append(element("option", { value, text: `${work.title || work.id} · ${work.state}`, title: value }));
-  });
-  select.value = state.lifecycleWork ? `${state.lifecycleWork.swarm_id}/${state.lifecycleWork.id}` : "";
-  select.addEventListener("change", () => {
-    const [swarmId, ...workParts] = select.value.split("/");
-    const workId = workParts.join("/");
-    state.lifecycleWork = (state.overview.work || []).find((item) => item.swarm_id === swarmId && item.id === workId) || null;
-    state.selectedLifecycleItem = null;
-    state.revisionDetails = new Map();
-    if (state.lifecycleWork) loadLifecycle("Loading lifecycle for selected work");
-    else {
-      state.lifecycle = null;
-      renderLifecycle();
-    }
-  });
-  return select;
-}
-
-function renderLifecycleSkeleton() {
+  const events = DashboardModel.recentActivity(ActivityModel.filterEvents(state.activity.events || [], state.activityFilters), 500);
   replaceContent(
-    viewHeading("07 / System map", "Lifecycle", "Loading Method topology, durable path, and specification history."),
-    element("section", { className: "lifecycle-loading", "aria-busy": "true", "aria-label": "Loading lifecycle" }, [
-      element("div", { className: "graph-skeleton" }, [...[0, 1, 2, 3].map(() => element("span"))]),
-    ])
-  );
-}
-
-function lifecycleSelect(kind, item) {
-  state.selectedLifecycleItem = LifecycleModel.itemKey(kind, item);
-  renderLifecycle();
-  announce(`${kind} ${item.id} selected. Lifecycle details updated.`);
-  if (kind === "revision" && !state.revisionDetails.has(item.id)) loadRevisionDetail(item.id);
-}
-
-function keyboardSelect(node, callback) {
-  node.addEventListener("click", callback);
-  node.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      callback();
-    }
-  });
-}
-
-function lifecycleDetail(projection) {
-  const selected = state.selectedLifecycleItem;
-  if (!selected) {
-    return element("aside", { className: "lifecycle-detail", "aria-label": "Lifecycle detail" }, [
-      element("p", { className: "section-kicker", text: "Inspect the map" }),
-      element("h3", { text: "Select a governed record" }),
-      element("p", { className: "muted", text: "Choose a state, transition, annotation, or specification revision. Exact durable relationships appear here without inferred attribution." }),
-    ]);
-  }
-  const [kind, id] = selected.split(/:(.*)/s);
-  const collections = {
-    state: projection.method.states || [], transition: projection.method.transitions || [],
-    annotation: projection.actual_path.annotations || [], revision: projection.specification.revisions || [],
-  };
-  const item = (collections[kind] || []).find((record) => record.id === id);
-  if (!item) {
-    state.selectedLifecycleItem = null;
-    return lifecycleDetail(projection);
-  }
-  let facts;
-  if (kind === "state") facts = [["State", item.id], ["Current", item.current ? "Yes" : "No"], ["Initial", item.initial ? "Yes" : "No"], ["Terminal", item.terminal ? "Yes" : "No"]];
-  else if (kind === "transition") facts = [["From", item.from], ["To", item.to], ["Roles", (item.roles || []).join(", ")], ["Gate", item.gate], ["Availability", item.available ? "Available now" : "Not currently available"]];
-  else if (kind === "annotation") facts = [["Type", item.type], ["Time", item.timestamp], ["Actor", item.actor], ["Session", item.session_id]];
-  else facts = [["Revision", item.short_sha], ["Kind", item.kind], ["Time", item.timestamp], ["Author", item.author], ["Work state", item.work_state], ["Approval", item.approved === false ? "Not approved" : "Not recorded"]];
-  const children = [
-    element("p", { className: "section-kicker", text: `Selected ${kind}` }),
-    element("h3", { className: "wrap-anywhere", text: item.subject || item.summary || item.id }),
-    definitionList(facts, "detail-facts"),
-  ];
-  if (kind === "transition") {
-    const selectedTransition = item;
-    const occurrences = (projection.actual_path.traversals || []).filter((occurrence) => occurrence.from === selectedTransition.from && occurrence.to === selectedTransition.to);
-    if (occurrences.length) children.push(element("section", { className: "related-block", "aria-labelledby": "traversal-detail-title" }, [
-      element("h4", { id: "traversal-detail-title", text: `Durable traversals · ${occurrences.length}` }),
-      element("ul", { className: "related-list" }, occurrences.map((occurrence) => element("li", {}, [
-        element("strong", { text: occurrence.timestamp }),
-        element("span", { text: `${occurrence.actor || "Unattributed"}${occurrence.session_id ? ` · ${occurrence.session_id}` : " · session not recorded"}` }),
-        occurrence.source ? element("a", { href: occurrence.source, className: "source-link mono", text: "Durable source" }) : element("span", { className: "muted", text: "Source not recorded" }),
-      ]))),
-    ]));
-  }
-  if (item.blockers?.length) children.push(element("div", { className: "gate-blockers" }, [element("strong", { text: "Recorded blockers" }), ...item.blockers.map((value) => element("span", { text: value }))]));
-  if (item.source) children.push(element("a", { href: item.source, className: "source-link mono wrap-anywhere", text: item.source }));
-  if (kind === "revision") {
-    const detail = state.revisionDetails.get(item.id);
-    if (detail === "loading") children.push(element("p", { className: "muted", text: "Loading bounded revision detail…" }));
-    else if (detail?.error) children.push(element("p", { className: "inline-error", role: "alert", text: detail.error }));
-    else if (detail?.detail) {
-      children.push(element("div", { className: "revision-summary" }, [
-        element("span", { className: "panel-label", text: `${detail.detail.line_count} diff lines${detail.detail.truncated ? " · truncated" : ""}` }),
-        tags(detail.detail.changed_headings),
-        element("pre", { className: "revision-diff", text: detail.detail.text || "No textual changes are available for this revision." }),
-      ]));
-    }
-  }
-  return element("aside", { className: "lifecycle-detail", "aria-label": "Lifecycle detail" }, children);
-}
-
-function lifecycleGraph(projection) {
-  const layout = LifecycleModel.layout(projection.method, 920);
-  const revisions = projection.specification.revisions || [];
-  const revisionY = layout.height + 58;
-  const graphHeight = layout.height + (state.lifecycleLayers.revisions && revisions.length ? 150 : 20);
-  const width = Math.max(layout.width, state.lifecycleLayers.revisions ? (revisions.length * 120) + 80 : 0);
-  const graph = svgElement("svg", {
-    className: "lifecycle-svg", viewBox: `0 0 ${width} ${graphHeight}`,
-    width: Math.round(width * state.lifecycleScale), height: Math.round(graphHeight * state.lifecycleScale),
-    role: "group", "aria-label": "Method lifecycle and specification evolution graph",
-  });
-  graph.append(svgElement("defs", {}, [svgElement("marker", {
-    id: "graph-arrow", viewBox: "0 0 10 10", refX: "8", refY: "5", markerWidth: "6", markerHeight: "6", orient: "auto-start-reverse",
-  }, [svgElement("path", { d: "M 0 0 L 10 5 L 0 10 z", className: "graph-arrow" })])]));
-  const counts = LifecycleModel.traversalCounts(projection.actual_path.traversals);
-  layout.edges.forEach((edge) => {
-    const used = counts.get(`${edge.from}\u0000${edge.to}`) || 0;
-    if ((!state.lifecycleLayers.topology && !used) || (!state.lifecycleLayers.path && used && !state.lifecycleLayers.topology)) return;
-    const source = layout.positions[edge.from];
-    const target = layout.positions[edge.to];
-    if (!source || !target) return;
-    const x1 = source.x + 58;
-    const x2 = target.x - 58;
-    const pathData = edge.backEdge
-      ? `M ${x1} ${source.y} C ${x1 + 55} ${source.y + 76}, ${x2 - 55} ${target.y + 76}, ${x2} ${target.y}`
-      : `M ${x1} ${source.y} C ${(x1 + x2) / 2} ${source.y}, ${(x1 + x2) / 2} ${target.y}, ${x2} ${target.y}`;
-    const path = svgElement("path", {
-      d: pathData,
-      className: `graph-edge${used && state.lifecycleLayers.path ? " is-traversed" : ""}${edge.available ? " is-available" : ""}${edge.blockers?.length ? " is-blocked" : ""}`,
-      "marker-end": "url(#graph-arrow)",
-      tabindex: "0", role: "button",
-      "aria-label": `${edge.from} to ${edge.to}; ${used ? `traversed ${used} times` : "not traversed"}${edge.blockers?.length ? "; blocked" : ""}`,
-    });
-    keyboardSelect(path, () => lifecycleSelect("transition", edge));
-    graph.append(path);
-    if (used && state.lifecycleLayers.path) graph.append(svgElement("text", { x: (x1 + x2) / 2, y: (source.y + target.y) / 2 - 8, className: "edge-count", text: `×${used}` }));
-  });
-  if (state.lifecycleLayers.topology || state.lifecycleLayers.path) {
-    (projection.method.states || []).forEach((item) => {
-      const position = layout.positions[item.id];
-      const group = svgElement("g", {
-        className: `graph-node${item.current ? " is-current" : ""}${item.initial ? " is-initial" : ""}${item.terminal ? " is-terminal" : ""}`,
-        transform: `translate(${position.x} ${position.y})`, tabindex: "0", role: "button",
-        "aria-label": `${item.id} state${item.current ? ", current" : ""}${item.initial ? ", initial" : ""}${item.terminal ? ", terminal" : ""}`,
-      }, [
-        svgElement("rect", { x: -58, y: -29, width: 116, height: 58, rx: 6 }),
-        svgElement("text", { x: 0, y: 4, "text-anchor": "middle", text: item.id }),
-        ...(item.current ? [svgElement("text", { x: 0, y: 45, "text-anchor": "middle", className: "node-note", text: "CURRENT" })] : []),
-      ]);
-      keyboardSelect(group, () => lifecycleSelect("state", item));
-      graph.append(group);
-    });
-  }
-  if (state.lifecycleLayers.revisions && revisions.length) {
-    graph.append(svgElement("line", { x1: 30, y1: revisionY, x2: width - 30, y2: revisionY, className: "revision-rail" }));
-    revisions.forEach((item, index) => {
-      const x = 65 + index * Math.max(110, (width - 130) / Math.max(1, revisions.length - 1));
-      const group = svgElement("g", {
-        className: `revision-node${item.uncommitted ? " is-working" : ""}`,
-        transform: `translate(${Math.min(x, width - 65)} ${revisionY})`, tabindex: "0", role: "button",
-        "aria-label": `${item.subject}; ${item.uncommitted ? "uncommitted and unapproved" : item.short_sha}`,
-      }, [
-        svgElement(item.uncommitted ? "rect" : "circle", item.uncommitted ? { x: -9, y: -9, width: 18, height: 18 } : { cx: 0, cy: 0, r: 9 }),
-        svgElement("text", { x: 0, y: 28, "text-anchor": "middle", text: item.short_sha }),
-        svgElement("text", { x: 0, y: 47, "text-anchor": "middle", className: "node-note", text: item.work_state || "STATE UNKNOWN" }),
-      ]);
-      keyboardSelect(group, () => lifecycleSelect("revision", item));
-      graph.append(group);
-    });
-  }
-  return element("div", { className: "graph-scroll", tabindex: "0", "aria-label": "Scrollable lifecycle graph" }, [graph]);
-}
-
-function lifecycleTextView(projection) {
-  const section = element("section", { className: "lifecycle-text", "aria-labelledby": "lifecycle-text-title" }, [
-    element("h3", { id: "lifecycle-text-title", text: "Text equivalent" }),
-    element("p", { className: "muted", text: "The same governed states, transitions, and specification revisions in reading order." }),
-  ]);
-  const traversed = LifecycleModel.traversalCounts(projection.actual_path.traversals);
-  const tables = [
-    ["States", ["State", "Markers"], (projection.method.states || []).map((item) => [item.id, [item.initial && "Initial", item.current && "Current", item.terminal && "Terminal"].filter(Boolean).join(", ") || "Declared"])],
-    ["Transitions", ["Transition", "Roles / gate", "Traversal", "Status"], (projection.method.transitions || []).map((item) => [
-      `${item.from} → ${item.to}`, `${(item.roles || []).join(", ") || "Not recorded"}${item.gate ? ` · gate ${item.gate}` : ""}`,
-      `${traversed.get(`${item.from}\u0000${item.to}`) || 0} durable`, item.blockers?.length ? `Blocked: ${item.blockers.join("; ")}` : item.available ? "Available now" : "Allowed",
-    ])],
-    ["Specification revisions", ["Revision", "Author / time", "Work state"], (projection.specification.revisions || []).map((item) => [
-      item.subject || item.short_sha, `${item.author || "Uncommitted"}${item.timestamp ? ` · ${item.timestamp}` : ""}`, item.work_state || "Not recorded",
-    ])],
-  ];
-  tables.forEach(([title, headings, rows]) => {
-    const table = element("table", { className: "compact-table" }, [
-      element("caption", { text: title }),
-      element("thead", {}, [element("tr", {}, headings.map((heading) => element("th", { scope: "col", text: heading })))]),
-      element("tbody", {}, rows.length ? rows.map((row) => element("tr", {}, row.map((value) => element("td", { text: value })))) : [element("tr", {}, [element("td", { colspan: String(headings.length), text: "Unavailable" })])]),
-    ]);
-    section.append(table);
-  });
-  return section;
-}
-
-function lifecycleToolbar(projection) {
-  const toolbar = element("section", { className: "lifecycle-toolbar", "aria-label": "Lifecycle controls" });
-  toolbar.append(element("label", { className: "work-picker" }, [element("span", { text: "Work item" }), lifecycleWorkPicker()]));
-  const layerControls = element("fieldset", { className: "layer-controls" }, [element("legend", { text: "Layers" })]);
-  [["topology", "Method"], ["path", "Actual path"], ["revisions", "Spec revisions"]].forEach(([key, label]) => {
-    const input = element("input", { type: "checkbox", id: `layer-${key}` });
-    input.checked = state.lifecycleLayers[key];
-    input.addEventListener("change", () => { state.lifecycleLayers[key] = input.checked; renderLifecycle(); });
-    layerControls.append(element("label", { for: input.id }, [input, element("span", { text: label })]));
-  });
-  toolbar.append(layerControls);
-  const fit = element("button", { className: "secondary-button", type: "button", text: "Fit graph" });
-  fit.addEventListener("click", () => { state.lifecycleScale = .82; renderLifecycle(); announce("Lifecycle graph fitted to the work surface."); });
-  const reset = element("button", { className: "secondary-button", type: "button", text: "Reset view" });
-  reset.addEventListener("click", () => { state.lifecycleScale = 1; renderLifecycle(); announce("Lifecycle graph view reset."); });
-  toolbar.append(element("div", { className: "graph-actions" }, [fit, reset]));
-  return toolbar;
-}
-
-function renderLifecycle() {
-  if (state.lifecycleLoading && !state.lifecycle) return renderLifecycleSkeleton();
-  const heading = viewHeading("07 / System map", "Lifecycle", "Allowed topology, traversed history, and Git-backed specification evolution for one work item.");
-  if (!state.lifecycleWork) {
-    replaceContent(heading, element("div", { className: "empty-state compact-empty" }, [
-      element("span", { className: "empty-index", text: "07 / SELECT" }),
-      element("h2", { text: "Choose work to map." }),
-      element("p", { text: "Lifecycle reads stay bounded to one exact swarm and work item." }),
-      element("label", { className: "standalone-work-picker" }, [element("span", { className: "panel-label", text: "Work item" }), lifecycleWorkPicker()]),
-    ]));
-    return;
-  }
-  if (!state.lifecycle && state.lifecycleError) {
-    const retry = element("button", { className: "primary-button", type: "button", text: "Retry" });
-    retry.addEventListener("click", () => loadLifecycle());
-    replaceContent(heading, element("div", { className: "error-panel", role: "alert" }, [element("h2", { text: "The last project read stayed intact." }), element("p", { text: state.lifecycleError }), retry]));
-    return;
-  }
-  if (!state.lifecycle) return renderLifecycleSkeleton();
-  const projection = state.lifecycle;
-  if (!LifecycleModel.selectionExists(projection, state.selectedLifecycleItem)) state.selectedLifecycleItem = null;
-  const children = [heading];
-  if (state.lifecycleError) {
-    const retry = element("button", { className: "secondary-button", type: "button", text: "Retry" });
-    retry.addEventListener("click", () => loadLifecycle());
-    children.push(element("div", { className: "inline-error", role: "alert" }, [element("span", { text: state.lifecycleError }), retry]));
-  }
-  children.push(lifecycleToolbar(projection));
-  if (projection.diagnostics?.length) children.push(element("div", { className: "partial-notice", role: "status" }, [element("strong", { text: "Verified partial view" }), ...projection.diagnostics.map((item) => element("span", { text: item }))]));
-  if (!projection.method.available) {
-    children.push(element("div", { className: "no-matches" }, [element("h3", { text: "Method topology is unavailable." }), element("p", { text: "The durable work state remains visible in the text summary without a guessed graph." })]));
-  }
-  children.push(element("div", { className: "lifecycle-workspace" }, [
-    element("section", { className: "graph-surface", "aria-label": "Lifecycle map" }, [lifecycleGraph(projection)]),
-    lifecycleDetail(projection),
-  ]));
-  if (projection.actual_path.annotations?.length) children.push(element("section", { className: "annotation-strip", "aria-labelledby": "annotations-title" }, [
-    element("h3", { id: "annotations-title", text: "Path annotations" }),
-    ...projection.actual_path.annotations.map((item) => {
-      const button = element("button", { type: "button", className: "annotation-button", text: `${item.type} · ${item.summary}` });
-      button.addEventListener("click", () => lifecycleSelect("annotation", item));
-      return button;
-    }),
-  ]));
-  children.push(lifecycleTextView(projection));
-  replaceContent(...children);
-}
-
-async function loadLifecycle(message = "Loading lifecycle") {
-  if (!state.lifecycleWork || state.lifecycleLoading) return;
-  const request = ++state.requestSerial;
-  const projectPath = state.selectionPath;
-  const scope = `${state.lifecycleWork.swarm_id}/${state.lifecycleWork.id}`;
-  state.lifecycleLoading = true;
-  state.lifecycleError = "";
-  nodes.refresh.disabled = true;
-  if (!state.lifecycle) renderLifecycleSkeleton();
-  announce(message);
-  try {
-    const query = `swarm=${encodeURIComponent(state.lifecycleWork.swarm_id)}&work=${encodeURIComponent(state.lifecycleWork.id)}`;
-    const payload = await requestJson(`/api/lifecycle?${query}`);
-    if (request !== state.requestSerial || projectPath !== state.selectionPath || scope !== `${state.lifecycleWork?.swarm_id}/${state.lifecycleWork?.id}`) return;
-    state.lifecycle = payload;
-    state.lifecycleLoading = false;
-    renderLifecycle();
-    announce(`Lifecycle loaded for ${scope}.${payload.availability.partial ? " Some layers are explicitly unavailable." : ""}`);
-  } catch (error) {
-    if (request !== state.requestSerial || projectPath !== state.selectionPath) return;
-    state.lifecycleError = error.message;
-    state.lifecycleLoading = false;
-    renderLifecycle();
-    announce(`Lifecycle could not be loaded. ${error.message}`);
-  } finally {
-    if (request === state.requestSerial) {
-      state.lifecycleLoading = false;
-      syncNavigation();
-    }
-  }
-}
-
-async function loadRevisionDetail(revision) {
-  if (!state.lifecycleWork || state.revisionDetails.has(revision)) return;
-  const request = state.requestSerial;
-  const projectPath = state.selectionPath;
-  state.revisionDetails.set(revision, "loading");
-  renderLifecycle();
-  try {
-    const query = `swarm=${encodeURIComponent(state.lifecycleWork.swarm_id)}&work=${encodeURIComponent(state.lifecycleWork.id)}&revision=${encodeURIComponent(revision)}`;
-    const payload = await requestJson(`/api/lifecycle/revision?${query}`);
-    if (request !== state.requestSerial || projectPath !== state.selectionPath) return;
-    state.revisionDetails.set(revision, payload);
-  } catch (error) {
-    if (request !== state.requestSerial || projectPath !== state.selectionPath) return;
-    state.revisionDetails.set(revision, { error: error.message });
-  }
-  renderLifecycle();
-}
-
-function artifactsWorkPicker() {
-  const select = element("select", { id: "artifacts-work-select", "aria-label": "Work item" });
-  select.append(element("option", { value: "", text: "Select work…" }));
-  (state.overview.work || []).forEach((work) => {
-    const value = `${work.swarm_id}/${work.id}`;
-    select.append(element("option", { value, text: `${work.title || work.id} · ${work.state}`, title: value }));
-  });
-  select.value = state.artifactsWork ? `${state.artifactsWork.swarm_id}/${state.artifactsWork.id}` : "";
-  select.addEventListener("change", () => {
-    const [swarmId, ...workParts] = select.value.split("/");
-    const workId = workParts.join("/");
-    state.artifactsWork = (state.overview.work || []).find((item) => item.swarm_id === swarmId && item.id === workId) || null;
-    state.selectedArtifactsItem = null;
-    if (state.artifactsWork) loadArtifacts("Loading artifacts for selected work");
-    else {
-      state.artifacts = null;
-      renderArtifacts();
-    }
-  });
-  return select;
-}
-
-function renderArtifactsSkeleton() {
-  replaceContent(
-    viewHeading("08 / Provenance", "Artifacts", "Loading durable artifacts, evidence, and approvals."),
-    element("section", { className: "activity-loading", "aria-busy": "true", "aria-label": "Loading artifacts" }, [
-      ...[0, 1, 2].map(() => element("div", { className: "skeleton-row" }, [element("span"), element("span"), element("span")])),
-    ])
-  );
-}
-
-function traceabilityNote(item) {
-  if (!ArtifactsModel.hasTraceability(item)) {
-    return element("span", { className: "muted", text: "No linked session or tool run is recorded." });
-  }
-  const trace = item.traceability;
-  return element("div", { className: "trace-note" }, [
-    trace.session_id ? element("span", { text: `Session: ${trace.session_id}` }) : null,
-    trace.tool_run_id ? element("span", { text: `Tool run: ${trace.tool_run_id}` }) : null,
-  ].filter(Boolean));
-}
-
-function artifactsDetail(projection) {
-  const found = ArtifactsModel.findSelected(projection, state.selectedArtifactsItem);
-  if (!found) {
-    return element("aside", { className: "lifecycle-detail", "aria-label": "Artifacts detail" }, [
-      element("p", { className: "section-kicker", text: "Inspect a record" }),
-      element("h3", { text: "Select an artifact, evidence, or approval record" }),
-      element("p", { className: "muted", text: "Full identifiers and, when a durable Agora record establishes it, the originating session or tool run appear here." }),
-    ]);
-  }
-  const { kind, item } = found;
-  let facts;
-  if (kind === "artifact") facts = [["Kind", item.kind], ["URI", item.uri], ["Produced by", item.produced_by], ["Timestamp", item.timestamp]];
-  else if (kind === "evidence") facts = [["Type", item.type], ["Result", item.result], ["Produced by", item.produced_by], ["Timestamp", item.timestamp]];
-  else facts = [["Role", item.role], ["Approved by", item.approved_by], ["Note", item.note], ["Timestamp", item.timestamp]];
-  const children = [
-    element("p", { className: "section-kicker", text: `Selected ${kind}` }),
-    element("h3", { className: "wrap-anywhere", text: item.kind || item.type || item.role }),
-    definitionList(facts, "detail-facts"),
-  ];
-  if (kind === "evidence" && item.artifact_references?.length) {
-    children.push(element("div", { className: "related-block" }, [
-      element("h4", { text: "Artifact references" }),
-      tags(item.artifact_references),
-    ]));
-  }
-  children.push(element("div", { className: "related-block" }, [
-    element("h4", { text: "Traceability" }),
-    traceabilityNote(item),
-  ]));
-  return element("aside", { className: "lifecycle-detail", "aria-label": "Artifacts detail" }, children);
-}
-
-function artifactsSelect(kind, item) {
-  state.selectedArtifactsItem = ArtifactsModel.itemKey(kind, item);
-  renderArtifacts();
-  announce(`${kind} ${item.id} selected. Details updated.`);
-}
-
-function recordButton(kind, item, label, meta, index = 0) {
-  const active = state.selectedArtifactsItem === ArtifactsModel.itemKey(kind, item);
-  const button = element("button", {
-    className: `event-button family-${kind}${active ? " is-selected" : ""}`,
-    type: "button",
-    "aria-current": active ? "true" : "false",
-    "aria-label": `${label}. ${meta}`,
-  }, [
-    element("span", { className: "event-index", text: String(index + 1).padStart(2, "0") }),
-    element("span", { className: "event-copy" }, [
-      element("span", { className: "event-head" }, [element("strong", { text: label })]),
-      element("span", { className: "event-meta", text: meta }),
+    sectionHeading("05 / Durable log", "Activity", "Filterable, bounded events with exact durable work and actor references."),
+    element("section", { className: "activity-toolbar", "aria-label": "Activity filters" }, [
+      activityFilter("Event type", "type"),
+      activityFilter("Actor", "actor"),
+      activityFilter("Swarm", "swarm_id"),
+      element("div", { className: "filter-result" }, [element("strong", { text: events.length }), element("span", { text: "events" })]),
     ]),
-  ]);
-  keyboardSelect(button, () => artifactsSelect(kind, item));
-  return button;
-}
-
-function renderArtifactsSection(title, description, emptyMessage, items, rowBuilder) {
-  const body = items.length
-    ? element("ol", { className: "timeline-list", "aria-label": title }, items.map((item, index) => element("li", { className: "timeline-item" }, [rowBuilder(item, index)])))
-    : element("p", { className: "empty-table", text: emptyMessage });
-  return element("section", { className: "panel", "aria-label": title }, [
-    element("h3", { text: title }),
-    element("p", { className: "muted", text: description }),
-    body,
-  ]);
-}
-
-function renderApprovalsSection(projection) {
-  const satisfaction = projection.approvals.satisfaction;
-  const records = projection.approvals.records;
-  if (!satisfaction.length) {
-    return element("section", { className: "panel", "aria-label": "Approvals" }, [
-      element("h3", { text: "Approvals" }),
-      element("p", { className: "empty-table", text: "No approval roles are required for this work item." }),
-    ]);
-  }
-  const list = element("ol", { className: "timeline-list", "aria-label": "Required approval roles" });
-  satisfaction.forEach(({ role, satisfied }, index) => {
-    const record = records.find((item) => item.role === role);
-    const label = `${satisfied ? "✓ Satisfied" : "○ Missing"} · ${role}`;
-    if (record) {
-      list.append(element("li", { className: "timeline-item" }, [
-        recordButton("approval", record, label, `${record.approved_by} · ${record.timestamp}`, index),
-      ]));
-    } else {
-      list.append(element("li", { className: "timeline-item" }, [
-        element("div", { className: "event-button family-approval is-unsatisfied", role: "text", "aria-label": label }, [
-          element("span", { className: "event-index", text: String(index + 1).padStart(2, "0") }),
-          element("span", { className: "event-copy" }, [element("span", { className: "event-head" }, [element("strong", { text: label })]), element("span", { className: "event-meta", text: "No approval record yet" })]),
-        ]),
-      ]));
-    }
-  });
-  return element("section", { className: "panel", "aria-label": "Approvals" }, [
-    element("h3", { text: "Approvals" }),
-    element("p", { className: "muted", text: "Required roles and their durable satisfaction state." }),
-    list,
-  ]);
-}
-
-function renderArtifacts() {
-  if (state.artifactsLoading && !state.artifacts) return renderArtifactsSkeleton();
-  const heading = viewHeading("08 / Provenance", "Artifacts", "Registered artifacts, evidence, and required approvals for one selected work item.");
-  if (!state.artifactsWork) {
-    replaceContent(heading, element("div", { className: "empty-state compact-empty" }, [
-      element("span", { className: "empty-index", text: "08 / SELECT" }),
-      element("h2", { text: "Choose work to inspect." }),
-      element("p", { text: "Artifacts, evidence, and approvals stay bounded to one exact swarm and work item." }),
-      element("label", { className: "standalone-work-picker" }, [element("span", { className: "panel-label", text: "Work item" }), artifactsWorkPicker()]),
-    ]));
-    return;
-  }
-  if (!state.artifacts && state.artifactsError) {
-    const retry = element("button", { className: "primary-button", type: "button", text: "Retry" });
-    retry.addEventListener("click", () => loadArtifacts());
-    replaceContent(heading, element("div", { className: "error-panel", role: "alert" }, [element("h2", { text: "The last project read stayed intact." }), element("p", { text: state.artifactsError }), retry]));
-    return;
-  }
-  if (!state.artifacts) return renderArtifactsSkeleton();
-  const projection = state.artifacts;
-  if (!ArtifactsModel.selectionExists(projection, state.selectedArtifactsItem)) state.selectedArtifactsItem = null;
-  const children = [heading];
-  if (state.artifactsError) {
-    const retry = element("button", { className: "secondary-button", type: "button", text: "Retry" });
-    retry.addEventListener("click", () => loadArtifacts());
-    children.push(element("div", { className: "inline-error", role: "alert" }, [element("span", { text: state.artifactsError }), retry]));
-  }
-  children.push(element("section", { className: "lifecycle-toolbar", "aria-label": "Artifacts controls" }, [
-    element("label", { className: "work-picker" }, [element("span", { text: "Work item" }), artifactsWorkPicker()]),
-  ]));
-  if (projection.diagnostics?.length) children.push(element("div", { className: "partial-notice", role: "status" }, [element("strong", { text: "Verified partial view" }), ...projection.diagnostics.map((item) => element("span", { text: item }))]));
-
-  const artifactsSection = renderArtifactsSection(
-    "Artifacts", "Every artifact registered durably for this work item.", "No artifacts are registered for this work item.",
-    projection.artifacts, (item, index) => recordButton("artifact", item, item.kind, `${item.uri} · ${item.produced_by}`, index)
+    events.length
+      ? element("section", { className: "activity-panel" }, [renderActivityRows(events)])
+      : emptyState("ACT—00", "No matching activity", "Clear one or more filters to expand the result."),
   );
-  const evidenceSection = renderArtifactsSection(
-    "Evidence", "Every evidence record registered durably for this work item.", "No evidence has been recorded for this work item.",
-    projection.evidence, (item, index) => recordButton("evidence", item, `${item.result === "success" ? "✓" : "✗"} ${item.type}`, `${item.result} · ${item.produced_by}`, index)
-  );
-  const approvalsSection = renderApprovalsSection(projection);
-
-  children.push(element("div", { className: "lifecycle-workspace" }, [
-    element("div", { className: "artifacts-panels" }, [artifactsSection, evidenceSection, approvalsSection]),
-    artifactsDetail(projection),
-  ]));
-  replaceContent(...children);
 }
 
-async function loadArtifacts(message = "Loading artifacts") {
-  if (!state.artifactsWork || state.artifactsLoading) return;
-  const request = ++state.requestSerial;
-  const projectPath = state.selectionPath;
-  const scope = `${state.artifactsWork.swarm_id}/${state.artifactsWork.id}`;
-  state.artifactsLoading = true;
-  state.artifactsError = "";
-  nodes.refresh.disabled = true;
-  if (!state.artifacts) renderArtifactsSkeleton();
-  announce(message);
-  try {
-    const query = `swarm=${encodeURIComponent(state.artifactsWork.swarm_id)}&work=${encodeURIComponent(state.artifactsWork.id)}`;
-    const payload = await requestJson(`/api/artifacts?${query}`);
-    if (request !== state.requestSerial || projectPath !== state.selectionPath || scope !== `${state.artifactsWork?.swarm_id}/${state.artifactsWork?.id}`) return;
-    state.artifacts = payload;
-    state.artifactsLoading = false;
-    renderArtifacts();
-    announce(`Artifacts loaded for ${scope}: ${payload.artifacts.length} artifacts, ${payload.evidence.length} evidence records, ${payload.approvals.satisfaction.length} required approval roles.`);
-  } catch (error) {
-    if (request !== state.requestSerial || projectPath !== state.selectionPath) return;
-    state.artifactsError = error.message;
-    state.artifactsLoading = false;
-    renderArtifacts();
-    announce(`Artifacts could not be loaded. ${error.message}`);
-  } finally {
-    if (request === state.requestSerial) {
-      state.artifactsLoading = false;
-      syncNavigation();
-    }
-  }
+function renderActivityRows(events) {
+  return element("ol", { className: "activity-list full-activity" }, events.map((event) => element("li", { className: "activity-row" }, [
+    element("span", { className: `event-mark family-${String(event.type || "other").split(".")[0]}`, "aria-hidden": "true" }),
+    element("div", { className: "activity-copy" }, [
+      element("div", { className: "activity-head" }, [element("strong", { className: "mono", text: event.type }), element("time", { datetime: event.timestamp, text: formatTime(event.timestamp) })]),
+      element("p", { text: event.summary }),
+      element("span", { className: "activity-scope", text: [event.actor, event.swarm_id, event.work_id, event.session_id].filter(Boolean).join(" / ") || "Project event" }),
+    ]),
+  ])));
 }
 
 function render() {
-  nodes.title.textContent = viewNames[state.view];
-  syncNavigation();
+  syncChrome();
+  if (!state.overview) return;
   if (state.view === "overview") renderOverview();
-  else if (state.view === "activity") renderActivity();
-  else if (state.view === "lifecycle") renderLifecycle();
-  else if (state.view === "artifacts") renderArtifacts();
-  else renderTable(tableViews[state.view]);
+  else if (state.view === "work") renderWork();
+  else if (state.view === "swarms") renderSwarms();
+  else if (state.view === "actors") renderActors();
+  else renderActivity();
 }
 
-function renderFailure(message) {
-  replaceContent(element("div", { className: "error-panel" }, [
-    element("p", { className: "section-kicker", text: "Read interrupted" }),
-    element("h2", { text: "The project stayed selected." }),
-    element("p", { text: message }),
-    element("p", { className: "muted", text: "Check the project's Agora records, then refresh or select another path." }),
-  ]));
+function renderFatal(message) {
+  replaceContent(
+    sectionHeading("Read interrupted", "The project stayed selected", "No local records were changed."),
+    notice("error", "Studio could not build the control view", message),
+  );
 }
 
-async function loadOverview(message = "Loading project data") {
-  setLoading(true, message);
+function switchView(view) {
+  state.view = view;
+  state.selectedWork = null;
+  state.selectedRevision = null;
+  render();
+  document.querySelector("#main-content").focus({ preventScroll: true });
+  announce(`${viewNames[view]} is visible.`);
+  if (view === "activity" && !state.activity) loadActivity();
+}
+
+function openWork(work) {
+  state.view = "work";
+  state.selectedWork = DashboardModel.workKey(work);
+  state.selectedTab = "summary";
+  state.selectedRevision = null;
+  render();
+  ensureWorkDetail(work);
+  if (!state.activity) loadActivity();
+  document.querySelector("#main-content").focus({ preventScroll: true });
+  announce(`${work.title || work.id} detail is visible.`);
+}
+
+async function loadActivity(message = "Loading durable activity") {
+  if (state.activityLoading || !state.overview) return;
+  const generation = state.generation;
+  state.activityLoading = true;
+  state.activityError = "";
+  if (state.view === "activity" || state.view === "overview" || state.selectedTab === "activity") render();
+  announce(message);
   try {
-    const overview = await requestJson("/api/overview");
+    const activity = await requestJson(`${API_ROOT}/activity?limit=500`);
+    if (generation !== state.generation) return;
+    state.activity = activity;
+  } catch (error) {
+    if (generation !== state.generation) return;
+    state.activityError = error.message;
+  } finally {
+    if (generation !== state.generation) return;
+    state.activityLoading = false;
+    if (["overview", "activity"].includes(state.view) || state.selectedTab === "activity") render();
+  }
+}
+
+async function ensureWorkDetail(work) {
+  const key = DashboardModel.workKey(work);
+  if (state.detailRequests.has(key)) return state.detailRequests.get(key);
+  if (state.details[key] && !state.details[key].loading) return state.details[key];
+  const generation = state.generation;
+  const request = (async () => {
+    state.details[key] = { loading: true, lifecycle: null, artifacts: null, errors: [] };
+    if (state.view === "work" || state.view === "overview") render();
+    const query = `swarm=${encodeURIComponent(work.swarm_id)}&work=${encodeURIComponent(work.id)}`;
+    const [lifecycle, artifacts] = await Promise.allSettled([
+      requestJson(`${API_ROOT}/lifecycle?${query}`),
+      requestJson(`${API_ROOT}/artifacts?${query}`),
+    ]);
+    if (generation !== state.generation) return null;
+    const errors = [];
+    if (lifecycle.status === "rejected") errors.push(`Lifecycle: ${lifecycle.reason.message}`);
+    if (artifacts.status === "rejected") errors.push(`Provenance: ${artifacts.reason.message}`);
+    state.details[key] = {
+      loading: false,
+      lifecycle: lifecycle.status === "fulfilled" ? lifecycle.value : null,
+      artifacts: artifacts.status === "fulfilled" ? artifacts.value : null,
+      errors,
+    };
+    if (state.view === "work" || state.view === "overview") render();
+    return state.details[key];
+  })();
+  state.detailRequests.set(key, request);
+  return request;
+}
+
+async function enrichWork() {
+  const work = state.overview.work || [];
+  if (!work.length) return;
+  const generation = state.generation;
+  state.enrichmentLoading = true;
+  render();
+  let cursor = 0;
+  const worker = async () => {
+    while (cursor < work.length && generation === state.generation) {
+      const item = work[cursor];
+      cursor += 1;
+      await ensureWorkDetail(item);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(4, work.length) }, worker));
+  if (generation !== state.generation) return;
+  state.enrichmentLoading = false;
+  render();
+  announce("Gate, evidence, and approval state loaded for the work board.");
+}
+
+async function loadRevision(work, revision) {
+  const generation = state.generation;
+  state.selectedRevision = revision;
+  const key = `${DashboardModel.workKey(work)}:${revision}`;
+  if (state.revisionDetails.has(key)) return renderWorkDetail();
+  state.revisionDetails.set(key, "loading");
+  renderWorkDetail();
+  const query = `swarm=${encodeURIComponent(work.swarm_id)}&work=${encodeURIComponent(work.id)}&revision=${encodeURIComponent(revision)}`;
+  try {
+    const detail = await requestJson(`${API_ROOT}/lifecycle/revision?${query}`);
+    if (generation !== state.generation) return;
+    state.revisionDetails.set(key, detail);
+  } catch (error) {
+    if (generation !== state.generation) return;
+    state.revisionDetails.set(key, { error: error.message });
+  }
+  if (generation !== state.generation) return;
+  renderWorkDetail();
+}
+
+async function loadOverview(message = "Loading process status") {
+  setLoading(true, message);
+  nodes.content.setAttribute("aria-busy", "true");
+  try {
+    const overview = await requestJson(`${API_ROOT}/overview`);
     state.overview = overview;
     setSelection(overview.selection);
     render();
     nodes.error.textContent = "";
     nodes.input.removeAttribute("aria-invalid");
-    announce(`${overview.selection.project} loaded. ${viewNames[state.view]} is visible.`);
-    if (state.view === "activity" && !state.activity) await loadActivity("Project selected. Loading durable activity");
-    if (state.view === "lifecycle" && state.lifecycleWork && !state.lifecycle) await loadLifecycle("Project selected. Loading lifecycle");
-    if (state.view === "artifacts" && state.artifactsWork && !state.artifacts) await loadArtifacts("Project selected. Loading artifacts");
+    announce(`${overview.selection.project} loaded. Process overview is visible.`);
+    loadActivity();
+    enrichWork();
   } catch (error) {
-    renderFailure(error.message);
+    renderFatal(error.message);
     announce(`Project data could not be loaded. ${error.message}`);
   } finally {
     setLoading(false);
-    syncNavigation();
+    syncChrome();
   }
 }
 
@@ -1167,13 +1040,15 @@ nodes.form.addEventListener("submit", async (event) => {
   nodes.input.removeAttribute("aria-invalid");
   setLoading(true, "Validating project path");
   try {
-    const payload = await requestJson("/api/projects/select", {
+    const payload = await requestJson(`${API_ROOT}/projects/select`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: nodes.input.value }),
     });
+    resetProjectData();
     setSelection(payload.project);
-    await loadOverview("Project selected. Loading durable state");
+    state.view = "overview";
+    await loadOverview("Project selected. Loading process status");
   } catch (error) {
     nodes.error.textContent = error.message;
     nodes.input.setAttribute("aria-invalid", "true");
@@ -1184,25 +1059,17 @@ nodes.form.addEventListener("submit", async (event) => {
 });
 
 nodes.refresh.addEventListener("click", () => {
-  if (state.view === "activity") loadActivity("Refreshing durable activity");
-  else if (state.view === "lifecycle" && state.lifecycleWork) loadLifecycle("Refreshing lifecycle");
-  else if (state.view === "artifacts" && state.artifactsWork) loadArtifacts("Refreshing artifacts");
-  else loadOverview("Refreshing project data");
+  resetProjectData();
+  loadOverview("Refreshing verified process status");
 });
-nodes.nav.forEach((button) => button.addEventListener("click", async () => {
-  if (!state.overview) return;
-  state.view = button.dataset.view;
-  render();
-  document.querySelector("#main-content").focus({ preventScroll: true });
-  announce(`${viewNames[state.view]} is visible.`);
-  if (state.view === "activity" && !state.activity) await loadActivity();
-  if (state.view === "lifecycle" && state.lifecycleWork && !state.lifecycle) await loadLifecycle();
-  if (state.view === "artifacts" && state.artifactsWork && !state.artifacts) await loadArtifacts();
+
+nodes.nav.forEach((button) => button.addEventListener("click", () => {
+  if (state.overview) switchView(button.dataset.view);
 }));
 
 (async function restoreSelection() {
   try {
-    const payload = await requestJson("/api/project");
+    const payload = await requestJson(`${API_ROOT}/project`);
     if (payload.project) {
       setSelection(payload.project);
       await loadOverview("Restoring selected project");
@@ -1210,4 +1077,4 @@ nodes.nav.forEach((button) => button.addEventListener("click", async () => {
   } catch (error) {
     announce(`Studio could not restore the project selection. ${error.message}`);
   }
-})();
+}());

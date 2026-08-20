@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import hashlib
 import json
-from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from pathlib import Path
 
 from agora_studio.core import AgoraCliBoundary, ProjectStore
 from agora_studio.server import handle_api, static_response
@@ -39,7 +39,9 @@ class ActivityRunner:
     def __call__(self, command: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
         self.calls.append((command, kwargs))
         if command[-1] == "status":
-            return subprocess.CompletedProcess(command, 0, json.dumps({"project": "activity-test"}), "")
+            return subprocess.CompletedProcess(
+                command, 0, json.dumps({"project": "activity-test"}), ""
+            )
         stdout = json.dumps(self.events) if self.returncode == 0 else ""
         return subprocess.CompletedProcess(command, self.returncode, stdout, self.stderr)
 
@@ -53,23 +55,40 @@ class ActivityBoundaryTests(unittest.TestCase):
             project = make_project(Path(directory), "activity-test")
             store.select(str(project))
             runner.calls.clear()
-            result = store.activity({
-                "type": "work.transitioned",
-                "actor": "project:agent",
-                "swarm": "studio",
-                "work": "timeline",
-                "session": "run-1",
-                "tool_run": "tool-1",
-                "limit": "25",
-            })
+            result = store.activity(
+                {
+                    "type": "work.transitioned",
+                    "actor": "project:agent",
+                    "swarm": "studio",
+                    "work": "timeline",
+                    "session": "run-1",
+                    "tool_run": "tool-1",
+                    "limit": "25",
+                }
+            )
 
         command, kwargs = runner.calls[0]
         self.assertEqual(
             [
-                "agora", "--project", str(project.resolve()), "activity", "list",
-                "--type", "work.transitioned", "--actor", "project:agent",
-                "--swarm", "studio", "--work", "timeline", "--session", "run-1",
-                "--tool-run", "tool-1", "--limit", "25",
+                "agora",
+                "--project",
+                str(project.resolve()),
+                "activity",
+                "list",
+                "--type",
+                "work.transitioned",
+                "--actor",
+                "project:agent",
+                "--swarm",
+                "studio",
+                "--work",
+                "timeline",
+                "--session",
+                "run-1",
+                "--tool-run",
+                "tool-1",
+                "--limit",
+                "25",
             ],
             command,
         )
@@ -132,7 +151,9 @@ class ActivityApiTests(unittest.TestCase):
             runner = ActivityRunner(records)
             store = ProjectStore(AgoraCliBoundary(runner=runner))
             selected = store.select(str(make_project(Path(directory), "activity-test")))
-            status, payload = handle_api(store, "GET", "/api/activity", query={"actor": "All", "limit": "2"})
+            status, payload = handle_api(
+                store, "GET", "/api/activity", query={"actor": "All", "limit": "2"}
+            )
 
         self.assertEqual(200, status)
         self.assertEqual(selected.as_dict(), payload["selection"])
@@ -197,7 +218,12 @@ class ActivityUiContractTests(unittest.TestCase):
             event(timestamp="2026-08-17T12:02:00Z", type="evidence.added", summary="right"),
             event(timestamp="2026-08-17T12:01:00Z", actor="project:owner", summary="oldest"),
             event(timestamp="2026-08-17T12:02:00Z", type="artifact.added", summary="tie second"),
-            event(timestamp="2026-08-17T12:03:00Z", work_id="other", type="evidence.added", summary="wrong work"),
+            event(
+                timestamp="2026-08-17T12:03:00Z",
+                work_id="other",
+                type="evidence.added",
+                summary="wrong work",
+            ),
         ]
         script = f"""
 require({json.dumps(str(model))});
@@ -230,12 +256,19 @@ process.stdout.write(JSON.stringify({{
         self.assertTrue(body)
         self.assertIn('data-view="activity"', html)
         for contract in (
-            "activityFilters", "tool_run_id", "aria-current", "aria-live", "href: event.source",
-            "limit_reached", "requestSerial", "activity-loading", "Clear filters",
+            "activityFilters",
+            "renderActivity",
+            "ActivityModel.filterEvents",
+            "ActivityModel.options",
+            "activityLoading",
+            "emptyState",
+            "loadingRows",
+            "activityError",
         ):
             self.assertIn(contract, javascript)
-        self.assertIn("grid-template-columns: minmax(0, 1fr) minmax(290px, .78fr)", css)
-        self.assertIn("@media (max-width: 480px)", css)
+        self.assertIn('aria-live="polite"', html)
+        self.assertIn("grid-template-columns: repeat(3, minmax(160px, 1fr)) auto", css)
+        self.assertIn("@media (max-width: 460px)", css)
         self.assertIn("@media (prefers-reduced-motion: reduce)", css)
         self.assertNotIn("innerHTML", javascript)
 

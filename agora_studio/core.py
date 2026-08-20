@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
-from pathlib import Path
 import subprocess
+import unicodedata
+from dataclasses import dataclass
+from pathlib import Path
 from threading import Lock
 from typing import Callable, Mapping, Sequence
-import unicodedata
 
 
 @dataclass(frozen=True)
@@ -69,6 +69,24 @@ ACTIVITY_FIELDS = (
     "path",
 )
 
+# This is deliberately a minimum rendering contract, not a negotiated Agora Core version.
+_OVERVIEW_FIELDS: Mapping[str, Mapping[str, type[object]]] = {
+    "status": {
+        "project": str,
+        "branch": str,
+        "default_method": str,
+        "integration": str,
+        "counts": dict,
+        "swarm_statuses": dict,
+        "work_states": dict,
+        "attention": dict,
+    },
+    "actors": {"name": str, "reference": str, "kind": str},
+    "swarms": {"id": str, "status": str, "assignments": dict},
+    "work": {"id": str, "swarm_id": str, "state": str},
+    "sessions": {"id": str, "status": str},
+}
+
 _ACTIVITY_FLAGS = {
     "type": "--type",
     "actor": "--actor",
@@ -116,6 +134,29 @@ def normalize_activity_query(query: Mapping[str, object] | None) -> ActivityQuer
 
 
 Runner = Callable[..., subprocess.CompletedProcess[str]]
+
+
+def validate_overview_compatibility(snapshot: Mapping[str, object], project_path: Path) -> None:
+    """Fail closed when the unversioned Agora CLI JSON cannot render the current overview."""
+    for operation, fields in _OVERVIEW_FIELDS.items():
+        result = snapshot.get(operation)
+        records = [result] if operation == "status" else result
+        if not isinstance(records, list):
+            raise SelectionError(
+                operation,
+                project_path,
+                "the Agora CLI result does not match Studio's minimum compatibility shape",
+            )
+        for record in records:
+            if not isinstance(record, dict) or any(
+                field not in record or not isinstance(record[field], expected)
+                for field, expected in fields.items()
+            ):
+                raise SelectionError(
+                    operation,
+                    project_path,
+                    "the Agora CLI result does not match Studio's minimum compatibility shape",
+                )
 
 
 class AgoraCliBoundary:
@@ -170,11 +211,15 @@ class AgoraCliBoundary:
                 shell=False,
             )
         except FileNotFoundError as error:
-            raise SelectionError(operation, project_path, "the Agora CLI is not available") from error
+            raise SelectionError(
+                operation, project_path, "the Agora CLI is not available"
+            ) from error
         except subprocess.TimeoutExpired as error:
             raise SelectionError(operation, project_path, "the Agora CLI read timed out") from error
         except OSError as error:
-            raise SelectionError(operation, project_path, f"the Agora CLI could not start: {error}") from error
+            raise SelectionError(
+                operation, project_path, f"the Agora CLI could not start: {error}"
+            ) from error
 
         diagnostic = completed.stderr.strip()
         if completed.returncode != 0:
@@ -184,9 +229,13 @@ class AgoraCliBoundary:
         try:
             data = json.loads(completed.stdout)
         except json.JSONDecodeError as error:
-            raise SelectionError(operation, project_path, "the Agora CLI returned invalid JSON") from error
+            raise SelectionError(
+                operation, project_path, "the Agora CLI returned invalid JSON"
+            ) from error
         if not isinstance(data, self._RESULT_TYPES[operation]):
-            raise SelectionError(operation, project_path, "the Agora CLI returned an invalid result")
+            raise SelectionError(
+                operation, project_path, "the Agora CLI returned an invalid result"
+            )
         return CliResult(operation, completed.returncode, data, diagnostic)
 
     def activity(self, project_path: Path, query: ActivityQuery) -> CliResult:
@@ -207,11 +256,17 @@ class AgoraCliBoundary:
                 shell=False,
             )
         except FileNotFoundError as error:
-            raise SelectionError("activity", project_path, "the Agora CLI is not available") from error
+            raise SelectionError(
+                "activity", project_path, "the Agora CLI is not available"
+            ) from error
         except subprocess.TimeoutExpired as error:
-            raise SelectionError("activity", project_path, "the Agora Activity read timed out") from error
+            raise SelectionError(
+                "activity", project_path, "the Agora Activity read timed out"
+            ) from error
         except OSError as error:
-            raise SelectionError("activity", project_path, "the Agora Activity read could not start") from error
+            raise SelectionError(
+                "activity", project_path, "the Agora Activity read could not start"
+            ) from error
 
         if completed.returncode != 0:
             raise SelectionError(
@@ -222,15 +277,21 @@ class AgoraCliBoundary:
         try:
             data = json.loads(completed.stdout)
         except json.JSONDecodeError as error:
-            raise SelectionError("activity", project_path, "Agora returned invalid Activity JSON") from error
+            raise SelectionError(
+                "activity", project_path, "Agora returned invalid Activity JSON"
+            ) from error
         if not isinstance(data, list):
-            raise SelectionError("activity", project_path, "Agora returned an invalid Activity result")
+            raise SelectionError(
+                "activity", project_path, "Agora returned an invalid Activity result"
+            )
         for item in data:
             if not isinstance(item, dict) or any(
                 field not in item or not isinstance(item[field], (str, type(None)))
                 for field in ACTIVITY_FIELDS
             ):
-                raise SelectionError("activity", project_path, "Agora returned an invalid Activity result")
+                raise SelectionError(
+                    "activity", project_path, "Agora returned an invalid Activity result"
+                )
         events = [{field: item[field] for field in ACTIVITY_FIELDS} for item in data]
         return CliResult("activity", completed.returncode, events, "")
 
@@ -238,7 +299,9 @@ class AgoraCliBoundary:
         result = self.execute("status", project_path)
         project = result.data.get("project") if isinstance(result.data, dict) else None
         if not isinstance(project, str) or not project.strip():
-            raise SelectionError("status", project_path, "the Agora CLI did not return a project identity")
+            raise SelectionError(
+                "status", project_path, "the Agora CLI did not return a project identity"
+            )
         return project
 
 
@@ -258,13 +321,17 @@ class ProjectStore:
     def select(self, requested_path: object) -> ProjectSelection:
         operation = "select_project"
         if not isinstance(requested_path, str) or not requested_path.strip():
-            raise SelectionError(operation, requested_path, "a non-empty directory path is required")
+            raise SelectionError(
+                operation, requested_path, "a non-empty directory path is required"
+            )
 
         candidate = Path(requested_path).expanduser()
         try:
             canonical = candidate.resolve(strict=True)
         except (OSError, RuntimeError) as error:
-            raise SelectionError(operation, requested_path, "the path does not exist or cannot be resolved") from error
+            raise SelectionError(
+                operation, requested_path, "the path does not exist or cannot be resolved"
+            ) from error
         if not canonical.is_dir():
             raise SelectionError(operation, canonical, "the path is not a directory")
 
@@ -296,6 +363,7 @@ class ProjectStore:
         snapshot: dict[str, object] = {"selection": selection.as_dict()}
         for operation in self._cli.allowed_operations:
             snapshot[operation] = self._cli.execute(operation, selection.path).data
+        validate_overview_compatibility(snapshot, selection.path)
         return snapshot
 
     def activity(self, query: Mapping[str, object] | None = None) -> dict[str, object]:

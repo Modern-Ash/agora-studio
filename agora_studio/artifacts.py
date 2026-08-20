@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
+import unicodedata
 from pathlib import Path
 from typing import Mapping
 
 from .lifecycle import _SLUG, _regular_file, _summary_fields
-import unicodedata
 
 
 class ArtifactsError(Exception):
@@ -23,20 +23,26 @@ def normalize_artifacts_query(query: Mapping[str, object] | None) -> dict[str, s
     allowed = {"swarm", "work"}
     unknown = set(values) - allowed
     if unknown:
-        raise ArtifactsError("invalid_query", f"unknown artifacts query field: {sorted(unknown)[0]}")
+        raise ArtifactsError(
+            "invalid_query", f"unknown artifacts query field: {sorted(unknown)[0]}"
+        )
     normalized: dict[str, str] = {}
     for key in allowed:
         raw = values.get(key)
         if isinstance(raw, (list, tuple)):
             if len(raw) != 1:
-                raise ArtifactsError("invalid_query", f"artifacts query field {key} must be provided once")
+                raise ArtifactsError(
+                    "invalid_query", f"artifacts query field {key} must be provided once"
+                )
             raw = raw[0]
         if not isinstance(raw, str) or not raw:
             raise ArtifactsError("invalid_query", f"artifacts query field {key} is required")
         if len(raw) > 128 or any(unicodedata.category(character) == "Cc" for character in raw):
             raise ArtifactsError("invalid_query", f"artifacts query field {key} is invalid")
         if not _SLUG.fullmatch(raw):
-            raise ArtifactsError("invalid_query", f"artifacts query field {key} must be a safe Agora slug")
+            raise ArtifactsError(
+                "invalid_query", f"artifacts query field {key} must be a safe Agora slug"
+            )
         normalized[key] = raw
     return normalized
 
@@ -66,7 +72,13 @@ def _artifact_rows(project: Path, swarm: str, work: str) -> list[dict[str, objec
     relative = Path(".agora") / "swarms" / swarm / "work" / work / "artifacts.md"
     rows = _table_rows(project, relative, 4)
     return [
-        {"id": f"artifact-{index}", "kind": kind, "uri": uri, "produced_by": produced_by, "timestamp": timestamp}
+        {
+            "id": f"artifact-{index}",
+            "kind": kind,
+            "uri": uri,
+            "produced_by": produced_by,
+            "timestamp": timestamp,
+        }
         for index, (kind, uri, produced_by, timestamp) in enumerate(rows)
     ]
 
@@ -79,7 +91,9 @@ def _evidence_rows(project: Path, swarm: str, work: str) -> list[dict[str, objec
             "id": f"evidence-{index}",
             "type": kind,
             "result": result,
-            "artifact_references": [reference.strip() for reference in references.split(",") if reference.strip()],
+            "artifact_references": [
+                reference.strip() for reference in references.split(",") if reference.strip()
+            ],
             "produced_by": produced_by,
             "timestamp": timestamp,
         }
@@ -91,7 +105,13 @@ def _approval_rows(project: Path, swarm: str, work: str) -> list[dict[str, objec
     relative = Path(".agora") / "swarms" / swarm / "work" / work / "approvals.md"
     rows = _table_rows(project, relative, 4)
     return [
-        {"id": f"approval-{index}", "role": role, "approved_by": approved_by, "note": note, "timestamp": timestamp}
+        {
+            "id": f"approval-{index}",
+            "role": role,
+            "approved_by": approved_by,
+            "note": note,
+            "timestamp": timestamp,
+        }
         for index, (role, approved_by, note, timestamp) in enumerate(rows)
     ]
 
@@ -106,7 +126,9 @@ def _traceability(event: Mapping[str, object]) -> dict[str, object]:
     }
 
 
-def _attach_traceability(rows: list[dict[str, object]], events: list[dict[str, object]], key_of_row, key_of_event) -> None:
+def _attach_traceability(
+    rows: list[dict[str, object]], events: list[dict[str, object]], key_of_row, key_of_event
+) -> None:
     """Attach traceability only where a durable identifier is exact: match same-key rows and events
     positionally, in the order both durably occur. Never infer across differing kinds or by time alone."""
     grouped_rows: dict[tuple, list[dict[str, object]]] = {}
@@ -132,13 +154,18 @@ def build_artifacts(store: object, query: Mapping[str, object] | None) -> dict[s
     normalized = normalize_artifacts_query(query)
     selection = store.selection
     if selection is None:
-        raise ArtifactsError("project_required", "Select a local Agora project before loading artifacts data.")
+        raise ArtifactsError(
+            "project_required", "Select a local Agora project before loading artifacts data."
+        )
 
     work_records = store._cli.execute("work", selection.path).data
     work = next(
         (
-            item for item in work_records
-            if isinstance(item, dict) and item.get("id") == normalized["work"] and item.get("swarm_id") == normalized["swarm"]
+            item
+            for item in work_records
+            if isinstance(item, dict)
+            and item.get("id") == normalized["work"]
+            and item.get("swarm_id") == normalized["swarm"]
         ),
         None,
     )
@@ -162,7 +189,9 @@ def build_artifacts(store: object, query: Mapping[str, object] | None) -> dict[s
         approvals = []
         diagnostics.append(f"Approvals are unavailable: {error}")
 
-    activity_result = store.activity({"swarm": normalized["swarm"], "work": normalized["work"], "limit": "500"})
+    activity_result = store.activity(
+        {"swarm": normalized["swarm"], "work": normalized["work"], "limit": "500"}
+    )
     events = activity_result.get("events", []) if isinstance(activity_result, dict) else []
 
     def artifact_event_key(event: Mapping[str, object]) -> tuple | None:
@@ -189,18 +218,30 @@ def build_artifacts(store: object, query: Mapping[str, object] | None) -> dict[s
             return None
         return (fields["role"],)
 
-    _attach_traceability(artifacts, events, lambda row: (row["kind"], row["uri"]), artifact_event_key)
-    _attach_traceability(evidence, events, lambda row: (row["type"], row["result"]), evidence_event_key)
+    _attach_traceability(
+        artifacts, events, lambda row: (row["kind"], row["uri"]), artifact_event_key
+    )
+    _attach_traceability(
+        evidence, events, lambda row: (row["type"], row["result"]), evidence_event_key
+    )
     _attach_traceability(approvals, events, lambda row: (row["role"],), approval_event_key)
 
-    required_roles = work.get("approval_roles") if isinstance(work.get("approval_roles"), list) else []
+    required_roles = (
+        work.get("approval_roles") if isinstance(work.get("approval_roles"), list) else []
+    )
     required_roles = [role for role in required_roles if isinstance(role, str)]
     satisfied_role_set = {row["role"] for row in approvals}
-    satisfaction = [{"role": role, "satisfied": role in satisfied_role_set} for role in required_roles]
+    satisfaction = [
+        {"role": role, "satisfied": role in satisfied_role_set} for role in required_roles
+    ]
 
     return {
         "selection": selection.as_dict(),
-        "scope": {"swarm_id": normalized["swarm"], "work_id": normalized["work"], "title": work.get("title")},
+        "scope": {
+            "swarm_id": normalized["swarm"],
+            "work_id": normalized["work"],
+            "title": work.get("title"),
+        },
         "artifacts": artifacts,
         "evidence": evidence,
         "approvals": {

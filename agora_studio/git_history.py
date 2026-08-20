@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import os
-from pathlib import Path
 import re
 import subprocess
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Callable, Sequence
-
 
 GitRunner = Callable[..., subprocess.CompletedProcess[str]]
 _SHA = re.compile(r"^[0-9a-f]{40}$")
@@ -82,7 +81,9 @@ class GitHistoryReader:
             "PAGER": "cat",
         }
 
-    def _run(self, repository: Path, arguments: Sequence[str], expected_codes: tuple[int, ...] = (0,)) -> GitOutput:
+    def _run(
+        self, repository: Path, arguments: Sequence[str], expected_codes: tuple[int, ...] = (0,)
+    ) -> GitOutput:
         command = [self._executable, "-C", str(repository), *arguments]
         try:
             completed = self._runner(
@@ -101,7 +102,9 @@ class GitHistoryReader:
         except OSError as error:
             raise GitReadError("the bounded Git read could not start") from error
         if completed.returncode not in expected_codes:
-            raise GitReadError(f"Git could not read the registered specification (exit code {completed.returncode})")
+            raise GitReadError(
+                f"Git could not read the registered specification (exit code {completed.returncode})"
+            )
         encoded = completed.stdout.encode("utf-8", errors="replace")
         truncated = len(encoded) > self._max_output_bytes
         if truncated:
@@ -110,42 +113,54 @@ class GitHistoryReader:
 
     def history(self, repository: Path, relative_path: str) -> dict[str, object]:
         """Return bounded commit nodes plus a distinct working-tree revision."""
-        log = self._run(repository, [
-            "log", "--follow", f"--max-count={self._max_revisions}",
-            "--format=%H%x1f%aI%x1f%an%x1f%s", "--", relative_path,
-        ])
+        log = self._run(
+            repository,
+            [
+                "log",
+                "--follow",
+                f"--max-count={self._max_revisions}",
+                "--format=%H%x1f%aI%x1f%an%x1f%s",
+                "--",
+                relative_path,
+            ],
+        )
         revisions: list[dict[str, object]] = []
         for line in log.stdout.splitlines():
             fields = line.split("\x1f", 3)
             if len(fields) != 4 or not _SHA.fullmatch(fields[0]):
                 continue
             sha, timestamp, author, subject = fields
-            revisions.append({
-                "id": sha,
-                "kind": "commit",
-                "sha": sha,
-                "short_sha": sha[:10],
-                "timestamp": timestamp,
-                "author": author,
-                "subject": subject,
-                "uncommitted": False,
-                "approved": None,
-            })
+            revisions.append(
+                {
+                    "id": sha,
+                    "kind": "commit",
+                    "sha": sha,
+                    "short_sha": sha[:10],
+                    "timestamp": timestamp,
+                    "author": author,
+                    "subject": subject,
+                    "uncommitted": False,
+                    "approved": None,
+                }
+            )
 
         status = self._run(repository, ["status", "--porcelain=v1", "--", relative_path])
         working = bool(status.stdout.strip())
         if working:
-            revisions.insert(0, {
-                "id": "working-tree",
-                "kind": "working-tree",
-                "sha": None,
-                "short_sha": "WORKTREE",
-                "timestamp": None,
-                "author": None,
-                "subject": "Modified, uncommitted specification",
-                "uncommitted": True,
-                "approved": False,
-            })
+            revisions.insert(
+                0,
+                {
+                    "id": "working-tree",
+                    "kind": "working-tree",
+                    "sha": None,
+                    "short_sha": "WORKTREE",
+                    "timestamp": None,
+                    "author": None,
+                    "subject": "Modified, uncommitted specification",
+                    "uncommitted": True,
+                    "approved": False,
+                },
+            )
         return {
             "available": True,
             "path": relative_path,
@@ -162,13 +177,34 @@ class GitHistoryReader:
             if status.stdout.startswith("??"):
                 output = self._run(
                     repository,
-                    ["diff", "--no-index", "--no-ext-diff", "--unified=3", "--", "/dev/null", relative_path],
+                    [
+                        "diff",
+                        "--no-index",
+                        "--no-ext-diff",
+                        "--unified=3",
+                        "--",
+                        "/dev/null",
+                        relative_path,
+                    ],
                     expected_codes=(0, 1),
                 )
             else:
-                output = self._run(repository, ["diff", "--no-ext-diff", "--unified=3", "--", relative_path])
+                output = self._run(
+                    repository, ["diff", "--no-ext-diff", "--unified=3", "--", relative_path]
+                )
         elif _SHA.fullmatch(revision):
-            output = self._run(repository, ["show", "--format=", "--no-ext-diff", "--unified=3", revision, "--", relative_path])
+            output = self._run(
+                repository,
+                [
+                    "show",
+                    "--format=",
+                    "--no-ext-diff",
+                    "--unified=3",
+                    revision,
+                    "--",
+                    relative_path,
+                ],
+            )
         else:
             raise GitReadError("the requested revision identifier is invalid")
         lines = output.stdout.splitlines()
