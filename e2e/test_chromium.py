@@ -209,7 +209,9 @@ class ChromiumControlPlaneTests(unittest.TestCase):
         self.open_approvals()
         self.prepare()
         self.page.get_by_role("button", name="Confirm approved").click()
-        self.page.get_by_text("Approval was durably persisted by Agora Core.").wait_for()
+        self.page.locator(".gate-control").get_by_text(
+            "Approval was durably persisted by Agora Core.", exact=True
+        ).wait_for()
         self.page.get_by_role("tab", name="Activity").click()
         self.page.get_by_text("approval.added", exact=True).wait_for()
 
@@ -336,7 +338,9 @@ class ChromiumControlPlaneTests(unittest.TestCase):
         signature = base64.b64encode(private_key.sign(payload)).decode("ascii")
         self.page.locator("#detached-signature").fill(signature)
         self.page.get_by_role("button", name="Confirm approved").click()
-        self.page.get_by_text("Approval was durably persisted by Agora Core.").wait_for()
+        self.page.locator(".gate-control").get_by_text(
+            "Approval was durably persisted by Agora Core.", exact=True
+        ).wait_for()
 
     def test_21_mobile_view_keeps_primary_controls_operable(self) -> None:
         self.page.set_viewport_size({"width": 390, "height": 844})
