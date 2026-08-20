@@ -20,20 +20,45 @@ class FakeCommands:
             raise self.error
         return {
             "schema": "agora/application/gate-decision-projection/v1",
+            "project_identity": selection.project,
+            "swarm_id": swarm_id,
+            "work_id": work_id,
+            "gate_id": request.gate_id,
+            "actor_id": request.actor_id,
+            "role_id": request.role_id,
             "decision": request.decision,
+            "reason": request.reason,
             "lifecycle": {"schema": "agora/application/lifecycle-projection/v2"},
             "activity": {"schema": "agora/application/activity-entry/v1"},
+        }
+
+    def prepare_gate(self, selection, swarm_id, work_id, request):
+        self.requests.append((selection, swarm_id, work_id, request))
+        if self.error:
+            raise self.error
+        return {
+            "schema": "agora/application/prepared-gate-decision/v1",
+            "project_identity": selection.project,
+            "swarm_id": swarm_id,
+            "work_id": work_id,
+            "gate_id": request.gate_id,
+            "actor_id": request.actor_id,
+            "role_id": request.role_id,
+            "decision": request.decision,
+            "authorization_payload": "canonical\n",
         }
 
 
 def command_payload(**changes: object) -> dict[str, object]:
     payload: dict[str, object] = {
-        "schema": "agora/application/approve-gate-command/v1",
+        "schema": "agora/application/approve-gate-command/v2",
         "gate_id": "completion",
-        "actor_id": "owner",
+        "actor_id": "project:owner",
         "decision": "approved",
         "reason": "Verified evidence",
         "expected_state": "verifying",
+        "transition_target": "completed",
+        "role_id": "product-owner",
         "evidence_references": ["repo://report"],
     }
     payload.update(changes)
@@ -64,7 +89,8 @@ class ApiContractTests(unittest.TestCase):
             "/api/v1/approvals": "agora-studio/api/approvals/v1",
             "/api/v1/traceability": "agora-studio/api/traceability/v1",
             "/api/v1/specification-history": "agora-studio/api/specification-history/v1",
-            "/api/v1/work-items/delivery/release": "agora-studio/api/work-item-detail/v1",
+            "/api/v1/specification-revisions/working-tree": "agora-studio/api/specification-revision-detail/v1",
+            "/api/v1/work-items/delivery/release": "agora-studio/api/work-item-detail/v2",
         }
         query = {"swarm": "delivery", "work": "release"}
         for route, schema in routes.items():
@@ -74,7 +100,8 @@ class ApiContractTests(unittest.TestCase):
                     "GET",
                     route,
                     query=query
-                    if route.rsplit("/", 1)[-1]
+                    if route.startswith("/api/v1/specification-revisions/")
+                    or route.rsplit("/", 1)[-1]
                     in {
                         "lifecycle",
                         "artifacts",
@@ -88,8 +115,11 @@ class ApiContractTests(unittest.TestCase):
                 self.assertEqual(status, 200)
                 self.assertEqual(payload["schema"], schema)
                 if route == "/api/v1/artifacts":
-                    self.assertEqual(payload["approvals"]["missing_roles"], ["product-owner"])
-                    self.assertNotIn("satisfaction", payload["approvals"])
+                    self.assertNotIn("missing_roles", payload["approvals"])
+                    self.assertEqual(
+                        payload["approvals"]["gate_decision_options"]["schema"],
+                        "agora/application/gate-decision-options-projection/v1",
+                    )
 
     def test_legacy_aliases_are_removed(self) -> None:
         for route in ("/api/overview", "/api/activity", "/api/lifecycle", "/api/artifacts"):
@@ -127,6 +157,20 @@ class ApiContractTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(payload["status"], "persisted")
         self.assertEqual(commands.requests[0][3].decision, "approved")
+        self.assertEqual(commands.requests[0][3].role_id, "product-owner")
+
+        status, prepared = handle_api(
+            self.store,
+            "POST",
+            f"{route}/prepare",
+            command_payload(),
+            commands=commands,
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(
+            prepared["preparation"]["schema"],
+            "agora/application/prepared-gate-decision/v1",
+        )
 
         commands.error = CommandAdapterError(
             "command.stale-precondition", "the expected state is stale"
@@ -145,6 +189,24 @@ class ApiContractTests(unittest.TestCase):
         )
         self.assertEqual(status, 503)
         self.assertEqual(payload["error"], "command.persistence-failed")
+
+        commands.error = CommandAdapterError(
+            "command.signature-required", "the actor must provide a detached signature"
+        )
+        status, payload = handle_api(
+            self.store, "POST", route, command_payload(), commands=commands
+        )
+        self.assertEqual(status, 428)
+        self.assertEqual(payload["error"], "command.signature-required")
+
+        commands.error = CommandAdapterError(
+            "core.schema-incompatible", "the durable projection is not compatible"
+        )
+        status, payload = handle_api(
+            self.store, "POST", route, command_payload(), commands=commands
+        )
+        self.assertEqual(status, 426)
+        self.assertEqual(payload["error"], "core.schema-incompatible")
 
     def test_invalid_slugs_and_missing_selection_fail_before_core(self) -> None:
         status, payload = handle_api(

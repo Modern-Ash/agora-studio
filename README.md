@@ -4,9 +4,9 @@
 
 # Agora Studio
 
-Agora Studio is the experimental, local-first web control plane for Agora projects. Studio 0.2
-renders operational state through Agora Core application services and offers one governed
-mutation: approving or rejecting a pending gate.
+Agora Studio is the experimental, local-first web control plane for Agora projects. Studio 0.3
+renders operational state through Agora Core 0.6 application services and offers one governed
+mutation: approving or rejecting an exact gate option calculated by Core.
 
 > [!WARNING]
 > Studio is experimental software. Keep it on loopback and review sensitive projects before
@@ -15,7 +15,7 @@ mutation: approving or rejecting a pending gate.
 ## Architecture
 
 ```text
-Browser -> /api/v1 -> Studio API -> AgoraReadService / AgoraCommandService -> Agora Core
+Browser -> /api/v1 -> Studio API -> AgoraReadService / AgoraCommandService -> Agora Core 0.6
 ```
 
 The browser consumes only `/api/v1`. Studio does not execute Agora CLI, spawn subprocesses, read
@@ -37,9 +37,12 @@ database, remote service, multi-user mode, telemetry, or frontend framework.
 - **Actors** — configured actors, capabilities, durable references, and runtime metadata.
 - **Activity** — a bounded, filterable timeline of durable Core events.
 
-Gate approval and rejection use Core's versioned `ApproveGateCommand`. Studio validates only the
-HTTP request envelope, waits for Core's durable response, and then refreshes lifecycle and
-Activity. There is no optimistic mutation.
+Gate approval and rejection use Core's versioned decision options and `ApproveGateCommand v2`.
+Studio never chooses a first gate, role, actor, transition, or readiness state. Disabled options
+retain the blockers returned by Core. For authenticated actors, Studio requests the canonical
+payload, shows its digest and public fingerprint, accepts an externally produced detached
+signature, and sends it back to Core. Studio never reads or stores a private key. There is no
+optimistic mutation.
 
 ## Install and run
 
@@ -48,7 +51,7 @@ Python 3.11, 3.12, and 3.13 are supported.
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install "agora-studio==0.2.0"
+python -m pip install "agora-studio==0.3.0"
 agora-studio --version
 agora-studio --port 7357
 ```
@@ -74,7 +77,7 @@ python3 -m venv .venv
 | --- | --- | --- | --- |
 | 0.1.x | Transitional/implicit | CLI reads plus gate command v1 | Project-defined |
 | 0.2.x | `agora-framework>=0.5,<0.6` | Core 0.5 read DTOs and gate command v1 | Project-defined and independently versioned |
-| 0.3.x+ | Not defined | Must be negotiated before adoption | Independent |
+| 0.3.x | `agora-framework>=0.6,<0.7` | Work detail v2, work control v1, gate command v2, prepared decision v1, revision detail v1 | Project-defined and independently versioned |
 
 Three versions must not be conflated:
 
@@ -92,9 +95,11 @@ All current endpoints are under `/api/v1`:
 
 - `GET /project`, `/overview`, `/actors`, `/swarms`, `/work-items`, `/sessions`, `/activity`;
 - `GET /work-items/{swarm}/{work}`;
+- `GET /specification-revisions/{revision_id}?swarm=...&work=...`;
 - `GET /lifecycle`, `/artifacts`, `/evidence`, `/approvals`, `/traceability`,
   `/specification-history`;
 - `POST /projects/select`;
+- `POST /work-items/{swarm}/{work}/approvals/prepare`;
 - `POST /work-items/{swarm}/{work}/approvals`.
 
 Every successful projection and error has a schema identifier. Missing durable information is
@@ -109,6 +114,10 @@ failures remain distinct HTTP errors. Legacy unversioned API aliases are removed
   `X-Agora-Studio-CSRF` token obtained from `GET /api/v1/project`.
 - The token is held only in memory, is not logged, and is never persisted in the selected project.
 - JSON mutations require `application/json` and a body no larger than 64 KiB.
+- Approval requests accept only versioned identifiers and bounded text; browser-provided paths are
+  not part of either gate endpoint.
+- Canonical payloads and detached signatures remain request-scoped. Studio does not persist or log
+  them and never handles private key material.
 - Responses set CSP, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, no-referrer, and
   no-store headers where appropriate. Studio emits no permissive CORS header.
 - Durable text is rendered through text nodes, not interpreted as HTML.
@@ -120,14 +129,18 @@ session may be able to view the selected project's durable data.
 
 ## Verification
 
-The suite includes fake-gateway unit tests and a non-mocked Core–Studio integration that creates a
-temporary Agora project, starts the loopback server, reads the dashboard projections, approves and
-rejects gates through `AgoraCommandService`, verifies Activity and persistence, and rereads the
-durable state.
+The suite includes behavioral JavaScript model tests, strict schema-failure tests, HTTP security
+tests, and non-mocked Core–Studio integrations. Those integrations create temporary Agora projects,
+start the loopback server, read the dashboard, prepare and persist unsigned and signed decisions,
+verify Activity, and retrieve committed and working-tree specification revisions exclusively
+through Core.
 
 CI builds the Core wheel, installs it, builds and installs the Studio wheel, runs Python
 3.11–3.13, and checks that production code contains no CLI bridge, subprocess access, protocol
 parser, or direct durable-file read.
+
+See the [Core 0.6 / Studio 0.3 verification record](docs/evidence/core-0.6-studio-0.3-verification.md)
+for the exercised contracts, distribution smoke, and deliberate limits.
 
 ## Contributing and license
 

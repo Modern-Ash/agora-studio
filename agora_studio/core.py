@@ -12,17 +12,21 @@ from threading import RLock
 from typing import Callable, Mapping, Protocol
 
 CORE_DISTRIBUTION = "agora-framework"
-MINIMUM_CORE_VERSION = (0, 5, 0)
-MAXIMUM_CORE_VERSION = (0, 6, 0)
+MINIMUM_CORE_VERSION = (0, 6, 0)
+MAXIMUM_CORE_VERSION = (0, 7, 0)
 
 SCHEMAS = {
     "overview": "agora/application/project-overview/v1",
     "actor": "agora/application/actor-summary/v1",
     "swarm": "agora/application/swarm-summary/v1",
     "work": "agora/application/work-item-summary/v1",
-    "work_detail": "agora/application/work-item-detail/v1",
+    "work_detail": "agora/application/work-item-detail/v2",
     "session": "agora/application/session-summary/v1",
     "method": "agora/application/method-summary/v1",
+    "method_state": "agora/application/method-state-summary/v1",
+    "transition": "agora/application/transition-summary/v1",
+    "gate": "agora/application/gate-summary/v1",
+    "gate_blocker": "agora/application/gate-blocker-summary/v1",
     "activity": "agora/application/activity-entry/v1",
     "lifecycle": "agora/application/lifecycle-projection/v2",
     "artifact": "agora/application/artifact-summary/v2",
@@ -30,6 +34,11 @@ SCHEMAS = {
     "approval": "agora/application/approval-summary/v2",
     "traceability": "agora/application/traceability-summary/v1",
     "specification": "agora/application/specification-summary/v1",
+    "specification_revision_summary": "agora/application/specification-revision-summary/v1",
+    "specification_revision": "agora/application/specification-revision-detail/v1",
+    "gate_option": "agora/application/gate-decision-option-summary/v1",
+    "gate_options": "agora/application/gate-decision-options-projection/v1",
+    "work_control": "agora/application/work-control-projection/v1",
 }
 
 
@@ -149,6 +158,10 @@ class ReadGateway(Protocol):
     def approvals(self, project: Path, swarm: str, work: str) -> list[dict[str, object]]: ...
     def traceability(self, project: Path, swarm: str, work: str) -> dict[str, object]: ...
     def specification(self, project: Path, swarm: str, work: str) -> dict[str, object]: ...
+    def specification_revision(
+        self, project: Path, swarm: str, work: str, revision: str
+    ) -> dict[str, object]: ...
+    def work_control(self, project: Path, swarm: str, work: str) -> dict[str, object]: ...
 
 
 def _version_tuple(value: str) -> tuple[int, int, int]:
@@ -186,13 +199,13 @@ class CoreReadGateway:
             except PackageNotFoundError as error:
                 raise CoreGatewayError(
                     "core.unavailable",
-                    "Agora Core is not installed; Studio requires agora-framework>=0.5,<0.6",
+                    "Agora Core is not installed; Studio requires agora-framework>=0.6,<0.7",
                 ) from error
         parsed = _version_tuple(self._core_version)
         if not MINIMUM_CORE_VERSION <= parsed < MAXIMUM_CORE_VERSION:
             raise CoreGatewayError(
                 "core.version-incompatible",
-                f"Agora Studio requires Agora Core >=0.5,<0.6; found {self._core_version}",
+                f"Agora Studio requires Agora Core >=0.6,<0.7; found {self._core_version}",
             )
 
     def _module(self) -> object:
@@ -315,6 +328,139 @@ class CoreReadGateway:
 
     def specification(self, project: Path, swarm: str, work: str) -> dict[str, object]:
         return self._one(project, "specification_history", SCHEMAS["specification"], swarm, work)
+
+    def specification_revision(
+        self, project: Path, swarm: str, work: str, revision: str
+    ) -> dict[str, object]:
+        return self._one(
+            project,
+            "specification_revision",
+            SCHEMAS["specification_revision"],
+            swarm,
+            work,
+            revision,
+        )
+
+    def work_control(self, project: Path, swarm: str, work: str) -> dict[str, object]:
+        payload = self._one(
+            project,
+            "work_control_projection",
+            SCHEMAS["work_control"],
+            swarm,
+            work,
+        )
+        required = {
+            "work": SCHEMAS["work_detail"],
+            "lifecycle": SCHEMAS["lifecycle"],
+            "traceability": SCHEMAS["traceability"],
+            "specification_history": SCHEMAS["specification"],
+            "gate_decision_options": SCHEMAS["gate_options"],
+        }
+        nested = {field: self._nested(payload, field, schema) for field, schema in required.items()}
+        for field in ("work", "lifecycle", "traceability", "gate_decision_options"):
+            identity = (("swarm_id", swarm), ("id" if field == "work" else "work_id", work))
+            for identity_field, expected in identity:
+                if nested[field].get(identity_field) != expected:
+                    raise CoreGatewayError(
+                        "core.schema-incompatible",
+                        f"Core changed {identity_field} at {field}",
+                    )
+
+        for field, schema in (
+            ("artifacts", SCHEMAS["artifact"]),
+            ("evidence", SCHEMAS["evidence"]),
+            ("approvals", SCHEMAS["approval"]),
+        ):
+            self._nested_many(payload, field, schema)
+            self._nested_many(nested["work"], field, schema, prefix="work")
+
+        for field, schema in (
+            ("artifacts", SCHEMAS["artifact"]),
+            ("evidence", SCHEMAS["evidence"]),
+        ):
+            self._nested_many(nested["traceability"], field, schema, prefix="traceability")
+
+        self._nested_many(
+            nested["traceability"], "activity", SCHEMAS["activity"], prefix="traceability"
+        )
+        self._nested_many(
+            nested["lifecycle"], "states", SCHEMAS["method_state"], prefix="lifecycle"
+        )
+        transitions = self._nested_many(
+            nested["lifecycle"], "transitions", SCHEMAS["transition"], prefix="lifecycle"
+        )
+        gates = self._nested_many(nested["lifecycle"], "gates", SCHEMAS["gate"], prefix="lifecycle")
+        for index, transition in enumerate(transitions):
+            self._nested_many(
+                transition,
+                "blockers",
+                SCHEMAS["gate_blocker"],
+                prefix=f"lifecycle.transitions[{index}]",
+            )
+        for index, gate in enumerate(gates):
+            self._nested_many(
+                gate,
+                "blockers",
+                SCHEMAS["gate_blocker"],
+                prefix=f"lifecycle.gates[{index}]",
+            )
+
+        self._nested_many(
+            nested["specification_history"],
+            "revisions",
+            SCHEMAS["specification_revision_summary"],
+            prefix="specification_history",
+        )
+        options = self._nested_many(
+            nested["gate_decision_options"],
+            "options",
+            SCHEMAS["gate_option"],
+            prefix="gate_decision_options",
+        )
+        for index, option in enumerate(options):
+            if option.get("swarm_id") != swarm or option.get("work_id") != work:
+                raise CoreGatewayError(
+                    "core.schema-incompatible",
+                    f"Core changed work identity at gate_decision_options.options[{index}]",
+                )
+            self._nested_many(
+                option,
+                "blockers",
+                SCHEMAS["gate_blocker"],
+                prefix=f"gate_decision_options.options[{index}]",
+            )
+        return payload
+
+    @staticmethod
+    def _nested(
+        payload: Mapping[str, object], field: str, schema: str, *, prefix: str = ""
+    ) -> dict[str, object]:
+        value = payload.get(field)
+        location = f"{prefix}.{field}" if prefix else field
+        if not isinstance(value, dict) or value.get("schema") != schema:
+            found = value.get("schema") if isinstance(value, dict) else None
+            raise CoreGatewayError(
+                "core.schema-incompatible",
+                f"Studio requires schema {schema} at {location}; found {found!r}",
+            )
+        return value
+
+    @classmethod
+    def _nested_many(
+        cls,
+        payload: Mapping[str, object],
+        field: str,
+        schema: str,
+        *,
+        prefix: str = "",
+    ) -> list[dict[str, object]]:
+        values = payload.get(field)
+        location = f"{prefix}.{field}" if prefix else field
+        if not isinstance(values, list):
+            raise CoreGatewayError(
+                "core.schema-incompatible", f"Core response field {location} must be an array"
+            )
+        return [cls._nested({"item": value}, "item", schema, prefix=location) for value in values]
 
 
 class ProjectStore:

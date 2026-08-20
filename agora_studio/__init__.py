@@ -3,7 +3,7 @@
 from .core import CoreReadGateway, ProjectSelection, ProjectStore, SelectionError
 from .server import StartupError, create_server
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 __all__ = [
     "__version__",

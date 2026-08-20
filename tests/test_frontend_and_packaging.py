@@ -16,14 +16,21 @@ PACKAGE = ROOT / "agora_studio"
 class PackagingTests(unittest.TestCase):
     def test_version_and_core_dependency_are_explicit(self) -> None:
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertEqual(agora_studio.__version__, "0.2.0")
+        self.assertEqual(agora_studio.__version__, "0.3.0")
         self.assertEqual(build_parser().parse_args(["--port", "7358"]).port, 7358)
-        self.assertIn('dependencies = ["agora-framework>=0.5,<0.6"]', pyproject)
+        self.assertIn('dependencies = ["agora-framework>=0.6,<0.7"]', pyproject)
         self.assertIn('version = { attr = "agora_studio.__version__" }', pyproject)
 
     def test_static_assets_are_packaged_and_exactly_allowlisted(self) -> None:
         package = files("agora_studio") / "static"
-        for name in ("index.html", "styles.css", "app.js", "agora-mark.png"):
+        for name in (
+            "index.html",
+            "styles.css",
+            "app.js",
+            "dashboard-model.js",
+            "control-model.js",
+            "agora-mark.png",
+        ):
             self.assertTrue((package / name).is_file())
         self.assertIsNotNone(static_response("/"))
         self.assertIsNone(static_response("/assets/../README.md"))
@@ -57,26 +64,82 @@ class FrontendContractTests(unittest.TestCase):
                 )
                 self.assertEqual(result.returncode, 0, result.stderr)
 
-    def test_dashboard_uses_core_terminal_and_blocker_fields(self) -> None:
+    def test_dashboard_consumes_core_attention_and_decision_options(self) -> None:
         model = PACKAGE / "static" / "dashboard-model.js"
         script = f"""
           require({str(model)!r});
-          const lifecycle = {{method: {{current_state: 'verifying', states: [
-            {{id: 'verifying', terminal: false}}, {{id: 'completed', terminal: true}}
-          ], transitions: [{{from: 'verifying', to: 'completed', gate: 'completion',
-            blockers: [{{category: 'evidence', message: 'Evidence missing'}},
-              {{category: 'approval', message: 'Approval missing', references: ['product-owner']}}],
-            required_approval_roles: ['product-owner']}}]}}}};
-          if (!DashboardModel.isWorkInProgress({{state: 'verifying'}}, {{lifecycle}})) process.exit(1);
-          if (DashboardModel.isWorkInProgress({{state: 'completed'}}, {{lifecycle}})) process.exit(2);
-          if (!DashboardModel.evidenceMissing({{state: 'verifying'}}, {{lifecycle}})) process.exit(3);
-          if (DashboardModel.pendingGates(lifecycle)[0].id !== 'completion') process.exit(4);
-          const detail = {{lifecycle, artifacts: {{approvals: {{records: [{{role: 'product-owner'}}]}},
-            evidence: [{{result: 'failure', artifact_references: ['repo://report']}}]}}}};
-          if (DashboardModel.pendingApprovals(detail.artifacts, lifecycle).length !== 1) process.exit(5);
-          const context = DashboardModel.gateDecisionContext({{swarm_id: 'delivery'}},
-            [{{id: 'delivery', assignments: {{'product-owner': 'project:owner'}}}}], detail);
-          if (!context.ready || context.evidence.length !== 1) process.exit(6);
+          const work = {{swarm_id: 'delivery', id: 'release', state: 'verifying'}};
+          const overview = {{status: {{swarm_statuses: {{active: 1}}, attention: {{
+            'active-work': ['delivery/release'], 'blocked-work': [], 'failed-sessions': []
+          }}}}}};
+          const options = [
+            {{transition_source: 'verifying', transition_target: 'completed', gate_id: 'completion',
+              decision: 'approved', role_id: 'product-owner', actor_id: 'project:owner', allowed: true,
+              blockers: [], evidence_references: ['repo://report']}},
+            {{transition_source: 'verifying', transition_target: 'reviewing', gate_id: 'review',
+              decision: 'rejected', role_id: 'scrum-master', actor_id: 'project:facilitator', allowed: false,
+              blockers: [{{category: 'evidence', message: 'Evidence missing'}}], evidence_references: []}},
+            {{transition_source: 'verifying', transition_target: 'completed', gate_id: 'completion',
+              decision: 'approved', role_id: 'release-manager', actor_id: 'project:release', allowed: true,
+              blockers: [], evidence_references: ['repo://report']}},
+            {{transition_source: 'verifying', transition_target: 'completed', gate_id: 'completion',
+              decision: 'rejected', role_id: 'product-owner', actor_id: 'project:owner', allowed: true,
+              blockers: [], evidence_references: []}}
+          ];
+          const detail = {{control: {{gate_decision_options: {{options}}, lifecycle: {{states: [
+            {{id: 'verifying'}}, {{id: 'completed'}}
+          ]}}}}}};
+          if (!DashboardModel.isWorkInProgress(work, overview)) process.exit(1);
+          if (DashboardModel.decisionOptions(detail).length !== 4) process.exit(2);
+          if (DashboardModel.gateCount(detail) !== 2) process.exit(3);
+          if (!DashboardModel.hasEvidenceBlocker(detail)) process.exit(4);
+          if (DashboardModel.findOption(detail, DashboardModel.optionKey(options[1])) !== options[1]) process.exit(5);
+          if (DashboardModel.metrics(overview, {{'delivery/release': detail}}).pendingApprovals !== 2) process.exit(6);
+          if (new Set(options.map(DashboardModel.optionKey)).size !== 4) process.exit(7);
+          const columns = DashboardModel.boardColumns([work, {{...work, id: 'second', state: 'completed'}}],
+            {{'delivery/release': detail}});
+          if (columns.map((column) => column.state).join(',') !== 'verifying,completed') process.exit(8);
+          const assignments = DashboardModel.swarmAssignments(work, [{{id: 'delivery', assignments: {{
+            'product-owner': 'project:owner', 'release-manager': 'project:release'
+          }}}}]);
+          if (assignments.length !== 2) process.exit(9);
+        """
+        result = subprocess.run(["node", "-e", script], capture_output=True, text=True, check=False)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+        source = model.read_text(encoding="utf-8")
+        for removed in (
+            "pendingGates",
+            "gateDecisionContext",
+            "currentTransitions",
+            "ready: Boolean",
+        ):
+            self.assertNotIn(removed, source)
+
+    def test_control_model_covers_tabs_signatures_and_exact_commands(self) -> None:
+        model = PACKAGE / "static" / "control-model.js"
+        script = f"""
+          require({str(model)!r});
+          const option = {{gate_id: 'completion', actor_id: 'project:owner', decision: 'approved',
+            expected_state: 'verifying', transition_target: 'completed', role_id: 'product-owner',
+            evidence_references: ['repo://report']}};
+          const command = ControlModel.command(option, '  reviewed  ');
+          if (command.schema !== 'agora/application/approve-gate-command/v2') process.exit(1);
+          if (command.reason !== 'reviewed' || command.role_id !== 'product-owner') process.exit(2);
+          if (ControlModel.nextTab('summary', 'ArrowLeft') !== 'activity') process.exit(3);
+          const prepared = {{authentication_required: true}};
+          if (!ControlModel.authenticationIssue(prepared, {{algorithm: 'ed25519', fingerprint: '', signature: ''}})) process.exit(4);
+          const auth = {{algorithm: 'ed25519', fingerprint: 'a'.repeat(64), signature: 'signed'}};
+          if (ControlModel.authenticationIssue(prepared, auth)) process.exit(5);
+          if (ControlModel.revisionToken('/one', 'delivery/release', 'working-tree') ===
+              ControlModel.revisionToken('/two', 'delivery/release', 'working-tree')) process.exit(6);
+          if (ControlModel.authenticationIssue({{authentication_required: false}}, null)) process.exit(7);
+          const exact = {{...option, reason: 'reviewed', evidence_references: ['repo://report']}};
+          if (ControlModel.preparationIssue(exact, option, ' reviewed ')) process.exit(8);
+          if (!ControlModel.preparationIssue(exact, option, 'changed')) process.exit(9);
+          if (!ControlModel.preparationIssue(exact, {{...option, evidence_references: []}}, 'reviewed')) process.exit(10);
+          if (ControlModel.nextTab('summary', 'End') !== 'activity') process.exit(11);
+          if (ControlModel.nextTab('activity', 'Home') !== 'summary') process.exit(12);
         """
         result = subprocess.run(["node", "-e", script], capture_output=True, text=True, check=False)
         self.assertEqual(result.returncode, 0, result.stderr)
