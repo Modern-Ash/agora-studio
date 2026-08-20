@@ -1,15 +1,16 @@
 "use strict";
 
 (function exposeDashboardModel(root) {
-  const terminalStates = new Set(["completed", "done", "closed", "cancelled", "canceled", "failed"]);
-  const inactiveSwarmStates = new Set(["completed", "closed", "cancelled", "canceled", "failed"]);
 
   function workKey(work) {
     return `${work.swarm_id}/${work.id}`;
   }
 
-  function isWorkInProgress(work) {
-    return !terminalStates.has(String(work.state || "").toLowerCase());
+  function isWorkInProgress(work, detail = null) {
+    const state = (detail?.lifecycle?.method?.states || []).find(
+      (candidate) => candidate.id === work?.state,
+    );
+    return state ? state.terminal !== true : true;
   }
 
   function isBlocked(work) {
@@ -17,9 +18,7 @@
   }
 
   function activeSwarms(swarms) {
-    return (swarms || []).filter(
-      (swarm) => !inactiveSwarmStates.has(String(swarm.status || "").toLowerCase()),
-    );
+    return (swarms || []).filter((swarm) => swarm.status === "active");
   }
 
   function assignmentFor(work, swarms) {
@@ -49,47 +48,36 @@
   }
 
   function pendingApprovals(artifacts, lifecycle = null) {
-    const required = [...new Set(currentTransitions(lifecycle).flatMap(
-      (transition) => transition.required_approval_roles || [],
-    ))];
-    if (required.length) {
-      const satisfied = new Set((artifacts?.approvals?.records || []).map((item) => item.role));
-      return required
-        .filter((role) => !satisfied.has(role))
-        .map((role) => ({ role, satisfied: false }));
-    }
-    return (artifacts?.approvals?.satisfaction || []).filter((item) => !item.satisfied);
+    const missing = currentTransitions(lifecycle).flatMap((transition) =>
+      (transition.blockers || [])
+        .filter((blocker) => blocker?.category === "approval")
+        .flatMap((blocker) => blocker.references || []));
+    return [...new Set(missing)].map((role) => ({ role, satisfied: false }));
   }
 
   function gateDecisionContext(work, swarms, detail) {
     const gate = pendingGates(detail?.lifecycle)[0] || null;
-    const satisfied = new Set(
-      (detail?.artifacts?.approvals?.records || []).map((item) => item.role),
-    );
-    const role = (gate?.required_approval_roles || []).find(
-      (candidate) => !satisfied.has(candidate),
-    ) || null;
+    const role = (gate?.blockers || [])
+      .filter((blocker) => blocker?.category === "approval")
+      .flatMap((blocker) => blocker.references || [])[0] || null;
     const swarm = (swarms || []).find((candidate) => candidate.id === work?.swarm_id);
     const actor = role ? swarm?.assignments?.[role] || null : null;
-    const evidence = (detail?.artifacts?.evidence || []).filter(
-      (record) => record.result === "success",
-    );
+    const evidence = detail?.artifacts?.evidence || [];
     return {
       gate,
       role,
       actor,
       evidence,
-      ready: Boolean(gate && role && actor && evidence.length),
+      ready: Boolean(gate && role && actor),
     };
   }
 
   function evidenceMissing(work, detail) {
-    if (!isWorkInProgress(work)) return false;
+    if (!isWorkInProgress(work, detail)) return false;
     const blockers = currentTransitions(detail?.lifecycle).flatMap(
       (transition) => transition.blockers || [],
     );
-    if (blockers.some((blocker) => /evidence/i.test(String(blocker)))) return true;
-    return !(work.evidence_results || []).includes("success");
+    return blockers.some((blocker) => blocker?.category === "evidence");
   }
 
   function stateOrder(work, details) {
@@ -128,8 +116,8 @@
       (session) => String(session.status || "").toLowerCase() === "failed",
     ).length;
     return {
-      activeSwarms: activeSwarms(overview?.swarms).length,
-      workInProgress: work.filter(isWorkInProgress).length,
+      activeSwarms: overview?.status?.swarm_statuses?.active ?? activeSwarms(overview?.swarms).length,
+      workInProgress: work.filter((item) => isWorkInProgress(item, details?.[workKey(item)])).length,
       blockedWork: work.filter(isBlocked).length,
       pendingApprovals: detailValues.reduce(
         (total, detail) => total + pendingApprovals(detail.artifacts, detail.lifecycle).length,

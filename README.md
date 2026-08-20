@@ -4,145 +4,132 @@
 
 # Agora Studio
 
-Agora Studio is the experimental web control plane for Agora projects. The current `0.x`
-implementation is local-first: its operational views are read-only, and its first governed action
-can approve or reject a pending gate through Agora Core.
+Agora Studio is the experimental, local-first web control plane for Agora projects. Studio 0.2
+renders operational state through Agora Core application services and offers one governed
+mutation: approving or rejecting a pending gate.
 
 > [!WARNING]
-> Agora Studio is experimental. Its UI and compatibility surface may change between `0.x`
-> releases. Do not expose the server to untrusted networks.
-
-## What is available today
-
-Studio provides these views:
-
-- **Overview** — active Method Pack, operational metrics, immediate work focus, and recent
-  activity.
-- **Work** — a read-only board grouped by Method Pack state. Work detail includes Summary, Spec,
-  Lifecycle, Artifacts, Evidence, Approvals, and Activity tabs. The Approvals tab can submit a
-  reasoned gate approval or rejection when a durable actor, role, and evidence are available.
-- **Swarms** — swarm status, method, objective, and assignments.
-- **Actors** — configured actors, capabilities, and durable references.
-- **Activity** — a bounded, filterable timeline derived from durable records.
-
-Artifacts, evidence, and approvals are visualized only when durable relationships exist. Studio
-does not infer or manufacture missing links. Failed reads are shown as partial-data states while
-the last verified data remains visible.
+> Studio is experimental software. Keep it on loopback and review sensitive projects before
+> opening them.
 
 ## Architecture
 
-Agora Studio is local-first during the `0.x` series:
-
 ```text
-Browser on 127.0.0.1
-        |
-Agora Studio frontend -> /api/v1 -> loopback HTTP server
-                                  |              |
-                    read-only projections       AgoraCommandService
-                                  |              |
-                     bounded CLI/Markdown/Git    governed transaction
-                                  \              /
-                           selected Agora project
+Browser -> /api/v1 -> Studio API -> AgoraReadService / AgoraCommandService -> Agora Core
 ```
 
-Markdown and Git remain the source of truth. Studio keeps only the active project selection in
-memory: it has no database, authentication system, remote service, or multi-user mode. The
-frontend is bundled with the Python package and makes no CDN or third-party network requests.
+The browser consumes only `/api/v1`. Studio does not execute Agora CLI, spawn subprocesses, read
+durable protocol files, parse Markdown/front matter, or calculate lifecycle rules. Core owns
+project validation, Method Pack topology, transition availability, gates, blockers, artifacts,
+evidence, approvals, traceability, specification history, persistence, and Activity.
 
-The gate-decision endpoint consumes Agora Core's versioned `ApproveGateCommand` through
-`AgoraCommandService`; Studio does not reproduce authority, evidence, lifecycle, or transaction
-rules. Existing read projections still predate that boundary and invoke a small allowlist of
-read-only Agora CLI commands. That bridge is an implementation constraint, not a conceptual
-dependency on terminal workflows.
+Markdown and Git remain the source of truth through Core's persistence adapters. Studio keeps only
+the selected canonical project path and a random CSRF token in process memory. There is no
+database, remote service, multi-user mode, telemetry, or frontend framework.
 
-## Requirements
+## Views
 
-- Python 3.11, 3.12, or 3.13
-- An `agora` executable on `PATH`
-- An editable Agora Core environment exposing `AgoraCommandService` for governed actions
-- A local Agora project containing `.agora/project.md`
+- **Overview** — active Method Pack, active swarms, work in progress, blocked work, approvals,
+  evidence, failed sessions, and recent Activity.
+- **Work** — a read-only board grouped by Core-reported Method state, with Summary, Spec,
+  Lifecycle, Artifacts, Evidence, Approvals, and Activity tabs.
+- **Swarms** — status, Method Pack, objective, assignments, and work states.
+- **Actors** — configured actors, capabilities, durable references, and runtime metadata.
+- **Activity** — a bounded, filterable timeline of durable Core events.
+
+Gate approval and rejection use Core's versioned `ApproveGateCommand`. Studio validates only the
+HTTP request envelope, waits for Core's durable response, and then refreshes lifecycle and
+Activity. There is no optimistic mutation.
 
 ## Install and run
 
-From a checkout:
+Python 3.11, 3.12, and 3.13 are supported.
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install -e ../agora
-python -m pip install .
+python -m pip install "agora-studio==0.2.0"
 agora-studio --version
 agora-studio --port 7357
 ```
 
-Open <http://127.0.0.1:7357>, select a local Agora project directory, and load its views. The
-same server can be run from source with `python -m agora_studio`.
+Installing the Studio wheel installs a compatible Agora Core wheel automatically. No `agora`
+executable or sibling checkout is required. Open <http://127.0.0.1:7357> and select a local Agora
+project.
 
-For development:
+For development with the sibling Core checkout:
 
 ```bash
-python -m pip install -e ".[dev]"
-ruff format --check .
-ruff check .
-python -m unittest discover -s tests -v
-python -m build
+python3 -m venv .venv
+.venv/bin/python -m pip install -e ../agora -e ".[dev]"
+.venv/bin/ruff format --check .
+.venv/bin/ruff check .
+.venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python -m build
 ```
+
+## Core compatibility
+
+| Studio | Agora Core package | Application contracts | Durable protocol |
+| --- | --- | --- | --- |
+| 0.1.x | Transitional/implicit | CLI reads plus gate command v1 | Project-defined |
+| 0.2.x | `agora-framework>=0.5,<0.6` | Core 0.5 read DTOs and gate command v1 | Project-defined and independently versioned |
+| 0.3.x+ | Not defined | Must be negotiated before adoption | Independent |
+
+Three versions must not be conflated:
+
+- **Studio version** describes this web package and API adapter.
+- **Core version** describes the installed `agora-framework` Python distribution.
+- **Protocol version** belongs to the selected durable Agora project.
+
+Studio validates the Core package range and every DTO schema it consumes. Missing Core, an
+unsupported Core minor, or an unexpected schema returns an explicit compatibility error; Studio
+never falls back to the CLI or a local parser.
+
+## HTTP API
+
+All current endpoints are under `/api/v1`:
+
+- `GET /project`, `/overview`, `/actors`, `/swarms`, `/work-items`, `/sessions`, `/activity`;
+- `GET /work-items/{swarm}/{work}`;
+- `GET /lifecycle`, `/artifacts`, `/evidence`, `/approvals`, `/traceability`,
+  `/specification-history`;
+- `POST /projects/select`;
+- `POST /work-items/{swarm}/{work}/approvals`.
+
+Every successful projection and error has a schema identifier. Missing durable information is
+returned as an explicit unavailable projection where Core supports it; compatibility and read
+failures remain distinct HTTP errors. Legacy unversioned API aliases are removed.
 
 ## Security boundaries
 
-- The server binds only to `127.0.0.1`; non-loopback hosts are not configurable.
-- Project selection requires a real, readable directory with `.agora/project.md` and successful
-  Agora project identification.
-- CLI calls use exact argument arrays, `shell=False`, timeouts, and an explicit read-only
-  allowlist. Browser input cannot choose arbitrary Agora subcommands.
-- Activity filters are length- and type-checked before a process starts.
-- Lifecycle and artifact paths are resolved inside the selected project and reject traversal,
-  absolute paths, symlink escapes, and unsafe Git object names.
-- Studio never edits `.agora/` or Git directly. Gate decisions are sent as versioned commands to
-  Agora Core, which revalidates authority and evidence and owns the durable transaction.
-- The gate endpoint accepts JSON only, caps request bodies at 64 KiB, validates slugs and fields,
-  derives project identity server-side, and never accepts a project path from the browser.
-- Durable text is rendered with DOM text nodes rather than injected as HTML.
+- The server binds only to IPv4 loopback.
+- Every request validates `Host`.
+- Mutating requests require an exact same-loopback `Origin` and the process-random
+  `X-Agora-Studio-CSRF` token obtained from `GET /api/v1/project`.
+- The token is held only in memory, is not logged, and is never persisted in the selected project.
+- JSON mutations require `application/json` and a body no larger than 64 KiB.
+- Responses set CSP, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, no-referrer, and
+  no-store headers where appropriate. Studio emits no permissive CORS header.
+- Durable text is rendered through text nodes, not interpreted as HTML.
+- Concurrent gate requests are serialized at the HTTP adapter and remain governed by Core's
+  transaction and stale-precondition checks.
 
-Loopback binding is a safety boundary, not authentication. Anyone able to access the local user
-session or loopback port may see the selected project's durable records. Review sensitive
-projects before opening them and do not proxy Studio onto a network.
+Loopback is an exposure boundary, not user authentication. Anyone with access to the same local
+session may be able to view the selected project's durable data.
 
-## Agora Core compatibility
+## Verification
 
-There is not yet a versioned, negotiated compatibility contract between Agora Studio and Agora
-Core for the legacy read bridge. Current read compatibility is limited to the JSON emitted by
-these operations:
+The suite includes fake-gateway unit tests and a non-mocked Core–Studio integration that creates a
+temporary Agora project, starts the loopback server, reads the dashboard projections, approves and
+rejects gates through `AgoraCommandService`, verifies Activity and persistence, and rereads the
+durable state.
 
-```text
-agora status
-agora actor list
-agora swarm list
-agora work list
-agora session list
-agora activity list
-```
+CI builds the Core wheel, installs it, builds and installs the Studio wheel, runs Python
+3.11–3.13, and checks that production code contains no CLI bridge, subprocess access, protocol
+parser, or direct durable-file read.
 
-Studio validates the top-level result types, the fields required to render an overview, and the
-complete Activity event shape. Compatibility tests exercise that minimum shape and fail closed
-when required durable data is absent or mistyped. This is narrower than a stable Core API; a
-future release should replace the CLI bridge with versioned, serializable Agora application
-service contracts.
+## Contributing and license
 
-The governed gate action has a narrower explicit contract:
-`agora/application/approve-gate-command/v1`. If that command or `AgoraCommandService` is absent,
-Studio fails closed with `command.version-incompatible`; it does not fall back to a CLI mutation.
-
-The Studio package version and the `.agora/project.md` protocol version are independent. This
-release is Agora Studio `0.1.0`; it does not claim compatibility with every Agora Core `0.x`
-release.
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, validation, and architectural guardrails.
-Security-sensitive findings should not be published in a public issue before maintainers have a
-chance to assess them.
-
-## License
-
-Licensed under the [Apache License 2.0](LICENSE).
+See [CONTRIBUTING.md](CONTRIBUTING.md). Agora Studio is licensed under the
+[Apache License 2.0](LICENSE).
