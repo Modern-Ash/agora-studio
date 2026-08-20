@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import unittest
+from dataclasses import replace
 from pathlib import Path
 from unittest.mock import patch
 
@@ -34,8 +37,11 @@ class FakeDTO:
 class FakeService:
     prepared = None
     projection = None
+    command = None
 
     def prepare_gate_decision(self, command):
+        self.command = command
+        type(self).command = command
         return self.prepared
 
     def approve_gate(self, command):
@@ -48,7 +54,7 @@ class FakeServiceType:
         return FakeService()
 
 
-def request(authentication=None) -> GateApprovalRequest:
+def request(authentication=None, precondition_digest=None) -> GateApprovalRequest:
     return GateApprovalRequest(
         gate_id="completion",
         actor_id="project:owner",
@@ -58,13 +64,14 @@ def request(authentication=None) -> GateApprovalRequest:
         transition_target="completed",
         role_id="product-owner",
         evidence_references=("repo://report",),
+        precondition_digest=precondition_digest,
         authentication=authentication,
     )
 
 
 def valid_projection() -> dict[str, object]:
     return {
-        "schema": "agora/application/gate-decision-projection/v1",
+        "schema": "agora/application/gate-decision-projection/v2",
         "project_identity": "demo",
         "swarm_id": "delivery",
         "work_id": "release",
@@ -73,6 +80,8 @@ def valid_projection() -> dict[str, object]:
         "role_id": "product-owner",
         "decision": "approved",
         "reason": "Evidence reviewed",
+        "evidence_references": ["repo://report"],
+        "precondition_digest": "b" * 64,
         "lifecycle": {
             "schema": "agora/application/lifecycle-projection/v2",
             "swarm_id": "delivery",
@@ -109,12 +118,32 @@ def valid_projection() -> dict[str, object]:
 
 
 def valid_preparation() -> dict[str, object]:
+    canonical = {
+        "schema": "agora/application/approve-gate-command/v3",
+        "authorization_schema": "agora/application/approve-gate-authorization/v3",
+        "project_identity": "demo",
+        "swarm_id": "delivery",
+        "work_id": "release",
+        "gate_id": "completion",
+        "actor_id": "project:owner",
+        "decision": "approved",
+        "reason": "Evidence reviewed",
+        "expected_state": "verifying",
+        "transition_target": "completed",
+        "role_id": "product-owner",
+        "evidence_references": ["repo://report"],
+        "precondition_digest": "b" * 64,
+    }
+    authorization_payload = (
+        json.dumps(canonical, ensure_ascii=True, separators=(",", ":"), sort_keys=True) + "\n"
+    )
     return {
-        "schema": "agora/application/prepared-gate-decision/v1",
-        "command_schema": "agora/application/approve-gate-command/v2",
-        "authorization_schema": "agora/application/approve-gate-authorization/v2",
-        "authorization_payload": "canonical\n",
-        "authorization_digest": "a" * 64,
+        "schema": "agora/application/prepared-gate-decision/v2",
+        "command_schema": "agora/application/approve-gate-command/v3",
+        "authorization_schema": "agora/application/approve-gate-authorization/v3",
+        "authorization_payload": authorization_payload,
+        "authorization_digest": hashlib.sha256(authorization_payload.encode("ascii")).hexdigest(),
+        "precondition_digest": "b" * 64,
         "project_identity": "demo",
         "swarm_id": "delivery",
         "work_id": "release",
@@ -130,14 +159,14 @@ def valid_preparation() -> dict[str, object]:
         "authentication_algorithm": "ed25519",
         "authentication_fingerprint": "a" * 64,
         "authentication_public_key": "public",
-        "freshness": "expected-state",
+        "freshness": "governed-material/v1",
         "expires_at": None,
     }
 
 
 class CommandGatewayTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.selection = ProjectSelection(Path("/tmp/demo"), "demo", "0.6.0")
+        self.selection = ProjectSelection(Path("/tmp/demo"), "demo", "0.7.0")
         self.gateway = CoreCommandGateway()
         self.bindings = patch.object(
             CoreCommandGateway,
@@ -153,7 +182,7 @@ class CommandGatewayTests(unittest.TestCase):
         FakeService.prepared = FakeDTO(valid_preparation())
         payload = self.gateway.prepare_gate(self.selection, "delivery", "release", request())
         self.assertTrue(payload["authentication_required"])
-        self.assertEqual(payload["authorization_digest"], "a" * 64)
+        self.assertEqual(payload["precondition_digest"], "b" * 64)
 
         malformed = {
             "changed expected state": ("expected_state", "reviewing", "core.schema-incompatible"),
@@ -178,6 +207,21 @@ class CommandGatewayTests(unittest.TestCase):
                     self.gateway.prepare_gate(self.selection, "delivery", "release", request())
                 self.assertEqual(captured.exception.code, code)
 
+    def test_preserves_intent_text_and_accepts_core_canonical_values(self) -> None:
+        FakeService.prepared = FakeDTO(valid_preparation())
+        intent = replace(
+            request(),
+            reason="  Evidence\n reviewed  ",
+            evidence_references=(" repo://report ", "repo://report"),
+        )
+
+        payload = self.gateway.prepare_gate(self.selection, "delivery", "release", intent)
+
+        self.assertEqual(FakeService.command.reason, intent.reason)
+        self.assertEqual(FakeService.command.evidence_references, intent.evidence_references)
+        self.assertEqual(payload["reason"], "Evidence reviewed")
+        self.assertEqual(payload["evidence_references"], ["repo://report"])
+
     def test_validates_the_complete_gate_decision_projection(self) -> None:
         FakeService.projection = FakeDTO(valid_projection())
         payload = self.gateway.approve_gate(
@@ -189,7 +233,8 @@ class CommandGatewayTests(unittest.TestCase):
                     "algorithm": "ed25519",
                     "fingerprint": "a" * 64,
                     "signature": "signed",
-                }
+                },
+                "b" * 64,
             ),
         )
         self.assertEqual(payload["decision"], "approved")
@@ -197,7 +242,7 @@ class CommandGatewayTests(unittest.TestCase):
 
     def test_rejects_missing_future_and_malformed_projection_fields(self) -> None:
         cases = []
-        for schema in (None, "agora/application/gate-decision-projection/v2"):
+        for schema in (None, "agora/application/gate-decision-projection/v3"):
             payload = valid_projection()
             payload["schema"] = schema
             cases.append((payload, "command.version-incompatible"))
@@ -227,17 +272,27 @@ class CommandGatewayTests(unittest.TestCase):
             with self.subTest(payload=payload):
                 FakeService.projection = FakeDTO(payload)
                 with self.assertRaises(CommandAdapterError) as captured:
-                    self.gateway.approve_gate(self.selection, "delivery", "release", request())
+                    self.gateway.approve_gate(
+                        self.selection,
+                        "delivery",
+                        "release",
+                        request(precondition_digest="b" * 64),
+                    )
                 self.assertEqual(captured.exception.code, code)
 
         FakeService.projection = object()
         with self.assertRaises(CommandAdapterError) as captured:
-            self.gateway.approve_gate(self.selection, "delivery", "release", request())
+            self.gateway.approve_gate(
+                self.selection,
+                "delivery",
+                "release",
+                request(precondition_digest="b" * 64),
+            )
         self.assertEqual(captured.exception.code, "command.version-incompatible")
 
     def test_http_shape_validation_rejects_missing_or_invalid_signatures(self) -> None:
         base = {
-            "schema": "agora/application/approve-gate-command/v2",
+            "schema": "agora/application/approve-gate-command/v3",
             "gate_id": "completion",
             "actor_id": "project:owner",
             "decision": "approved",
@@ -246,6 +301,7 @@ class CommandGatewayTests(unittest.TestCase):
             "transition_target": "completed",
             "role_id": "product-owner",
             "evidence_references": [],
+            "precondition_digest": None,
         }
         self.assertIsNone(normalize_gate_approval(base).authentication)
         for authentication in (

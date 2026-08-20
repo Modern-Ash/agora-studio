@@ -31,8 +31,14 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from agora_studio.server import create_server
 
 
-def create_gate_project(root: Path) -> Path:
-    project = root / "governed-project"
+def create_gate_project(
+    root: Path,
+    *,
+    include_evidence: bool = True,
+    owner_public_key: Path | None = None,
+    name: str = "governed-project",
+) -> Path:
+    project = root / name
     project.mkdir()
     workspace = AgoraWorkspace(cwd=project)
     workspace.initialize(InitInput(integration="generic", default_method="scrum"))
@@ -43,6 +49,8 @@ def create_gate_project(root: Path) -> Path:
             kind="human",
             capabilities=["backlog-management", "acceptance"],
             scope="project",
+            public_key=str(owner_public_key) if owner_public_key else None,
+            require_authentication=owner_public_key is not None,
         ),
         AddActorInput(
             id="facilitator",
@@ -113,16 +121,17 @@ def create_gate_project(root: Path) -> Path:
             uri="repo://reports/release.txt",
         )
     )
-    workspace.add_evidence(
-        AddEvidenceInput(
-            swarm_id="delivery",
-            work_id="release",
-            actor_id="developer",
-            type="test-run",
-            result="success",
-            artifact_refs=["repo://reports/release.txt"],
+    if include_evidence:
+        workspace.add_evidence(
+            AddEvidenceInput(
+                swarm_id="delivery",
+                work_id="release",
+                actor_id="developer",
+                type="test-run",
+                result="success",
+                artifact_refs=["repo://reports/release.txt"],
+            )
         )
-    )
     return project
 
 
@@ -200,7 +209,7 @@ def gate_payload(
     decision: str = "approved", expected_state: str = "verifying"
 ) -> dict[str, object]:
     return {
-        "schema": "agora/application/approve-gate-command/v2",
+        "schema": "agora/application/approve-gate-command/v3",
         "gate_id": "completion",
         "actor_id": "project:owner",
         "decision": decision,
@@ -209,6 +218,25 @@ def gate_payload(
         "transition_target": "completed",
         "role_id": "product-owner",
         "evidence_references": ["repo://reports/release.txt"],
+        "precondition_digest": None,
+    }
+
+
+def confirmation_payload(
+    prepared: dict[str, object], authentication: dict[str, str] | None = None
+) -> dict[str, object]:
+    return {
+        "schema": prepared["command_schema"],
+        "gate_id": prepared["gate_id"],
+        "actor_id": prepared["actor_id"],
+        "decision": prepared["decision"],
+        "reason": prepared["reason"],
+        "expected_state": prepared["expected_state"],
+        "transition_target": prepared["transition_target"],
+        "role_id": prepared["role_id"],
+        "evidence_references": prepared["evidence_references"],
+        "precondition_digest": prepared["precondition_digest"],
+        "authentication": authentication,
     }
 
 
@@ -292,7 +320,7 @@ class RealCoreStudioIntegrationTests(unittest.TestCase):
                     "POST", "/api/v1/projects/select", {"path": str(project)}
                 )
                 self.assertEqual(status, 200)
-                self.assertEqual(opened["project"]["core_version"], "0.6.0")
+                self.assertEqual(opened["project"]["core_version"], "0.7.0")
 
                 responses = {}
                 for route in (
@@ -327,20 +355,24 @@ class RealCoreStudioIntegrationTests(unittest.TestCase):
                 self.assertFalse(prepared["preparation"]["authentication_required"])
                 self.assertEqual(
                     prepared["preparation"]["command_schema"],
-                    "agora/application/approve-gate-command/v2",
+                    "agora/application/approve-gate-command/v3",
                 )
+                self.assertRegex(prepared["preparation"]["precondition_digest"], r"^[0-9a-f]{64}$")
 
                 status, stale = studio.request(
                     "POST",
                     "/api/v1/work-items/delivery/release/approvals",
-                    gate_payload(expected_state="implementing"),
+                    {
+                        **confirmation_payload(prepared["preparation"]),
+                        "precondition_digest": "0" * 64,
+                    },
                 )
                 self.assertEqual((status, stale["error"]), (409, "command.stale-precondition"))
 
                 status, decision = studio.request(
                     "POST",
                     "/api/v1/work-items/delivery/release/approvals",
-                    gate_payload(),
+                    confirmation_payload(prepared["preparation"]),
                 )
                 self.assertEqual(status, 200, decision)
                 self.assertEqual(decision["projection"]["decision"], "approved")
@@ -357,10 +389,16 @@ class RealCoreStudioIntegrationTests(unittest.TestCase):
                 status, duplicate = studio.request(
                     "POST",
                     "/api/v1/work-items/delivery/release/approvals",
+                    confirmation_payload(prepared["preparation"]),
+                )
+                self.assertEqual((status, duplicate["error"]), (409, "command.stale-precondition"))
+                status, resolved = studio.request(
+                    "POST",
+                    "/api/v1/work-items/delivery/release/approvals/prepare",
                     gate_payload(),
                 )
                 self.assertEqual(
-                    (status, duplicate["error"]), (409, "command.gate-already-resolved")
+                    (status, resolved["error"]), (409, "command.gate-already-resolved")
                 )
             finally:
                 studio.close()
@@ -377,10 +415,16 @@ class RealCoreStudioIntegrationTests(unittest.TestCase):
                     studio.request("POST", "/api/v1/projects/select", {"path": str(project)})[0],
                     200,
                 )
+                status, prepared_response = studio.request(
+                    "POST",
+                    "/api/v1/work-items/delivery/release/approvals/prepare",
+                    gate_payload("rejected"),
+                )
+                self.assertEqual(status, 200, prepared_response)
                 status, decision = studio.request(
                     "POST",
                     "/api/v1/work-items/delivery/release/approvals",
-                    gate_payload("rejected"),
+                    confirmation_payload(prepared_response["preparation"]),
                 )
                 self.assertEqual(status, 200, decision)
                 self.assertEqual(decision["projection"]["decision"], "rejected")
@@ -440,14 +484,14 @@ class RealCoreStudioIntegrationTests(unittest.TestCase):
                     signature = base64.b64encode(
                         private_key.sign(prepared["authorization_payload"].encode("ascii"))
                     ).decode("ascii")
-                    signed = {
-                        **unsigned,
-                        "authentication": {
+                    signed = confirmation_payload(
+                        prepared,
+                        {
                             "algorithm": prepared["authentication_algorithm"],
                             "fingerprint": prepared["authentication_fingerprint"],
                             "signature": signature,
                         },
-                    }
+                    )
                     status, decision = studio.request(
                         "POST", "/api/v1/work-items/delivery/release/approvals", signed
                     )

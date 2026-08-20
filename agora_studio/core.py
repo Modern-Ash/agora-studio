@@ -12,8 +12,8 @@ from threading import RLock
 from typing import Callable, Mapping, Protocol
 
 CORE_DISTRIBUTION = "agora-framework"
-MINIMUM_CORE_VERSION = (0, 6, 0)
-MAXIMUM_CORE_VERSION = (0, 7, 0)
+MINIMUM_CORE_VERSION = (0, 7, 0)
+MAXIMUM_CORE_VERSION = (0, 8, 0)
 
 SCHEMAS = {
     "overview": "agora/application/project-overview/v1",
@@ -36,9 +36,9 @@ SCHEMAS = {
     "specification": "agora/application/specification-summary/v1",
     "specification_revision_summary": "agora/application/specification-revision-summary/v1",
     "specification_revision": "agora/application/specification-revision-detail/v1",
-    "gate_option": "agora/application/gate-decision-option-summary/v1",
-    "gate_options": "agora/application/gate-decision-options-projection/v1",
-    "work_control": "agora/application/work-control-projection/v1",
+    "gate_option": "agora/application/gate-decision-option-summary/v2",
+    "gate_options": "agora/application/gate-decision-options-projection/v2",
+    "work_control": "agora/application/work-control-projection/v2",
 }
 
 
@@ -199,13 +199,13 @@ class CoreReadGateway:
             except PackageNotFoundError as error:
                 raise CoreGatewayError(
                     "core.unavailable",
-                    "Agora Core is not installed; Studio requires agora-framework>=0.6,<0.7",
+                    "Agora Core is not installed; Studio requires agora-framework>=0.7,<0.8",
                 ) from error
         parsed = _version_tuple(self._core_version)
         if not MINIMUM_CORE_VERSION <= parsed < MAXIMUM_CORE_VERSION:
             raise CoreGatewayError(
                 "core.version-incompatible",
-                f"Agora Studio requires Agora Core >=0.6,<0.7; found {self._core_version}",
+                f"Agora Studio requires Agora Core >=0.7,<0.8; found {self._core_version}",
             )
 
     def _module(self) -> object:
@@ -357,6 +357,15 @@ class CoreReadGateway:
             "gate_decision_options": SCHEMAS["gate_options"],
         }
         nested = {field: self._nested(payload, field, schema) for field, schema in required.items()}
+        snapshot_token = payload.get("snapshot_token")
+        if (
+            not isinstance(snapshot_token, str)
+            or re.fullmatch(r"[0-9a-f]{64}", snapshot_token) is None
+        ):
+            raise CoreGatewayError(
+                "core.schema-incompatible",
+                "Core response field snapshot_token must be a lowercase SHA-256 value",
+            )
         for field in ("work", "lifecycle", "traceability", "gate_decision_options"):
             identity = (("swarm_id", swarm), ("id" if field == "work" else "work_id", work))
             for identity_field, expected in identity:
@@ -366,19 +375,58 @@ class CoreReadGateway:
                         f"Core changed {identity_field} at {field}",
                     )
 
+        state_values = (
+            nested["work"].get("state"),
+            nested["lifecycle"].get("current_state"),
+            nested["traceability"].get("state"),
+            nested["gate_decision_options"].get("current_state"),
+        )
+        if (
+            not all(isinstance(value, str) and value for value in state_values)
+            or len(set(state_values)) != 1
+        ):
+            raise CoreGatewayError(
+                "core.schema-incompatible",
+                "Core work control projection contains inconsistent lifecycle states",
+            )
+        operational_values = (
+            nested["work"].get("operational_status"),
+            nested["lifecycle"].get("operational_status"),
+            nested["gate_decision_options"].get("operational_status"),
+        )
+        if (
+            not all(isinstance(value, str) and value for value in operational_values)
+            or len(set(operational_values)) != 1
+        ):
+            raise CoreGatewayError(
+                "core.schema-incompatible",
+                "Core work control projection contains inconsistent operational status",
+            )
+
+        materials: dict[str, list[dict[str, object]]] = {}
         for field, schema in (
             ("artifacts", SCHEMAS["artifact"]),
             ("evidence", SCHEMAS["evidence"]),
             ("approvals", SCHEMAS["approval"]),
         ):
-            self._nested_many(payload, field, schema)
-            self._nested_many(nested["work"], field, schema, prefix="work")
+            materials[field] = self._nested_many(payload, field, schema)
+            work_materials = self._nested_many(nested["work"], field, schema, prefix="work")
+            if materials[field] != work_materials:
+                raise CoreGatewayError(
+                    "core.schema-incompatible",
+                    f"Core work control projection contains inconsistent {field}",
+                )
 
         for field, schema in (
             ("artifacts", SCHEMAS["artifact"]),
             ("evidence", SCHEMAS["evidence"]),
         ):
-            self._nested_many(nested["traceability"], field, schema, prefix="traceability")
+            traced = self._nested_many(nested["traceability"], field, schema, prefix="traceability")
+            if materials[field] != traced:
+                raise CoreGatewayError(
+                    "core.schema-incompatible",
+                    f"Core traceability contains inconsistent {field}",
+                )
 
         self._nested_many(
             nested["traceability"], "activity", SCHEMAS["activity"], prefix="traceability"
@@ -429,6 +477,42 @@ class CoreReadGateway:
                 SCHEMAS["gate_blocker"],
                 prefix=f"gate_decision_options.options[{index}]",
             )
+            evidence_by_type = option.get("evidence_references_by_type")
+            evidence_references = option.get("evidence_references")
+            if not isinstance(evidence_by_type, dict) or any(
+                not isinstance(kind, str)
+                or not kind
+                or not isinstance(references, list)
+                or any(not isinstance(reference, str) or not reference for reference in references)
+                for kind, references in evidence_by_type.items()
+            ):
+                raise CoreGatewayError(
+                    "core.schema-incompatible",
+                    "Core response field "
+                    f"gate_decision_options.options[{index}].evidence_references_by_type "
+                    "must map evidence types to reference arrays",
+                )
+            if not isinstance(evidence_references, list) or any(
+                not isinstance(reference, str) or not reference for reference in evidence_references
+            ):
+                raise CoreGatewayError(
+                    "core.schema-incompatible",
+                    "Core response field "
+                    f"gate_decision_options.options[{index}].evidence_references "
+                    "must be a reference array",
+                )
+            typed_union = list(
+                dict.fromkeys(
+                    reference
+                    for references in evidence_by_type.values()
+                    for reference in references
+                )
+            )
+            if typed_union != evidence_references:
+                raise CoreGatewayError(
+                    "core.schema-incompatible",
+                    "Core gate option contains inconsistent typed evidence references",
+                )
         return payload
 
     @staticmethod

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 from collections.abc import Mapping
 from dataclasses import dataclass
@@ -9,10 +11,10 @@ from typing import Protocol
 
 from .core import ProjectSelection
 
-APPROVE_GATE_SCHEMA = "agora/application/approve-gate-command/v2"
-AUTHORIZATION_SCHEMA = "agora/application/approve-gate-authorization/v2"
-PREPARED_GATE_SCHEMA = "agora/application/prepared-gate-decision/v1"
-GATE_PROJECTION_SCHEMA = "agora/application/gate-decision-projection/v1"
+APPROVE_GATE_SCHEMA = "agora/application/approve-gate-command/v3"
+AUTHORIZATION_SCHEMA = "agora/application/approve-gate-authorization/v3"
+PREPARED_GATE_SCHEMA = "agora/application/prepared-gate-decision/v2"
+GATE_PROJECTION_SCHEMA = "agora/application/gate-decision-projection/v2"
 LIFECYCLE_SCHEMA = "agora/application/lifecycle-projection/v2"
 ACTIVITY_SCHEMA = "agora/application/activity-entry/v1"
 _SLUG = re.compile(r"[a-z][a-z0-9-]*")
@@ -40,6 +42,7 @@ class GateApprovalRequest:
     transition_target: str
     role_id: str
     evidence_references: tuple[str, ...]
+    precondition_digest: str | None
     authentication: Mapping[str, str] | None
 
 
@@ -61,7 +64,9 @@ class GateCommandGateway(Protocol):
     ) -> dict[str, object]: ...
 
 
-def normalize_gate_approval(payload: object) -> GateApprovalRequest:
+def normalize_gate_approval(
+    payload: object, *, for_confirmation: bool = False
+) -> GateApprovalRequest:
     if not isinstance(payload, dict):
         raise CommandAdapterError("invalid_request", "the JSON body must be an object")
     allowed = {
@@ -74,6 +79,7 @@ def normalize_gate_approval(payload: object) -> GateApprovalRequest:
         "transition_target",
         "role_id",
         "evidence_references",
+        "precondition_digest",
         "authentication",
     }
     unknown = set(payload) - allowed
@@ -89,7 +95,6 @@ def normalize_gate_approval(payload: object) -> GateApprovalRequest:
         "gate_id",
         "actor_id",
         "decision",
-        "reason",
         "expected_state",
         "transition_target",
         "role_id",
@@ -97,7 +102,14 @@ def normalize_gate_approval(payload: object) -> GateApprovalRequest:
         value = payload.get(field)
         if not isinstance(value, str) or not value.strip():
             raise CommandAdapterError("invalid_request", f"command field {field} is required")
-        values[field] = value.strip()
+        if value != value.strip():
+            raise CommandAdapterError(
+                "invalid_request", f"command field {field} must already be canonical"
+            )
+        values[field] = value
+    reason = payload.get("reason")
+    if not isinstance(reason, str) or not reason.strip():
+        raise CommandAdapterError("invalid_request", "command field reason is required")
     if not _SLUG.fullmatch(values["gate_id"]):
         raise CommandAdapterError("invalid_request", "gate_id must be a safe Agora slug")
     if len(values["actor_id"]) > 256 or any(
@@ -106,8 +118,10 @@ def normalize_gate_approval(payload: object) -> GateApprovalRequest:
         raise CommandAdapterError("invalid_request", "actor_id is invalid")
     if values["decision"] not in {"approved", "rejected"}:
         raise CommandAdapterError("invalid_request", "decision must be approved or rejected")
-    if len(values["reason"]) > _MAX_REASON:
+    if len(reason) > _MAX_REASON:
         raise CommandAdapterError("invalid_request", "reason is longer than 4000 characters")
+    if any(ord(character) < 32 and character not in "\t\n\r" for character in reason):
+        raise CommandAdapterError("invalid_request", "reason contains unsupported control text")
     if not _SLUG.fullmatch(values["expected_state"]):
         raise CommandAdapterError("invalid_request", "expected_state must be a safe Agora slug")
     if not _SLUG.fullmatch(values["transition_target"]):
@@ -128,6 +142,24 @@ def normalize_gate_approval(payload: object) -> GateApprovalRequest:
         for reference in references
     ):
         raise CommandAdapterError("invalid_request", "evidence_references are invalid")
+
+    precondition_digest = payload.get("precondition_digest")
+    if precondition_digest is not None and (
+        not isinstance(precondition_digest, str)
+        or re.fullmatch(r"[0-9a-f]{64}", precondition_digest) is None
+    ):
+        raise CommandAdapterError(
+            "invalid_request", "precondition_digest must be a lowercase SHA-256 value or null"
+        )
+    if for_confirmation and precondition_digest is None:
+        raise CommandAdapterError(
+            "command.stale-precondition",
+            "gate confirmation requires the precondition digest issued by Core",
+        )
+    if not for_confirmation and precondition_digest is not None:
+        raise CommandAdapterError(
+            "invalid_request", "gate preparation must not include a precondition digest"
+        )
 
     authentication = payload.get("authentication")
     if authentication is not None:
@@ -155,11 +187,12 @@ def normalize_gate_approval(payload: object) -> GateApprovalRequest:
         gate_id=values["gate_id"],
         actor_id=values["actor_id"],
         decision=values["decision"],
-        reason=values["reason"],
+        reason=reason,
         expected_state=values["expected_state"],
         transition_target=values["transition_target"],
         role_id=values["role_id"],
-        evidence_references=tuple(reference.strip() for reference in references),
+        evidence_references=tuple(references),
+        precondition_digest=precondition_digest,
         authentication=authentication,
     )
 
@@ -205,6 +238,7 @@ class CoreCommandGateway:
             transition_target=request.transition_target,
             role_id=request.role_id,
             evidence_references=request.evidence_references,
+            precondition_digest=request.precondition_digest,
             authentication=request.authentication if include_authentication else None,
         )
 
@@ -286,6 +320,10 @@ class CoreCommandGateway:
             raise CommandAdapterError(
                 "invalid_request", "gate preparation must not include authentication material"
             )
+        if request.precondition_digest is not None:
+            raise CommandAdapterError(
+                "invalid_request", "gate preparation must not include a precondition digest"
+            )
         application_error, service_type, command_type = self._bindings()
         command = self._command(
             command_type, selection, swarm_id, work_id, request, include_authentication=False
@@ -324,7 +362,6 @@ class CoreCommandGateway:
         expected = {
             "expected_state": request.expected_state,
             "transition_target": request.transition_target,
-            "reason": request.reason,
         }
         for field, value in expected.items():
             if payload[field] != value:
@@ -332,16 +369,62 @@ class CoreCommandGateway:
                     "core.schema-incompatible", f"Core response field {field} changed the command"
                 )
         evidence_references = self._require_array(payload, "evidence_references")
-        if evidence_references != list(request.evidence_references) or any(
-            not isinstance(reference, str) for reference in evidence_references
+        if any(
+            not isinstance(reference, str) or not reference for reference in evidence_references
         ):
             raise CommandAdapterError(
                 "core.schema-incompatible",
-                "Core response field evidence_references changed the command",
+                "Core response field evidence_references is invalid",
+            )
+        precondition_digest = self._require_string(payload, "precondition_digest")
+        if re.fullmatch(r"[0-9a-f]{64}", precondition_digest) is None:
+            raise CommandAdapterError(
+                "core.schema-incompatible", "Core response field precondition_digest is invalid"
             )
         if re.fullmatch(r"[0-9a-f]{64}", str(payload["authorization_digest"])) is None:
             raise CommandAdapterError(
                 "core.schema-incompatible", "Core response field authorization_digest is invalid"
+            )
+        authorization_payload = str(payload["authorization_payload"])
+        try:
+            authorization_bytes = authorization_payload.encode("ascii")
+        except UnicodeEncodeError as error:
+            raise CommandAdapterError(
+                "core.schema-incompatible", "Core authorization payload must be ASCII JSON"
+            ) from error
+        if (
+            not authorization_payload.endswith("\n")
+            or hashlib.sha256(authorization_bytes).hexdigest() != payload["authorization_digest"]
+        ):
+            raise CommandAdapterError(
+                "core.schema-incompatible", "Core authorization payload digest does not match"
+            )
+        try:
+            canonical = json.loads(authorization_payload)
+        except (json.JSONDecodeError, TypeError) as error:
+            raise CommandAdapterError(
+                "core.schema-incompatible", "Core authorization payload is not canonical JSON"
+            ) from error
+        canonical_expected = {
+            "schema": APPROVE_GATE_SCHEMA,
+            "authorization_schema": AUTHORIZATION_SCHEMA,
+            "project_identity": selection.project,
+            "swarm_id": swarm_id,
+            "work_id": work_id,
+            "gate_id": request.gate_id,
+            "actor_id": request.actor_id,
+            "decision": request.decision,
+            "reason": payload["reason"],
+            "expected_state": payload["expected_state"],
+            "transition_target": payload["transition_target"],
+            "role_id": request.role_id,
+            "evidence_references": evidence_references,
+            "precondition_digest": precondition_digest,
+        }
+        if canonical != canonical_expected:
+            raise CommandAdapterError(
+                "core.schema-incompatible",
+                "Core authorization payload does not match the prepared command",
             )
         if not isinstance(payload.get("authentication_required"), bool):
             raise CommandAdapterError(
@@ -364,6 +447,18 @@ class CoreCommandGateway:
                 "core.schema-incompatible",
                 "Core response field authentication_fingerprint is invalid",
             )
+        if payload["freshness"] != "governed-material/v1":
+            raise CommandAdapterError(
+                "command.version-incompatible", "Core prepared an incompatible freshness contract"
+            )
+        if payload["authentication_required"] and (
+            payload.get("authentication_algorithm") is None
+            or payload.get("authentication_fingerprint") is None
+            or payload.get("authentication_public_key") is None
+        ):
+            raise CommandAdapterError(
+                "core.schema-incompatible", "Core omitted required authentication metadata"
+            )
         return payload
 
     def approve_gate(
@@ -373,6 +468,11 @@ class CoreCommandGateway:
         work_id: str,
         request: GateApprovalRequest,
     ) -> dict[str, object]:
+        if request.precondition_digest is None:
+            raise CommandAdapterError(
+                "command.stale-precondition",
+                "gate confirmation requires the precondition digest issued by Core",
+            )
         application_error, service_type, command_type = self._bindings()
 
         command = self._command(
@@ -393,6 +493,14 @@ class CoreCommandGateway:
         if self._require_string(payload, "reason") != request.reason:
             raise CommandAdapterError(
                 "core.schema-incompatible", "Core response field reason changed the command"
+            )
+        if self._require_string(payload, "precondition_digest") != request.precondition_digest:
+            raise CommandAdapterError(
+                "core.schema-incompatible", "Core response field precondition_digest changed"
+            )
+        if self._require_array(payload, "evidence_references") != list(request.evidence_references):
+            raise CommandAdapterError(
+                "core.schema-incompatible", "Core response field evidence_references changed"
             )
         lifecycle = payload.get("lifecycle")
         activity = payload.get("activity")

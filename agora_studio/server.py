@@ -160,7 +160,7 @@ def handle_api(
         except CommandAdapterError as error:
             return _COMMAND_STATUS.get(error.code, 500), _error(error.code, error.reason)
         return 200, {
-            "schema": "agora-studio/api/prepared-gate-decision/v1",
+            "schema": "agora-studio/api/prepared-gate-decision/v2",
             "preparation": prepared,
         }
 
@@ -174,7 +174,7 @@ def handle_api(
         selection = store.selection
         assert selection is not None
         try:
-            request = normalize_gate_approval(payload)
+            request = normalize_gate_approval(payload, for_confirmation=True)
             projection = (commands or CoreCommandGateway()).approve_gate(
                 selection,
                 approval_match.group("swarm"),
@@ -184,7 +184,7 @@ def handle_api(
         except CommandAdapterError as error:
             return _COMMAND_STATUS.get(error.code, 500), _error(error.code, error.reason)
         return 200, {
-            "schema": "agora-studio/api/gate-decision/v1",
+            "schema": "agora-studio/api/gate-decision/v2",
             "status": "persisted",
             "projection": projection,
         }
@@ -286,7 +286,7 @@ def handle_api(
                 selection.path, work_match.group("swarm"), work_match.group("work")
             )
             return 200, {
-                "schema": "agora-studio/api/work-item-detail/v2",
+                "schema": "agora-studio/api/work-item-detail/v3",
                 "selection": selection.as_dict(),
                 "control": control,
             }

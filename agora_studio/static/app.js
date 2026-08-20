@@ -41,6 +41,8 @@ const state = {
   },
   details: {},
   detailRequests: new Map(),
+  controlRevision: 0,
+  mutationRevision: 0,
   enrichmentLoading: false,
   generation: 0,
   gateAction: newGateAction(),
@@ -217,6 +219,7 @@ function setLoading(loading, message) {
 
 function resetProjectData() {
   state.revisionRequest?.abort();
+  state.detailRequests.forEach((request) => request.controller?.abort());
   state.generation += 1;
   state.activity = null;
   state.activityError = "";
@@ -491,17 +494,31 @@ async function loadSpecificationRevision(work, revision) {
       `${API_ROOT}/specification-revisions/${encodeURIComponent(revision.id)}?${query}`,
       { signal: controller.signal },
     );
-    if (generation !== state.generation || selectedWork !== state.selectedWork) return;
+    if (
+      generation !== state.generation
+      || selectedWork !== state.selectedWork
+      || state.selectedRevision !== revision.id
+      || state.revisionRequest !== controller
+    ) return;
     state.revisionDetails.set(key, { loading: false, error: "", data: payload.revision });
     announce(`${revision.subject || revision.id} revision detail loaded.`);
   } catch (error) {
     if (error.name === "AbortError") return;
-    if (generation !== state.generation || selectedWork !== state.selectedWork) return;
+    if (
+      generation !== state.generation
+      || selectedWork !== state.selectedWork
+      || state.selectedRevision !== revision.id
+      || state.revisionRequest !== controller
+    ) return;
     state.revisionDetails.set(key, { loading: false, error: error.message, data: null });
     announce(`Specification revision could not be loaded. ${error.message}`);
   } finally {
     if (state.revisionRequest === controller) state.revisionRequest = null;
-    if (generation === state.generation && selectedWork === state.selectedWork) renderWorkDetail();
+    if (
+      generation === state.generation
+      && selectedWork === state.selectedWork
+      && state.selectedRevision === revision.id
+    ) renderWorkDetail();
   }
 }
 
@@ -675,6 +692,7 @@ async function prepareGateDecision(work, detail) {
   action.reason = action.reason.trim();
   action.preparing = true;
   action.error = "";
+  const generation = state.generation;
   renderWorkDetail();
   try {
     const payload = await requestJson(
@@ -685,6 +703,7 @@ async function prepareGateDecision(work, detail) {
         body: JSON.stringify(gateCommand(option, action.reason)),
       },
     );
+    if (generation !== state.generation || state.gateAction !== action) return;
     action.prepared = payload.preparation;
     action.authentication = {
       algorithm: payload.preparation.authentication_algorithm || "ed25519",
@@ -698,6 +717,7 @@ async function prepareGateDecision(work, detail) {
         : "Gate decision prepared and ready for confirmation.",
     );
   } catch (error) {
+    if (generation !== state.generation || state.gateAction !== action) return;
     action.error = gateErrorMessage(error);
     if (["command.stale-precondition", "command.gate-already-resolved"].includes(error.code)) {
       try {
@@ -707,6 +727,7 @@ async function prepareGateDecision(work, detail) {
       }
     }
   } finally {
+    if (generation !== state.generation || state.gateAction !== action) return;
     action.preparing = false;
     renderWorkDetail();
     document.querySelector(action.phase === "sign" ? "#detached-signature" : ".gate-confirmation button")?.focus();
@@ -715,16 +736,28 @@ async function prepareGateDecision(work, detail) {
 
 async function refreshAfterGateDecision(work) {
   const key = DashboardModel.workKey(work);
-  const [overview, activity] = await Promise.all([
+  const generation = state.generation;
+  const selectionPath = state.selectionPath;
+  const revision = ++state.mutationRevision;
+  state.detailRequests.get(key)?.controller?.abort();
+  state.detailRequests.delete(key);
+  const [overview, activity, detail] = await Promise.all([
     requestJson(`${API_ROOT}/overview`),
     requestJson(`${API_ROOT}/activity?limit=500`),
+    requestJson(
+      `${API_ROOT}/work-items/${encodeURIComponent(work.swarm_id)}/${encodeURIComponent(work.id)}`,
+    ),
   ]);
+  if (
+    revision !== state.mutationRevision
+    || generation !== state.generation
+    || selectionPath !== state.selectionPath
+    || state.selectedWork !== key
+  ) return false;
   state.overview = overview;
   state.activity = activity;
-  delete state.details[key];
-  state.detailRequests.delete(key);
-  const current = state.overview.work.find((item) => DashboardModel.workKey(item) === key);
-  if (current) await ensureWorkDetail(current);
+  state.details[key] = { loading: false, control: detail.control, errors: [] };
+  return true;
 }
 
 async function submitGateDecision(work, detail) {
@@ -732,7 +765,7 @@ async function submitGateDecision(work, detail) {
   const action = state.gateAction;
   const option = DashboardModel.findOption(detail, action.optionKey);
   if (!option || option.allowed !== true || !action.prepared) return;
-  const preparationIssue = ControlModel.preparationIssue(action.prepared, option, action.reason);
+  const preparationIssue = ControlModel.preparationIssue(action.prepared, option);
   if (preparationIssue) {
     resetGatePreparation(action);
     action.error = preparationIssue;
@@ -763,12 +796,15 @@ async function submitGateDecision(work, detail) {
     response = await requestJson(`${API_ROOT}/work-items/${encodeURIComponent(work.swarm_id)}/${encodeURIComponent(work.id)}/approvals`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(gateCommand(option, action.reason, authentication)),
+      body: JSON.stringify(ControlModel.preparedCommand(action.prepared, authentication)),
     });
   } catch (error) {
     action.submitting = false;
     action.error = gateErrorMessage(error);
     if (["command.stale-precondition", "command.gate-already-resolved"].includes(error.code)) {
+      const preservedError = action.error;
+      resetGatePreparation(action);
+      action.error = preservedError;
       try {
         await refreshAfterGateDecision(work);
       } catch {
@@ -785,13 +821,6 @@ async function submitGateDecision(work, detail) {
   action.result = option.decision === "approved"
     ? "Approval was durably persisted by Agora Core."
     : "Rejection was durably persisted by Agora Core.";
-  if (state.activity && response.projection?.activity) {
-    state.activity.events = [...state.activity.events, response.projection.activity];
-  }
-  if (detail.control && response.projection?.lifecycle) {
-    detail.control.lifecycle = response.projection.lifecycle;
-  }
-  renderWorkDetail();
   announce(action.result);
   try {
     await refreshAfterGateDecision(work);
@@ -835,24 +864,31 @@ function renderPreparedDecision(work, detail, action, option) {
       ["Expected state", prepared.expected_state],
       ["Target state", prepared.transition_target],
       ["Fingerprint", prepared.authentication_fingerprint],
-      ["Digest", prepared.authorization_digest],
+      ["Authorization digest", prepared.authorization_digest],
+      ["Precondition digest", prepared.precondition_digest],
       ["Freshness", prepared.freshness],
     ]),
-    element("blockquote", { text: action.reason }),
+    element("div", { className: "canonical-command" }, [
+      element("strong", { text: "Canonical reason" }),
+      element("blockquote", { text: prepared.reason }),
+      element("strong", { text: "Canonical evidence references" }),
+      tags(prepared.evidence_references, "None"),
+    ]),
   ];
+  const payload = element("textarea", { id: "canonical-payload", rows: "8", readonly: "readonly", text: prepared.authorization_payload, "aria-label": "Canonical command payload" });
+  const copy = element("button", { className: "back-button", type: "button", text: "Copy canonical payload" });
+  copy.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(prepared.authorization_payload);
+      announce("Canonical payload copied.");
+    } catch {
+      payload.focus();
+      payload.select();
+      announce("Clipboard access is unavailable. The canonical payload is selected for copying.");
+    }
+  });
+  children.push(element("div", { className: "signature-payload" }, [payload, copy]));
   if (prepared.authentication_required) {
-    const payload = element("textarea", { id: "canonical-payload", rows: "8", readonly: "readonly", text: prepared.authorization_payload, "aria-label": "Canonical payload to sign" });
-    const copy = element("button", { className: "back-button", type: "button", text: "Copy payload" });
-    copy.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(prepared.authorization_payload);
-        announce("Canonical payload copied.");
-      } catch {
-        payload.focus();
-        payload.select();
-        announce("Clipboard access is unavailable. The canonical payload is selected for copying.");
-      }
-    });
     const algorithm = element("input", { id: "signature-algorithm", value: action.authentication.algorithm, maxlength: "32", required: "required", autocomplete: "off" });
     const fingerprint = element("input", { id: "signature-fingerprint", value: action.authentication.fingerprint, pattern: "[0-9a-f]{64}", maxlength: "64", required: "required", autocomplete: "off" });
     const signature = element("textarea", { id: "detached-signature", rows: "5", maxlength: "8192", required: "required", autocomplete: "off", placeholder: "Paste the detached signature", text: action.authentication.signature });
@@ -860,7 +896,6 @@ function renderPreparedDecision(work, detail, action, option) {
     fingerprint.addEventListener("input", () => { action.authentication.fingerprint = fingerprint.value; });
     signature.addEventListener("input", () => { action.authentication.signature = signature.value; });
     children.push(
-      element("div", { className: "signature-payload" }, [payload, copy]),
       element("div", { className: "signature-fields" }, [
         element("label", { for: "signature-algorithm" }, [element("span", { text: "Algorithm" }), algorithm]),
         element("label", { for: "signature-fingerprint" }, [element("span", { text: "Fingerprint" }), fingerprint]),
@@ -893,6 +928,10 @@ function renderGateControl(work, detail) {
         element("legend", { text: "Action calculated by Agora Core" }),
         ...options.map((option, index) => {
           const id = `gate-option-${index}`;
+          const evidenceTypes = [...new Set([
+            ...(option.required_evidence_types || []),
+            ...Object.keys(option.evidence_references_by_type || {}),
+          ])];
           const input = element("input", {
             id,
             type: "radio",
@@ -913,6 +952,14 @@ function renderGateControl(work, detail) {
             element("span", {}, [
               element("strong", { text: `${titleCase(option.decision)} ${option.gate_id}` }),
               element("small", { text: `${option.transition_source} → ${option.transition_target} · ${option.role_id} · ${display(option.actor_id, "No authorized actor")}` }),
+              evidenceTypes.length
+                ? element("span", { className: "typed-evidence" }, evidenceTypes.map((kind) =>
+                  element("small", {}, [
+                    element("b", { text: `${kind}: ` }),
+                    element("span", { text: (option.evidence_references_by_type?.[kind] || []).join(", ") || "missing" }),
+                  ]),
+                ))
+                : null,
               option.blockers?.length ? element("small", { className: "option-blockers", text: option.blockers.map(blockerText).join("; ") }) : null,
             ]),
           ]);
@@ -921,7 +968,7 @@ function renderGateControl(work, detail) {
       : emptyState("GATE—00", "No gate decisions available", projection.reason || "Core returned no governed options for this state.");
     const reason = element("textarea", { id: "gate-reason", name: "reason", rows: "4", required: "required", maxlength: "4000", text: action.reason, placeholder: "Explain the durable basis for this exact action." });
     reason.addEventListener("input", () => { action.reason = reason.value; });
-    const form = element("form", { className: "gate-decision-form" }, [
+    const form = element("form", { className: "gate-decision-form", novalidate: "novalidate" }, [
       optionsList,
       element("label", { for: "gate-reason" }, [element("span", { text: "Decision reason" }), reason]),
       element("div", { className: "gate-actions" }, [
@@ -1207,9 +1254,12 @@ async function loadActivity(message = "Loading durable activity") {
 
 async function ensureWorkDetail(work) {
   const key = DashboardModel.workKey(work);
-  if (state.detailRequests.has(key)) return state.detailRequests.get(key);
+  if (state.detailRequests.has(key)) return state.detailRequests.get(key).promise;
   if (state.details[key] && !state.details[key].loading) return state.details[key];
   const generation = state.generation;
+  const selectionPath = state.selectionPath;
+  const revision = ++state.controlRevision;
+  const controller = new AbortController();
   const request = (async () => {
     state.details[key] = { loading: true, control: null, errors: [] };
     if (state.view === "work" || state.view === "overview") render();
@@ -1218,11 +1268,18 @@ async function ensureWorkDetail(work) {
     try {
       payload = await requestJson(
         `${API_ROOT}/work-items/${encodeURIComponent(work.swarm_id)}/${encodeURIComponent(work.id)}`,
+        { signal: controller.signal },
       );
     } catch (caught) {
+      if (caught.name === "AbortError") return null;
       error = caught;
     }
-    if (generation !== state.generation) return null;
+    const active = state.detailRequests.get(key);
+    if (
+      generation !== state.generation
+      || selectionPath !== state.selectionPath
+      || active?.revision !== revision
+    ) return null;
     state.details[key] = {
       loading: false,
       control: payload?.control || null,
@@ -1231,7 +1288,7 @@ async function ensureWorkDetail(work) {
     if (state.view === "work" || state.view === "overview") render();
     return state.details[key];
   })();
-  state.detailRequests.set(key, request);
+  state.detailRequests.set(key, { promise: request, controller, revision });
   return request;
 }
 
