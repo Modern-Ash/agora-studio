@@ -19,7 +19,7 @@ class FakeCommands:
         if self.error:
             raise self.error
         return {
-            "schema": "agora/application/gate-decision-projection/v1",
+            "schema": "agora/application/gate-decision-projection/v2",
             "project_identity": selection.project,
             "swarm_id": swarm_id,
             "work_id": work_id,
@@ -28,6 +28,8 @@ class FakeCommands:
             "role_id": request.role_id,
             "decision": request.decision,
             "reason": request.reason,
+            "evidence_references": list(request.evidence_references),
+            "precondition_digest": request.precondition_digest,
             "lifecycle": {"schema": "agora/application/lifecycle-projection/v2"},
             "activity": {"schema": "agora/application/activity-entry/v1"},
         }
@@ -37,7 +39,7 @@ class FakeCommands:
         if self.error:
             raise self.error
         return {
-            "schema": "agora/application/prepared-gate-decision/v1",
+            "schema": "agora/application/prepared-gate-decision/v2",
             "project_identity": selection.project,
             "swarm_id": swarm_id,
             "work_id": work_id,
@@ -51,7 +53,7 @@ class FakeCommands:
 
 def command_payload(**changes: object) -> dict[str, object]:
     payload: dict[str, object] = {
-        "schema": "agora/application/approve-gate-command/v2",
+        "schema": "agora/application/approve-gate-command/v3",
         "gate_id": "completion",
         "actor_id": "project:owner",
         "decision": "approved",
@@ -60,6 +62,7 @@ def command_payload(**changes: object) -> dict[str, object]:
         "transition_target": "completed",
         "role_id": "product-owner",
         "evidence_references": ["repo://report"],
+        "precondition_digest": None,
     }
     payload.update(changes)
     return payload
@@ -90,7 +93,7 @@ class ApiContractTests(unittest.TestCase):
             "/api/v1/traceability": "agora-studio/api/traceability/v1",
             "/api/v1/specification-history": "agora-studio/api/specification-history/v1",
             "/api/v1/specification-revisions/working-tree": "agora-studio/api/specification-revision-detail/v1",
-            "/api/v1/work-items/delivery/release": "agora-studio/api/work-item-detail/v2",
+            "/api/v1/work-items/delivery/release": "agora-studio/api/work-item-detail/v3",
         }
         query = {"swarm": "delivery", "work": "release"}
         for route, schema in routes.items():
@@ -118,7 +121,7 @@ class ApiContractTests(unittest.TestCase):
                     self.assertNotIn("missing_roles", payload["approvals"])
                     self.assertEqual(
                         payload["approvals"]["gate_decision_options"]["schema"],
-                        "agora/application/gate-decision-options-projection/v1",
+                        "agora/application/gate-decision-options-projection/v2",
                     )
 
     def test_legacy_aliases_are_removed(self) -> None:
@@ -152,7 +155,11 @@ class ApiContractTests(unittest.TestCase):
         commands = FakeCommands()
         route = "/api/v1/work-items/delivery/release/approvals"
         status, payload = handle_api(
-            self.store, "POST", route, command_payload(), commands=commands
+            self.store,
+            "POST",
+            route,
+            command_payload(precondition_digest="b" * 64),
+            commands=commands,
         )
         self.assertEqual(status, 200)
         self.assertEqual(payload["status"], "persisted")
@@ -169,14 +176,18 @@ class ApiContractTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(
             prepared["preparation"]["schema"],
-            "agora/application/prepared-gate-decision/v1",
+            "agora/application/prepared-gate-decision/v2",
         )
 
         commands.error = CommandAdapterError(
             "command.stale-precondition", "the expected state is stale"
         )
         status, payload = handle_api(
-            self.store, "POST", route, command_payload(), commands=commands
+            self.store,
+            "POST",
+            route,
+            command_payload(precondition_digest="b" * 64),
+            commands=commands,
         )
         self.assertEqual(status, 409)
         self.assertEqual(payload["error"], "command.stale-precondition")
@@ -185,7 +196,11 @@ class ApiContractTests(unittest.TestCase):
             "command.persistence-failed", "the durable transaction was rolled back"
         )
         status, payload = handle_api(
-            self.store, "POST", route, command_payload(), commands=commands
+            self.store,
+            "POST",
+            route,
+            command_payload(precondition_digest="b" * 64),
+            commands=commands,
         )
         self.assertEqual(status, 503)
         self.assertEqual(payload["error"], "command.persistence-failed")
@@ -194,7 +209,11 @@ class ApiContractTests(unittest.TestCase):
             "command.signature-required", "the actor must provide a detached signature"
         )
         status, payload = handle_api(
-            self.store, "POST", route, command_payload(), commands=commands
+            self.store,
+            "POST",
+            route,
+            command_payload(precondition_digest="b" * 64),
+            commands=commands,
         )
         self.assertEqual(status, 428)
         self.assertEqual(payload["error"], "command.signature-required")
@@ -203,10 +222,30 @@ class ApiContractTests(unittest.TestCase):
             "core.schema-incompatible", "the durable projection is not compatible"
         )
         status, payload = handle_api(
-            self.store, "POST", route, command_payload(), commands=commands
+            self.store,
+            "POST",
+            route,
+            command_payload(precondition_digest="b" * 64),
+            commands=commands,
         )
         self.assertEqual(status, 426)
         self.assertEqual(payload["error"], "core.schema-incompatible")
+
+    def test_confirmation_requires_the_digest_and_unknown_contracts_are_rejected(self) -> None:
+        route = "/api/v1/work-items/delivery/release/approvals"
+        status, payload = handle_api(
+            self.store, "POST", route, command_payload(), commands=FakeCommands()
+        )
+        self.assertEqual((status, payload["error"]), (409, "command.stale-precondition"))
+
+        status, payload = handle_api(
+            self.store,
+            "POST",
+            f"{route}/prepare",
+            command_payload(schema="agora/application/approve-gate-command/v99"),
+            commands=FakeCommands(),
+        )
+        self.assertEqual((status, payload["error"]), (426, "command.version-incompatible"))
 
     def test_invalid_slugs_and_missing_selection_fail_before_core(self) -> None:
         status, payload = handle_api(

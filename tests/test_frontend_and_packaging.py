@@ -16,9 +16,9 @@ PACKAGE = ROOT / "agora_studio"
 class PackagingTests(unittest.TestCase):
     def test_version_and_core_dependency_are_explicit(self) -> None:
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertEqual(agora_studio.__version__, "0.3.0")
+        self.assertEqual(agora_studio.__version__, "0.4.0")
         self.assertEqual(build_parser().parse_args(["--port", "7358"]).port, 7358)
-        self.assertIn('dependencies = ["agora-framework>=0.6,<0.7"]', pyproject)
+        self.assertIn('dependencies = ["agora-framework>=0.7,<0.8"]', pyproject)
         self.assertIn('version = { attr = "agora_studio.__version__" }', pyproject)
 
     def test_static_assets_are_packaged_and_exactly_allowlisted(self) -> None:
@@ -75,16 +75,19 @@ class FrontendContractTests(unittest.TestCase):
           const options = [
             {{transition_source: 'verifying', transition_target: 'completed', gate_id: 'completion',
               decision: 'approved', role_id: 'product-owner', actor_id: 'project:owner', allowed: true,
-              blockers: [], evidence_references: ['repo://report']}},
+              blockers: [], evidence_references: ['repo://report'],
+              evidence_references_by_type: {{'test-run': ['repo://report']}}}},
             {{transition_source: 'verifying', transition_target: 'reviewing', gate_id: 'review',
               decision: 'rejected', role_id: 'scrum-master', actor_id: 'project:facilitator', allowed: false,
-              blockers: [{{category: 'evidence', message: 'Evidence missing'}}], evidence_references: []}},
+              blockers: [{{category: 'evidence', message: 'Evidence missing'}}], evidence_references: [],
+              evidence_references_by_type: {{}}}},
             {{transition_source: 'verifying', transition_target: 'completed', gate_id: 'completion',
               decision: 'approved', role_id: 'release-manager', actor_id: 'project:release', allowed: true,
-              blockers: [], evidence_references: ['repo://report']}},
+              blockers: [], evidence_references: ['repo://report'],
+              evidence_references_by_type: {{'test-run': ['repo://report']}}}},
             {{transition_source: 'verifying', transition_target: 'completed', gate_id: 'completion',
               decision: 'rejected', role_id: 'product-owner', actor_id: 'project:owner', allowed: true,
-              blockers: [], evidence_references: []}}
+              blockers: [], evidence_references: [], evidence_references_by_type: {{}}}}
           ];
           const detail = {{control: {{gate_decision_options: {{options}}, lifecycle: {{states: [
             {{id: 'verifying'}}, {{id: 'completed'}}
@@ -124,8 +127,9 @@ class FrontendContractTests(unittest.TestCase):
             expected_state: 'verifying', transition_target: 'completed', role_id: 'product-owner',
             evidence_references: ['repo://report']}};
           const command = ControlModel.command(option, '  reviewed  ');
-          if (command.schema !== 'agora/application/approve-gate-command/v2') process.exit(1);
-          if (command.reason !== 'reviewed' || command.role_id !== 'product-owner') process.exit(2);
+          if (command.schema !== 'agora/application/approve-gate-command/v3') process.exit(1);
+          if (command.reason !== '  reviewed  ' || command.role_id !== 'product-owner') process.exit(2);
+          if (command.precondition_digest !== null) process.exit(13);
           if (ControlModel.nextTab('summary', 'ArrowLeft') !== 'activity') process.exit(3);
           const prepared = {{authentication_required: true}};
           if (!ControlModel.authenticationIssue(prepared, {{algorithm: 'ed25519', fingerprint: '', signature: ''}})) process.exit(4);
@@ -134,10 +138,12 @@ class FrontendContractTests(unittest.TestCase):
           if (ControlModel.revisionToken('/one', 'delivery/release', 'working-tree') ===
               ControlModel.revisionToken('/two', 'delivery/release', 'working-tree')) process.exit(6);
           if (ControlModel.authenticationIssue({{authentication_required: false}}, null)) process.exit(7);
-          const exact = {{...option, reason: 'reviewed', evidence_references: ['repo://report']}};
-          if (ControlModel.preparationIssue(exact, option, ' reviewed ')) process.exit(8);
-          if (!ControlModel.preparationIssue(exact, option, 'changed')) process.exit(9);
-          if (!ControlModel.preparationIssue(exact, {{...option, evidence_references: []}}, 'reviewed')) process.exit(10);
+          const exact = {{...option, command_schema: 'agora/application/approve-gate-command/v3',
+            reason: 'reviewed', evidence_references: ['repo://report'], precondition_digest: 'b'.repeat(64)}};
+          if (ControlModel.preparationIssue(exact, option)) process.exit(8);
+          if (!ControlModel.preparationIssue({{...exact, precondition_digest: 'bad'}}, option)) process.exit(9);
+          const confirmed = ControlModel.preparedCommand(exact, auth);
+          if (confirmed.reason !== 'reviewed' || confirmed.precondition_digest !== 'b'.repeat(64)) process.exit(10);
           if (ControlModel.nextTab('summary', 'End') !== 'activity') process.exit(11);
           if (ControlModel.nextTab('activity', 'Home') !== 'summary') process.exit(12);
         """

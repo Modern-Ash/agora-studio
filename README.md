@@ -4,8 +4,8 @@
 
 # Agora Studio
 
-Agora Studio is the experimental, local-first web control plane for Agora projects. Studio 0.3
-renders operational state through Agora Core 0.6 application services and offers one governed
+Agora Studio is the experimental, local-first web control plane for Agora projects. Studio 0.4
+renders operational state through Agora Core 0.7 application services and offers one governed
 mutation: approving or rejecting an exact gate option calculated by Core.
 
 > [!WARNING]
@@ -15,7 +15,7 @@ mutation: approving or rejecting an exact gate option calculated by Core.
 ## Architecture
 
 ```text
-Browser -> /api/v1 -> Studio API -> AgoraReadService / AgoraCommandService -> Agora Core 0.6
+Browser -> /api/v1 -> Studio API -> AgoraReadService / AgoraCommandService -> Agora Core 0.7
 ```
 
 The browser consumes only `/api/v1`. Studio does not execute Agora CLI, spawn subprocesses, read
@@ -37,21 +37,28 @@ database, remote service, multi-user mode, telemetry, or frontend framework.
 - **Actors** — configured actors, capabilities, durable references, and runtime metadata.
 - **Activity** — a bounded, filterable timeline of durable Core events.
 
-Gate approval and rejection use Core's versioned decision options and `ApproveGateCommand v2`.
+Gate approval and rejection use Core's versioned decision options and `ApproveGateCommand v3`.
 Studio never chooses a first gate, role, actor, transition, or readiness state. Disabled options
-retain the blockers returned by Core. For authenticated actors, Studio requests the canonical
-payload, shows its digest and public fingerprint, accepts an externally produced detached
-signature, and sends it back to Core. Studio never reads or stores a private key. There is no
-optimistic mutation.
+retain the blockers returned by Core, including evidence references grouped by Core-defined type.
+Preparation returns Core's canonical reason and evidence references, an opaque material
+precondition digest, and the exact authorization payload. Confirmation reuses those prepared
+values; editing requires a new preparation. For authenticated actors, Studio shows the
+authorization digest and public fingerprint, accepts an externally produced detached signature,
+and sends it back to Core. Studio never reads or stores a private key. There is no optimistic
+mutation or automatic retry.
 
 ## Install and run
 
 Python 3.11, 3.12, and 3.13 are supported.
 
+Agora Core 0.7 is published on PyPI and satisfies Studio's production dependency. Studio 0.4 is
+still under verification in this source tree; until its own release is published, install Studio
+from this checkout rather than claiming a public package version that is not yet available.
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install "agora-studio==0.3.0"
+python -m pip install .
 agora-studio --version
 agora-studio --port 7357
 ```
@@ -68,6 +75,8 @@ python3 -m venv .venv
 .venv/bin/ruff format --check .
 .venv/bin/ruff check .
 .venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python -m playwright install chromium
+.venv/bin/python -m unittest discover -s e2e -v
 .venv/bin/python -m build
 ```
 
@@ -78,6 +87,11 @@ python3 -m venv .venv
 | 0.1.x | Transitional/implicit | CLI reads plus gate command v1 | Project-defined |
 | 0.2.x | `agora-framework>=0.5,<0.6` | Core 0.5 read DTOs and gate command v1 | Project-defined and independently versioned |
 | 0.3.x | `agora-framework>=0.6,<0.7` | Work detail v2, work control v1, gate command v2, prepared decision v1, revision detail v1 | Project-defined and independently versioned |
+| 0.4.x | `agora-framework>=0.7,<0.8` | Work control v2, typed gate options v2, gate command v3, prepared decision v2, gate projection v2 | Project-defined and independently versioned |
+
+CI builds the minimum compatible Core wheel from immutable tag `v0.7.0`. A separate range matrix
+installs both `agora-framework==0.7.0` and the latest published `agora-framework>=0.7,<0.8` wheel,
+so source integration and the actual public package contract are both exercised.
 
 Three versions must not be conflated:
 
@@ -123,6 +137,9 @@ failures remain distinct HTTP errors. Legacy unversioned API aliases are removed
 - Durable text is rendered through text nodes, not interpreted as HTML.
 - Concurrent gate requests are serialized at the HTTP adapter and remain governed by Core's
   transaction and stale-precondition checks.
+- Work detail is one `WorkControlProjection v2` carrying a validated snapshot token. Browser
+  request generations prevent older project, work, revision, refresh, or mutation responses from
+  replacing a newer projection.
 
 Loopback is an exposure boundary, not user authentication. Anyone with access to the same local
 session may be able to view the selected project's durable data.
@@ -130,17 +147,19 @@ session may be able to view the selected project's durable data.
 ## Verification
 
 The suite includes behavioral JavaScript model tests, strict schema-failure tests, HTTP security
-tests, and non-mocked Core–Studio integrations. Those integrations create temporary Agora projects,
-start the loopback server, read the dashboard, prepare and persist unsigned and signed decisions,
-verify Activity, and retrieve committed and working-tree specification revisions exclusively
-through Core.
+tests, non-mocked Core–Studio integrations, and 22 real Chromium scenarios. They create temporary
+Agora projects, start the loopback server, read the dashboard, exercise blocked and typed-evidence
+options, prepare and persist unsigned and signed decisions, verify stale refresh and Activity, test
+rapid specification-revision switching, keyboard/focus/mobile behavior, and reject HTML
+interpretation of durable text.
 
-CI builds the Core wheel, installs it, builds and installs the Studio wheel, runs Python
-3.11–3.13, and checks that production code contains no CLI bridge, subprocess access, protocol
-parser, or direct durable-file read.
+CI builds and installs real Core and Studio wheels, runs Python 3.11–3.13, executes Chromium in a
+separate job, uploads screenshots and traces only on failure, and checks that production code
+contains no CLI bridge, subprocess access, protocol parser, or direct durable-file read.
 
-See the [Core 0.6 / Studio 0.3 verification record](docs/evidence/core-0.6-studio-0.3-verification.md)
-for the exercised contracts, distribution smoke, and deliberate limits.
+See the [Core 0.7 / Studio 0.4 verification record](docs/evidence/core-0.7-studio-0.4-verification.md)
+for the exercised contracts, browser coverage, distribution smoke, and deliberate limits. The
+[Core 0.6 / Studio 0.3 record](docs/evidence/core-0.6-studio-0.3-verification.md) remains historical.
 
 ## Contributing and license
 

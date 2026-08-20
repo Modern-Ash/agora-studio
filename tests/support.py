@@ -6,7 +6,7 @@ from agora_studio.core import ActivityQuery, CoreGatewayError
 
 
 class FakeGateway:
-    core_version = "0.6.0"
+    core_version = "0.7.0"
 
     def __init__(self) -> None:
         self.calls: list[tuple[object, ...]] = []
@@ -340,7 +340,7 @@ class FakeGateway:
     def gate_options(self, project: Path, swarm: str, work: str) -> dict[str, object]:
         self._record("gate_options", project, swarm, work)
         common = {
-            "schema": "agora/application/gate-decision-option-summary/v1",
+            "schema": "agora/application/gate-decision-option-summary/v2",
             "swarm_id": swarm,
             "work_id": work,
             "expected_state": "verifying",
@@ -353,13 +353,14 @@ class FakeGateway:
             "blockers": [],
             "required_evidence_types": ["test-run"],
             "evidence_references": ["repo://report"],
+            "evidence_references_by_type": {"test-run": ["repo://report"]},
             "authentication_required": False,
             "authentication_algorithm": None,
             "authentication_fingerprint": None,
             "unavailable_reason": None,
         }
         return {
-            "schema": "agora/application/gate-decision-options-projection/v1",
+            "schema": "agora/application/gate-decision-options-projection/v2",
             "swarm_id": swarm,
             "work_id": work,
             "current_state": "verifying",
@@ -373,6 +374,7 @@ class FakeGateway:
                     "decision": "rejected",
                     "evidence_required": False,
                     "required_evidence_types": [],
+                    "evidence_references_by_type": {},
                 },
             ],
         }
@@ -381,7 +383,8 @@ class FakeGateway:
         self._record("work_control", project, swarm, work)
         detail = self.get_work_item(project, swarm, work)
         return {
-            "schema": "agora/application/work-control-projection/v1",
+            "schema": "agora/application/work-control-projection/v2",
+            "snapshot_token": "a" * 64,
             "work": detail,
             "lifecycle": self.lifecycle(project, swarm, work),
             "artifacts": detail["artifacts"],

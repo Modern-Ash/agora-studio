@@ -5,15 +5,32 @@
 
   function command(option, reason, authentication = null) {
     return {
-      schema: "agora/application/approve-gate-command/v2",
+      schema: "agora/application/approve-gate-command/v3",
       gate_id: option.gate_id,
       actor_id: option.actor_id,
       decision: option.decision,
-      reason: reason.trim(),
+      reason,
       expected_state: option.expected_state,
       transition_target: option.transition_target,
       role_id: option.role_id,
       evidence_references: [...(option.evidence_references || [])],
+      precondition_digest: null,
+      authentication,
+    };
+  }
+
+  function preparedCommand(prepared, authentication = null) {
+    return {
+      schema: prepared.command_schema,
+      gate_id: prepared.gate_id,
+      actor_id: prepared.actor_id,
+      decision: prepared.decision,
+      reason: prepared.reason,
+      expected_state: prepared.expected_state,
+      transition_target: prepared.transition_target,
+      role_id: prepared.role_id,
+      evidence_references: [...prepared.evidence_references],
+      precondition_digest: prepared.precondition_digest,
       authentication,
     };
   }
@@ -32,7 +49,7 @@
     return "";
   }
 
-  function preparationIssue(prepared, option, reason) {
+  function preparationIssue(prepared, option) {
     if (!prepared || !option) return "The prepared action is unavailable.";
     const expected = {
       gate_id: option.gate_id,
@@ -41,16 +58,12 @@
       expected_state: option.expected_state,
       transition_target: option.transition_target,
       role_id: option.role_id,
-      reason: reason.trim(),
     };
     for (const [field, value] of Object.entries(expected)) {
       if (prepared[field] !== value) return "The action changed after preparation. Regenerate it.";
     }
-    if (
-      JSON.stringify(prepared.evidence_references || [])
-      !== JSON.stringify(option.evidence_references || [])
-    ) {
-      return "The evidence references changed after preparation. Regenerate the action.";
+    if (!/^[0-9a-f]{64}$/.test(prepared.precondition_digest || "")) {
+      return "The prepared precondition digest is invalid. Regenerate the action.";
     }
     return "";
   }
@@ -74,6 +87,7 @@
     command,
     nextTab,
     preparationIssue,
+    preparedCommand,
     revisionToken,
     tabs,
   };
