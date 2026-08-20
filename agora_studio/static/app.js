@@ -28,6 +28,7 @@ const state = {
   revisionDetails: new Map(),
   view: "overview",
   loading: false,
+  csrfToken: "",
 };
 
 const nodes = {
@@ -108,7 +109,11 @@ function relativeTime(timestamp) {
 
 async function requestJson(path, options) {
   if (!path.startsWith(`${API_ROOT}/`)) throw new Error("Studio rejected an unversioned API route.");
-  const response = await fetch(path, options);
+  const request = { ...(options || {}) };
+  if (request.method && request.method !== "GET") {
+    request.headers = { ...(request.headers || {}), "X-Agora-Studio-CSRF": state.csrfToken };
+  }
+  const response = await fetch(path, request);
   let payload;
   try {
     payload = await response.json();
@@ -131,6 +136,10 @@ function statusPill(value) {
       ? "danger"
       : "neutral";
   return element("span", { className: `status-pill tone-${tone}`, text: titleCase(value) });
+}
+
+function blockerText(blocker) {
+  return typeof blocker === "string" ? blocker : blocker?.message || blocker?.code || "Blocked";
 }
 
 function tags(values, empty = "None") {
@@ -423,7 +432,7 @@ function renderSummaryTab(work, detail) {
       gates.length
         ? element("div", { className: "gate-alert" }, [
           element("strong", { text: `${gates.length} pending gate${gates.length === 1 ? "" : "s"}` }),
-          ...gates.map((gate) => element("span", { text: `${gate.id} → ${gate.target}: ${gate.blockers.join("; ")}` })),
+          ...gates.map((gate) => element("span", { text: `${gate.id} → ${gate.target}: ${gate.blockers.map(blockerText).join("; ")}` })),
         ])
         : element("p", { className: "quiet-success", text: detail?.loading ? "Checking current gates…" : "No pending gate blockers detected." }),
     ]),
@@ -436,35 +445,25 @@ function renderSpecTab(work, detail) {
   const specification = detail.lifecycle.specification || {};
   if (!specification.available) return emptyState("SPC—00", "No verified specification", specification.reason || "No single registered specification is available.");
   const revisions = specification.revisions || [];
-  const revisionKey = state.selectedRevision ? `${DashboardModel.workKey(work)}:${state.selectedRevision}` : null;
-  const revisionDetail = revisionKey ? state.revisionDetails.get(revisionKey) : null;
   return element("div", { className: "detail-grid spec-grid" }, [
     element("section", { className: "detail-panel" }, [
       element("p", { className: "section-kicker", text: "Registered specification" }),
       element("h3", { className: "mono wrap", text: specification.uri }),
       revisions.length
-        ? element("ol", { className: "revision-list" }, revisions.map((revision) => {
-          const button = element("button", { className: `revision-button${state.selectedRevision === revision.id ? " is-selected" : ""}`, type: "button" }, [
+        ? element("ol", { className: "revision-list" }, revisions.map((revision) =>
+          element("li", { className: "revision-button" }, [
             element("strong", { className: "mono", text: revision.short_sha || revision.id }),
             element("span", { text: revision.subject || "Working tree" }),
-            element("small", { text: `${display(revision.work_state, "state unknown")} · ${formatTime(revision.timestamp)}` }),
-          ]);
-          button.addEventListener("click", () => loadRevision(work, revision.id));
-          return element("li", {}, [button]);
-        }))
+            element("small", { text: `${display(revision.author, "author unknown")} · ${formatTime(revision.timestamp)}` }),
+          ]),
+        ))
         : emptyState("REV—00", "No revisions", "The specification has no available Git history."),
     ]),
     element("section", { className: "detail-panel revision-detail" }, [
-      element("p", { className: "section-kicker", text: "Revision detail" }),
-      !state.selectedRevision
-        ? emptyState("REV—SELECT", "Select a revision", "Choose a verified revision to inspect its bounded diff.")
-        : revisionDetail === "loading"
-          ? loadingRows("Loading revision detail")
-          : revisionDetail?.error
-            ? emptyState("REV—ERR", "Revision unavailable", revisionDetail.error)
-            : revisionDetail
-              ? [element("h3", { className: "mono", text: revisionDetail.detail.revision }), tags(revisionDetail.detail.changed_headings, "No changed headings"), element("pre", { className: "revision-diff", text: revisionDetail.detail.text || "No textual diff." })]
-              : loadingRows("Loading revision detail"),
+      element("p", { className: "section-kicker", text: "Core contract" }),
+      element("h3", { text: "Versioned specification history" }),
+      element("p", { text: "Revision metadata is supplied by Agora Core. Studio does not read Git objects or specification files directly." }),
+      definitionList([["Schema", specification.schema], ["History", specification.has_history ? "Available" : "Not recorded"], ["Working tree", specification.working_tree ? "Modified" : "Clean"]]),
     ]),
   ]);
 }
@@ -490,7 +489,7 @@ function renderLifecycleTab(detail) {
         element("li", { className: `${traversed.has(`${transition.from}/${transition.to}`) ? "is-traversed" : ""}${transition.blockers?.length ? " is-blocked" : ""}` }, [
           element("span", { className: "transition-path mono", text: `${transition.from} → ${transition.to}` }),
           element("span", { text: transition.gate || "No gate" }),
-          transition.blockers?.length ? element("small", { text: transition.blockers.join("; ") }) : element("small", { text: traversed.has(`${transition.from}/${transition.to}`) ? "Traversed" : "Available by method" }),
+          transition.blockers?.length ? element("small", { text: transition.blockers.map(blockerText).join("; ") }) : element("small", { text: transition.available ? "Available now" : "Declared by method" }),
         ]),
       )),
     ]),
@@ -628,7 +627,7 @@ function renderGateControl(work, detail) {
       statusPill(record.result),
       element("span", {}, [element("strong", { text: record.type }), tags(record.artifact_references, "No artifact references")]),
     ])))
-    : emptyState("EVD—REQ", "Evidence required", "No successful durable evidence is associated with this gate.");
+    : emptyState("EVD—REQ", "No evidence recorded", "Core will decide whether durable evidence is required for this gate.");
 
   let controls;
   if (action.decision) {
@@ -686,14 +685,16 @@ function renderApprovalsTab(work, detail) {
   if (detail?.loading && !detail.artifacts) return loadingRows("Loading approvals");
   if (!detail?.artifacts) return emptyState("APR—ERR", "Approvals unavailable", detail?.errors?.join(" ") || "No approval projection was returned.");
   const projection = detail.artifacts.approvals;
-  if (!projection.satisfaction?.length) return emptyState("APR—00", "No approvals required", "This work item has no durable required approval roles.");
-  const approvals = element("div", { className: "approval-grid" }, projection.satisfaction.map((item) => {
-    const record = projection.records.find((candidate) => candidate.role === item.role);
-    return element("article", { className: `approval-card${item.satisfied ? " is-satisfied" : " is-missing"}` }, [
-      element("span", { className: "approval-mark", "aria-hidden": "true", text: item.satisfied ? "✓" : "!" }),
+  if (!projection.required_roles?.length) return emptyState("APR—00", "No approvals required", "Core reports no approval roles for the current transition.");
+  const missing = new Set(projection.missing_roles || []);
+  const approvals = element("div", { className: "approval-grid" }, projection.required_roles.map((role) => {
+    const record = projection.records.find((candidate) => candidate.role === role);
+    const satisfied = !missing.has(role);
+    return element("article", { className: `approval-card${satisfied ? " is-satisfied" : " is-missing"}` }, [
+      element("span", { className: "approval-mark", "aria-hidden": "true", text: satisfied ? "✓" : "!" }),
       element("div", {}, [
-        element("span", { className: "metric-label", text: item.satisfied ? "Approved" : "Pending" }),
-        element("h3", { text: item.role }),
+        element("span", { className: "metric-label", text: satisfied ? "Approved" : "Pending" }),
+        element("h3", { text: role }),
         element("p", { text: record ? `${record.approved_by} · ${record.note}` : "No durable approval record yet." }),
         record ? element("time", { datetime: record.timestamp, text: formatTime(record.timestamp) }) : null,
       ]),
@@ -991,26 +992,6 @@ async function enrichWork() {
   announce("Gate, evidence, and approval state loaded for the work board.");
 }
 
-async function loadRevision(work, revision) {
-  const generation = state.generation;
-  state.selectedRevision = revision;
-  const key = `${DashboardModel.workKey(work)}:${revision}`;
-  if (state.revisionDetails.has(key)) return renderWorkDetail();
-  state.revisionDetails.set(key, "loading");
-  renderWorkDetail();
-  const query = `swarm=${encodeURIComponent(work.swarm_id)}&work=${encodeURIComponent(work.id)}&revision=${encodeURIComponent(revision)}`;
-  try {
-    const detail = await requestJson(`${API_ROOT}/lifecycle/revision?${query}`);
-    if (generation !== state.generation) return;
-    state.revisionDetails.set(key, detail);
-  } catch (error) {
-    if (generation !== state.generation) return;
-    state.revisionDetails.set(key, { error: error.message });
-  }
-  if (generation !== state.generation) return;
-  renderWorkDetail();
-}
-
 async function loadOverview(message = "Loading process status") {
   setLoading(true, message);
   nodes.content.setAttribute("aria-busy", "true");
@@ -1070,6 +1051,7 @@ nodes.nav.forEach((button) => button.addEventListener("click", () => {
 (async function restoreSelection() {
   try {
     const payload = await requestJson(`${API_ROOT}/project`);
+    state.csrfToken = payload.csrf_token || "";
     if (payload.project) {
       setSelection(payload.project);
       await loadOverview("Restoring selected project");

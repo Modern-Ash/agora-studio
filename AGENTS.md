@@ -15,10 +15,11 @@ architecture unless a task explicitly changes it:
 - do not add authentication, a database, remote or multi-user behavior;
 - do not migrate the dependency-free frontend incidentally.
 
-Studio must not become the owner of Agora lifecycle or domain rules. The current Agora CLI bridge
-is temporary and limited to reviewed read operations. Keep invocations as explicit argument
-arrays with `shell=False`, bounded timeouts, validated JSON, and no user-selected command names.
-Preserve project path containment, symlink protections, and Git object-name validation.
+Studio must not become the owner of Agora lifecycle or domain rules. All project reads use
+`AgoraReadService`; all governed mutations use `AgoraCommandService`. Do not execute Agora CLI,
+spawn subprocesses, interpret durable Markdown/front matter, read protocol records directly, or
+add a fallback around the application-service boundary. Validate the supported Core version and
+exact DTO schemas.
 
 ## Working practices
 

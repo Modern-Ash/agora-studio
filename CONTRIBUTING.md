@@ -10,11 +10,11 @@ Use Python 3.11 or newer:
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install -e ".[dev]"
+python -m pip install -e ../agora -e ".[dev]"
 ```
 
-Run the application with `python -m agora_studio` or `agora-studio`. A usable checkout of Agora
-Core must provide the `agora` command on `PATH` for project reads.
+Run the application with `python -m agora_studio` or `agora-studio`. Development may use the
+sibling Core checkout, but production and wheel tests use `agora-framework>=0.5,<0.6`.
 
 ## Before opening a pull request
 
@@ -39,13 +39,13 @@ documentation when a contract or safety boundary changes.
   remote mode, or multi-user behavior without an accepted architectural decision.
 - Never edit a selected project's `.agora/` files from Studio.
 - Keep browser rendering separate from Agora domain and application rules.
-- Invoke only reviewed, non-mutating Agora reads with argument arrays; never use a shell.
-- Preserve path containment, symlink defenses, bounded reads, timeouts, and output validation.
+- Consume only public, versioned `agora.application` DTOs and services. Do not execute Agora CLI,
+  spawn processes, parse durable files, or add a local lifecycle fallback.
+- Preserve Core's path containment, symlink defenses, bounded reads, and schema validation.
 - Do not add frontend frameworks or remote assets as incidental changes.
 
-The current CLI JSON bridge has only the minimum compatibility validation described in the
-README. Changes to expected fields must include characterization tests and must not silently
-invent durable relationships.
+Changes to Core DTO expectations must include consumer-contract tests and must not silently invent
+durable relationships.
 
 ## Change scope
 
