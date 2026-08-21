@@ -11,7 +11,7 @@ termination-reason: null
 
 ## Standard output
 
-    Fresh verification passed: 20 tests and JavaScript syntax validation succeeded. The result was persisted in [evidence.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md) against the [verification report](/home/faguero/dev/agora-studio/docs/evidence/visual-console-mvp-verification.md).
+    Fresh verification passed: 20 tests and JavaScript syntax validation succeeded. The result was persisted in [evidence.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md) against the [verification report](/home/faguero/dev-agora/agora-studio/docs/evidence/visual-console-mvp-verification.md).
     
     Work remains in `verifying`. The developer role’s only transition is rework to `implementing`, which is unwarranted. Stopped at the Spec Owner’s human visual and final approval gate.
 
@@ -23,7 +23,7 @@ termination-reason: null
     2026-08-17T02:38:07.623006Z  WARN codex_core_skills::loader: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -37,7 +37,7 @@ termination-reason: null
     codex
     I’m using the `agora-execute` skill to identify the assigned role, validate the session’s operational rules, and carry out exactly one permitted transition. I’ll stop if the next gate requires human approval or authority the session does not grant.
     exec
-    /usr/bin/zsh -lc "sed -n '1,240p' /home/faguero/dev/agora-studio/.agents/skills/agora-execute/SKILL.md && env | rg '"'^AGORA_CONTEXT='"'" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,240p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-execute/SKILL.md && env | rg '"'^AGORA_CONTEXT='"'" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     name: "agora-execute"
@@ -78,18 +78,18 @@ termination-reason: null
     authority; neither operation permits silently rewriting independently owned child work.
     
     Execution request: `$ARGUMENTS`
-    AGORA_CONTEXT=/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02381786945087z/CONTEXT.md
+    AGORA_CONTEXT=/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02381786945087z/CONTEXT.md
     
     exec
-    /usr/bin/zsh -lc 'context_path="$AGORA_CONTEXT"; wc -l "$context_path"; sed -n '"'1,260p' \""'$context_path"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'context_path="$AGORA_CONTEXT"; wc -l "$context_path"; sed -n '"'1,260p' \""'$context_path"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    60 /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02381786945087z/CONTEXT.md
+    60 /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02381786945087z/CONTEXT.md
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -146,7 +146,7 @@ termination-reason: null
     5. Stop when policy, permissions, or a gate cannot be satisfied.
     
     exec
-    /usr/bin/zsh -lc 'wc -l .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'wc -l .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
        15 .agora/project.md
        27 .agora/constitution.md
@@ -167,7 +167,7 @@ termination-reason: null
       302 total
     
     exec
-    /usr/bin/zsh -lc "for p in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do sed -n '1,260p' \""'$p"; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "for p in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do sed -n '1,260p' \""'$p"; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/project/v1"
@@ -475,7 +475,7 @@ termination-reason: null
     codex
     The durable state is already in `verifying`: every acceptance criterion is marked satisfied, the verification report is registered, and three successful evidence records exist. I’m now asking Agora for the single outgoing transition assigned to `project:agent`; I won’t infer a rework or completion edge from the files alone.
     exec
-    /usr/bin/zsh -lc "env | rg '"'^AGORA_(ACTOR|SESSION|CONTEXT)='"'; agora next --actor \""'$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "env | rg '"'^AGORA_(ACTOR|SESSION|CONTEXT)='"'; agora next --actor \""'$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 76ms:
     [
       {
@@ -499,9 +499,9 @@ termination-reason: null
     ]
     
     exec
-    /usr/bin/zsh -lc 'wc -l "$AGORA_SESSION"; sed -n '"'1,240p' \""'$AGORA_SESSION"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'wc -l "$AGORA_SESSION"; sed -n '"'1,240p' \""'$AGORA_SESSION"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    32 /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02381786945087z/SESSION.md
+    32 /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02381786945087z/SESSION.md
     ---
     schema: "agora/session/v1"
     id: "run-studio-visual-console-visual-console-mvp-20260817t02381786945087z"
@@ -513,7 +513,7 @@ termination-reason: null
     provider: "openai"
     model: "configured-by-codex"
     status: "running"
-    context: "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02381786945087z/CONTEXT.md"
+    context: "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02381786945087z/CONTEXT.md"
     launch-command: ["codex","exec","Read the Agora session context from the path in AGORA_CONTEXT. Follow its operational Markdown, perform only the next action permitted for the assigned role, persist artifacts and evidence through Agora, and stop at human approval or unavailable authority."]
     runtime-available: true
     created-at: "2026-08-17T02:38:07.195582Z"
@@ -536,7 +536,7 @@ termination-reason: null
     The session context and runtime selection are durable. Model conversation history is not project state unless its outcome is recorded in Agora files.
     
     exec
-    /usr/bin/zsh -lc 'agora usage status --swarm studio-visual-console --work visual-console-mvp; agora tool --help; rg --files .agora/tools/repository' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora usage status --swarm studio-visual-console --work visual-console-mvp; agora tool --help; rg --files .agora/tools/repository' in /home/faguero/dev-agora/agora-studio
      succeeded in 247ms:
     {
       "swarm_id": "studio-visual-console",
@@ -572,14 +572,14 @@ termination-reason: null
     .agora/tools/repository/operations/status.md
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,260p' .agora/tools/repository/TOOL.md; sed -n '1,260p' .agora/tools/repository/operations/status.md; sed -n '1,300p' .agora/tools/repository/operations/commit.md; agora tool show repository" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,260p' .agora/tools/repository/TOOL.md; sed -n '1,260p' .agora/tools/repository/operations/status.md; sed -n '1,300p' .agora/tools/repository/operations/commit.md; agora tool show repository" in /home/faguero/dev-agora/agora-studio
      exited 2 in 66ms:
     usage: agora tool show [-h] --tool TOOL
     agora tool show: error: the following arguments are required: --tool
     
     2026-08-17T02:38:59.328223Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora tool runs --help; agora tool invoke --help; agora tool launch --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora tool runs --help; agora tool invoke --help; agora tool launch --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 369ms:
     usage: agora tool runs [-h] [--status STATUS]
     
@@ -613,7 +613,7 @@ termination-reason: null
     
     2026-08-17T02:39:04.491264Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora tool runs' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora tool runs' in /home/faguero/dev-agora/agora-studio
      succeeded in 70ms:
     [
       {
@@ -634,7 +634,7 @@ termination-reason: null
         ],
         "runtime_available": true,
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/tool-runs/tool-20260817t01261786940810z",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tool-runs/tool-20260817t01261786940810z",
         "created_at": "2026-08-17T01:26:50.011697Z",
         "result_kind": "repository-branch",
         "exit_code": 0,
@@ -664,7 +664,7 @@ termination-reason: null
         ],
         "runtime_available": true,
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/tool-runs/tool-20260817t01261786940817z",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tool-runs/tool-20260817t01261786940817z",
         "created_at": "2026-08-17T01:26:57.376029Z",
         "result_kind": "repository-status",
         "exit_code": 0,
@@ -697,7 +697,7 @@ termination-reason: null
         ],
         "runtime_available": true,
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/tool-runs/tool-20260817t02321786944774z",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tool-runs/tool-20260817t02321786944774z",
         "created_at": "2026-08-17T02:32:54.780327Z",
         "result_kind": "repository-change",
         "exit_code": 0,
@@ -716,7 +716,7 @@ termination-reason: null
     Agora reports no remaining work budget limit. The governed commit was already completed before this session, so the status note about launching it is stale; I will not create a duplicate commit. The permitted developer action is to continue verification, so I’m checking the committed implementation and its recorded test procedure, then I’ll persist only fresh verification evidence if it succeeds.
     2026-08-17T02:39:24.889916Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora tool invoke --tool repository --operation status --actor "$AGORA_ACTOR" --swarm studio-visual-console --work visual-console-mvp --launch' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora tool invoke --tool repository --operation status --actor "$AGORA_ACTOR" --swarm studio-visual-console --work visual-console-mvp --launch' in /home/faguero/dev-agora/agora-studio
      succeeded in 83ms:
     {
       "id": "tool-20260817t02391786945169z",
@@ -736,7 +736,7 @@ termination-reason: null
       ],
       "runtime_available": true,
       "status": "completed",
-      "path": "/home/faguero/dev/agora-studio/.agora/tool-runs/tool-20260817t02391786945169z",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/tool-runs/tool-20260817t02391786945169z",
       "created_at": "2026-08-17T02:39:29.189126Z",
       "result_kind": "repository-status",
       "exit_code": 0,
@@ -751,7 +751,7 @@ termination-reason: null
     
     2026-08-17T02:39:29.263390Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "sed -n '1,240p' .agora/tool-runs/tool-20260817t02391786945169z/RESULT.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,240p' .agora/tool-runs/tool-20260817t02391786945169z/RESULT.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/tool-result/v1"
@@ -783,7 +783,7 @@ termination-reason: null
     
     2026-08-17T02:39:32.398877Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora evidence --help; agora evidence add --help; agora work transition --help; agora handoff --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora evidence --help; agora evidence add --help; agora work transition --help; agora handoff --help' in /home/faguero/dev-agora/agora-studio
      exited 2 in 523ms:
     usage: agora evidence [-h] {add,prepare} ...
     
@@ -820,7 +820,7 @@ termination-reason: null
     
     2026-08-17T02:39:43.565495Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora gate --help; agora gate check --help; agora approval --help; agora approval add --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora gate --help; agora gate check --help; agora approval --help; agora approval add --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 522ms:
     usage: agora gate [-h] {waive,waive-prepare,list} ...
     
@@ -864,7 +864,7 @@ termination-reason: null
     
     2026-08-17T02:39:48.457075Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora status' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora status' in /home/faguero/dev-agora/agora-studio
      succeeded in 125ms:
     {
       "project": "agora-studio",
@@ -925,7 +925,7 @@ termination-reason: null
     2026-08-17T02:39:56.896248Z  WARN codex_core::responses_retry: stream disconnected - retrying sampling request (1/5 in 213ms)... turn_id=01a00d95-5d72-7fc2-9051-4c6f2cfb79e1 retries=1 max_retries=5 sampling_error=stream disconnected before completion: WebSocket protocol error: Connection reset without closing handshake
     2026-08-17T02:39:57.414096Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora tool list; rg --files .agora/tools/ci-cd .agora/tools | sort' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora tool list; rg --files .agora/tools/ci-cd .agora/tools | sort' in /home/faguero/dev-agora/agora-studio
      succeeded in 68ms:
     [
       {
@@ -936,7 +936,7 @@ termination-reason: null
         "category": "ci",
         "executable": "cictl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/ci-cd",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/ci-cd",
         "operations": [
           "cancel-run",
           "create-deployment",
@@ -964,7 +964,7 @@ termination-reason: null
         "category": "cloud",
         "executable": "cloudctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/cloud-infrastructure",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/cloud-infrastructure",
         "operations": [
           "apply-plan",
           "destroy-resource",
@@ -991,7 +991,7 @@ termination-reason: null
         "category": "code-review",
         "executable": "reviewctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/code-review",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/code-review",
         "operations": [
           "approve",
           "checks",
@@ -1021,7 +1021,7 @@ termination-reason: null
         "category": "documentation",
         "executable": "docsctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/knowledge-base",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/knowledge-base",
         "operations": [
           "archive",
           "create",
@@ -1049,7 +1049,7 @@ termination-reason: null
         "category": "observability",
         "executable": "observectl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/observability",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/observability",
         "operations": [
           "create-incident",
           "query-metrics",
@@ -1077,7 +1077,7 @@ termination-reason: null
         "category": "portfolio",
         "executable": "portfolioctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/portfolio-management",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/portfolio-management",
         "operations": [
           "add-item",
           "archive-item",
@@ -1105,7 +1105,7 @@ termination-reason: null
         "category": "release",
         "executable": "releasectl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/release-management",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/release-management",
         "operations": [
           "list-releases",
           "publish-release",
@@ -1131,7 +1131,7 @@ termination-reason: null
         "category": "repository",
         "executable": "git",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/repository",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/repository",
         "operations": [
           "commit",
           "create-branch",
@@ -1158,7 +1158,7 @@ termination-reason: null
         "category": "repository-governance",
         "executable": "repo-policyctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/repository-governance",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/repository-governance",
         "operations": [
           "inspect-repository",
           "list-rulesets",
@@ -1185,7 +1185,7 @@ termination-reason: null
         "category": "security",
         "executable": "securityctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/security-scanning",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/security-scanning",
         "operations": [
           "list-code-alerts",
           "list-dependency-alerts",
@@ -1210,7 +1210,7 @@ termination-reason: null
         "category": "issue-tracker",
         "executable": "workctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/work-management",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/work-management",
         "operations": [
           "comment",
           "create",
@@ -1311,16 +1311,16 @@ termination-reason: null
     
     2026-08-17T02:40:05.256128Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'node --check agora_studio/static/app.js' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'node --check agora_studio/static/app.js' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     exec
-    /usr/bin/zsh -lc 'python3 -m unittest discover -s tests -v' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'python3 -m unittest discover -s tests -v' in /home/faguero/dev-agora/agora-studio
      succeeded in 15ms:
     2026-08-17T02:40:15.596032Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     codex
     The fresh developer verification succeeded: all 20 tests pass and the frontend JavaScript parses cleanly. I’m registering that result against the existing verification-report artifact; after that, the only remaining gate is the Spec Owner’s human visual/final acceptance, which this developer role cannot supply.
     exec
-    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type automated-verification --result success --by "$AGORA_ACTOR" --artifact repo://docs/evidence/visual-console-mvp-verification.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type automated-verification --result success --by "$AGORA_ACTOR" --artifact repo://docs/evidence/visual-console-mvp-verification.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 61ms:
     {
       "id": "visual-console-mvp",
@@ -1360,7 +1360,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1373,7 +1373,7 @@ termination-reason: null
     
     2026-08-17T02:40:27.293810Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'tail -n 8 .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md; agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'tail -n 8 .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md; agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 67ms:
     [
       {
@@ -1398,7 +1398,7 @@ termination-reason: null
     
     2026-08-17T02:40:34.838140Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     codex
-    Fresh verification passed: 20 tests and JavaScript syntax validation succeeded. The result was persisted in [evidence.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md) against the [verification report](/home/faguero/dev/agora-studio/docs/evidence/visual-console-mvp-verification.md).
+    Fresh verification passed: 20 tests and JavaScript syntax validation succeeded. The result was persisted in [evidence.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md) against the [verification report](/home/faguero/dev-agora/agora-studio/docs/evidence/visual-console-mvp-verification.md).
     
     Work remains in `verifying`. The developer role’s only transition is rework to `implementing`, which is unwarranted. Stopped at the Spec Owner’s human visual and final approval gate.
     tokens used

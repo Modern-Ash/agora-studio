@@ -13,8 +13,8 @@ termination-reason: null
 
     Transitioned governed work `foundation` from `clarified` to `planned` as `project:agent`.
     
-    - Transition recorded in [events.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md)
-    - State persisted in [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/WORK.md)
+    - Transition recorded in [events.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md)
+    - State persisted in [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/WORK.md)
     - `agora validate` passes with no issues
     
     Stopped after the single permitted action; implementation was not started.
@@ -23,7 +23,7 @@ termination-reason: null
 
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -38,7 +38,7 @@ termination-reason: null
     codex
     I’m using the Agora status and execution skills to load the governed session, identify the assigned role’s single permitted transition, and persist its artifacts/evidence without crossing an approval boundary.
     exec
-    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && pwd && rg --files -g 'AGENTS.md' -g '"'!node_modules'"' -g '"'!vendor'"' . .." in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && pwd && rg --files -g 'AGENTS.md' -g '"'!node_modules'"' -g '"'!vendor'"' . .." in /home/faguero/dev-agora/agora-studio
      succeeded in 28ms:
     ../agora/AGENTS.md
     ../trivor/trivor-backend/AGENTS.md
@@ -58,7 +58,7 @@ termination-reason: null
     ../agora-pr20/AGENTS.md
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,240p' /home/faguero/dev/AGENTS.md && sed -n '1,260p' /home/faguero/dev/agora-studio/.agents/skills/agora-status/SKILL.md && sed -n '1,320p' /home/faguero/dev/agora-studio/.agents/skills/agora-execute/SKILL.md && sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,240p' /home/faguero/dev/AGENTS.md && sed -n '1,260p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-status/SKILL.md && sed -n '1,320p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-execute/SKILL.md && sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     <!-- OPENSPEC:START -->
     # OpenSpec Instructions
@@ -137,7 +137,7 @@ termination-reason: null
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -216,7 +216,7 @@ termination-reason: null
       echo \"===== "'$f ====="
       sed -n '"'1,2000p' \""'$f"
     done
-    printenv AGORA_ACTOR AGORA_SESSION' in /home/faguero/dev/agora-studio
+    printenv AGORA_ACTOR AGORA_SESSION' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ===== .agora/project.md =====
     ---
@@ -529,10 +529,10 @@ termination-reason: null
     | Role | Approved by | Note | Timestamp |
     | --- | --- | --- | --- |
     project:agent
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z/SESSION.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z/SESSION.md
     
     exec
-    /usr/bin/zsh -lc 'agora validate && agora status && agora next --actor "$AGORA_ACTOR" && agora inbox --actor "$AGORA_ACTOR" && agora swarm list && agora work list --swarm studio-foundation && agora event list --swarm studio-foundation && agora usage status --swarm studio-foundation --work foundation' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora validate && agora status && agora next --actor "$AGORA_ACTOR" && agora inbox --actor "$AGORA_ACTOR" && agora swarm list && agora work list --swarm studio-foundation && agora event list --swarm studio-foundation && agora usage status --swarm studio-foundation --work foundation' in /home/faguero/dev-agora/agora-studio
      succeeded in 1182ms:
     {
       "ok": true,
@@ -666,7 +666,7 @@ termination-reason: null
           "developer": "project:agent"
         },
         "objective": "Build the local read-only foundation of Agora Studio",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation"
       },
       {
         "id": "studio-mvp",
@@ -682,7 +682,7 @@ termination-reason: null
           "developer": "project:agent"
         },
         "objective": "Build a local-first GUI for visualizing and operating Agora projects while keeping Markdown and Git as the source of truth",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp"
       }
     ]
     [
@@ -714,7 +714,7 @@ termination-reason: null
         ],
         "evidence_results": [],
         "approval_roles": [],
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation",
         "child_work_refs": [],
         "budget_limits": null,
         "operational_status": "active",
@@ -731,119 +731,119 @@ termination-reason: null
         "type": "swarm.created",
         "detail": "branch=agora/studio-mvp",
         "scope": "swarm:studio-foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T00:50:48.953088Z",
         "type": "swarm.actor-assigned",
         "detail": "role=spec-owner actor=project:owner",
         "scope": "swarm:studio-foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T00:50:49.128019Z",
         "type": "swarm.actor-assigned",
         "detail": "role=developer actor=project:agent",
         "scope": "swarm:studio-foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T00:51:21.451275Z",
         "type": "work.created",
         "detail": "state=drafting actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:08:21.381295Z",
         "type": "artifact.added",
         "detail": "kind=spec uri=repo://docs/specs/studio-foundation.md actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:08:36.684930Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=startup actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:08:36.845662Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=selection actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:08:37.003118Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=invalid-project actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:08:37.164810Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=read-only actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:08:37.331281Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=tests actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:08:37.502040Z",
         "type": "work.transitioned",
         "detail": "from=drafting to=clarified actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:08:37.502712Z",
         "type": "swarm.status-changed",
         "detail": "from=ready to=running",
         "scope": "swarm:studio-foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:15:07.072529Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=startup actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:15:07.241177Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=selection actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:15:07.407971Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=invalid-project actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:15:07.566407Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=read-only actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:15:07.721893Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=tests actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       }
     ]
     {
@@ -858,7 +858,7 @@ termination-reason: null
     codex
     Durable state validates cleanly. The sole next edge is developer-owned `clarified → planned`; the “already running” blocker only reflects this active governed session, so I’m checking the transition contract and CLI syntax before recording exactly that edge.
     exec
-    /usr/bin/zsh -lc "rg --files .agora/methods/spec-driven .agora/commands | sort && agora work transition --help && sed -n '1,240p' \""'$AGORA_SESSION" && git status --short --branch' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "rg --files .agora/methods/spec-driven .agora/commands | sort && agora work transition --help && sed -n '1,240p' \""'$AGORA_SESSION" && git status --short --branch' in /home/faguero/dev-agora/agora-studio
      succeeded in 87ms:
     usage: agora work transition [-h] --swarm SWARM --work WORK --to TO --by BY
     
@@ -879,7 +879,7 @@ termination-reason: null
     provider: "openai"
     model: "configured-by-codex"
     status: "running"
-    context: "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z/CONTEXT.md"
+    context: "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z/CONTEXT.md"
     launch-command: ["codex","exec","Read the Agora session context from the path in AGORA_CONTEXT. Follow its operational Markdown, perform only the next action permitted for the assigned role, persist artifacts and evidence through Agora, and stop at human approval or unavailable authority."]
     runtime-available: true
     created-at: "2026-08-17T01:21:37.622009Z"
@@ -912,7 +912,7 @@ termination-reason: null
     ?? docs/
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,240p' .agora/methods/spec-driven/transitions/02-clarified-planned.md && sed -n '1,240p' .agora/commands/execute.md && agora work show --swarm studio-foundation --work foundation" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,240p' .agora/methods/spec-driven/transitions/02-clarified-planned.md && sed -n '1,240p' .agora/commands/execute.md && agora work show --swarm studio-foundation --work foundation" in /home/faguero/dev-agora/agora-studio
      succeeded in 65ms:
     {
       "id": "foundation",
@@ -942,7 +942,7 @@ termination-reason: null
       ],
       "evidence_results": [],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -954,7 +954,7 @@ termination-reason: null
     }
     
     exec
-    /usr/bin/zsh -lc 'agora work transition --swarm studio-foundation --work foundation --to planned --by "$AGORA_ACTOR" && agora validate && agora work show --swarm studio-foundation --work foundation && agora event list --swarm studio-foundation' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work transition --swarm studio-foundation --work foundation --to planned --by "$AGORA_ACTOR" && agora validate && agora work show --swarm studio-foundation --work foundation && agora event list --swarm studio-foundation' in /home/faguero/dev-agora/agora-studio
      succeeded in 517ms:
     {
       "id": "foundation",
@@ -984,7 +984,7 @@ termination-reason: null
       ],
       "evidence_results": [],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1067,7 +1067,7 @@ termination-reason: null
       ],
       "evidence_results": [],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1083,134 +1083,134 @@ termination-reason: null
         "type": "swarm.created",
         "detail": "branch=agora/studio-mvp",
         "scope": "swarm:studio-foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T00:50:48.953088Z",
         "type": "swarm.actor-assigned",
         "detail": "role=spec-owner actor=project:owner",
         "scope": "swarm:studio-foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T00:50:49.128019Z",
         "type": "swarm.actor-assigned",
         "detail": "role=developer actor=project:agent",
         "scope": "swarm:studio-foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T00:51:21.451275Z",
         "type": "work.created",
         "detail": "state=drafting actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:08:21.381295Z",
         "type": "artifact.added",
         "detail": "kind=spec uri=repo://docs/specs/studio-foundation.md actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:08:36.684930Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=startup actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:08:36.845662Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=selection actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:08:37.003118Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=invalid-project actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:08:37.164810Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=read-only actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:08:37.331281Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=tests actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:08:37.502040Z",
         "type": "work.transitioned",
         "detail": "from=drafting to=clarified actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:08:37.502712Z",
         "type": "swarm.status-changed",
         "detail": "from=ready to=running",
         "scope": "swarm:studio-foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:15:07.072529Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=startup actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:15:07.241177Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=selection actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:15:07.407971Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=invalid-project actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:15:07.566407Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=read-only actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:15:07.721893Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=tests actor=project:owner",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       },
       {
         "timestamp": "2026-08-17T01:24:31.945323Z",
         "type": "work.transitioned",
         "detail": "from=clarified to=planned actor=project:agent",
         "scope": "work:studio-foundation/foundation",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md"
       }
     ]
     
     codex
     Transitioned governed work `foundation` from `clarified` to `planned` as `project:agent`.
     
-    - Transition recorded in [events.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md)
-    - State persisted in [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation/WORK.md)
+    - Transition recorded in [events.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/events.md)
+    - State persisted in [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation/WORK.md)
     - `agora validate` passes with no issues
     
     Stopped after the single permitted action; implementation was not started.

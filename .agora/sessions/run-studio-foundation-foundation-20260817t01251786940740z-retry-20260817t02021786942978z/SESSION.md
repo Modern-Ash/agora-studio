@@ -9,7 +9,7 @@ integration: "codex"
 provider: "openai"
 model: "configured-by-codex"
 status: "completed"
-context: "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z/CONTEXT.md"
+context: "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z/CONTEXT.md"
 launch-command: ["codex","exec","Read the Agora session context from the path in AGORA_CONTEXT. Follow its operational Markdown, perform only the next action permitted for the assigned role, persist artifacts and evidence through Agora, and stop at human approval or unavailable authority."]
 runtime-available: true
 created-at: "2026-08-17T02:02:58.564277Z"

@@ -5,7 +5,7 @@
 
   function command(option, reason, authentication = null) {
     return {
-      schema: "agora/application/approve-gate-command/v3",
+      schema: "agora/application/approve-gate-command/v4",
       gate_id: option.gate_id,
       actor_id: option.actor_id,
       decision: option.decision,
@@ -30,7 +30,11 @@
       transition_target: prepared.transition_target,
       role_id: prepared.role_id,
       evidence_references: [...prepared.evidence_references],
+      evidence_content_sha256: prepared.evidence_content_sha256 ? { ...prepared.evidence_content_sha256 } : {},
+      actor_fingerprint: prepared.actor_fingerprint || null,
       precondition_digest: prepared.precondition_digest,
+      prepared_at: prepared.prepared_at,
+      expires_at: prepared.expires_at || null,
       authentication,
     };
   }
@@ -65,6 +69,14 @@
     if (!/^[0-9a-f]{64}$/.test(prepared.precondition_digest || "")) {
       return "The prepared precondition digest is invalid. Regenerate the action.";
     }
+    if (!prepared.prepared_at) return "Missing prepared_at. Regenerate the action.";
+    if (prepared.expires_at) {
+      const exp = Date.parse(prepared.expires_at);
+      if (!Number.isNaN(exp) && Date.now() >= exp) return "The prepared material has expired. Prepare again.";
+    }
+    const refs = prepared.evidence_references || [];
+    const m = prepared.evidence_content_sha256 || {};
+    if (Object.keys(m).length !== refs.length || !refs.every((r) => r in m)) return "Evidence digest map does not match selection.";
     return "";
   }
 

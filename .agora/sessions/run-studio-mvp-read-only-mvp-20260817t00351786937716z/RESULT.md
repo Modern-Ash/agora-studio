@@ -13,19 +13,19 @@ termination-reason: null
 
     Performed the next developer-authorized action:
     
-    - Recorded successful `completion-gate-prerequisites` evidence against [SPEC.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md).
+    - Recorded successful `completion-gate-prerequisites` evidence against [SPEC.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md).
     - Agora validation passes with no issues.
     - Work remains `verifying`.
     - Stopped at the required human `spec-owner` approval. Only `project:owner` can approve and transition the work to `completed`; no rework or unauthorized transition was performed.
     
-    Durable evidence: [evidence.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md).
+    Durable evidence: [evidence.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md).
 
 ## Standard error
 
     2026-08-17T00:35:16.984753Z ERROR codex_models_manager::cache: failed to load models cache: missing field `base_instructions` at line 95 column 5
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -39,10 +39,10 @@ termination-reason: null
     codex
     I’m using the Agora status and execution skills because this request is to inspect durable session state and perform exactly one role-authorized transition. I’ll read the session context and its operational instructions first, then persist the permitted result and stop at any approval or authority boundary.
     exec
-    /usr/bin/zsh -lc "pwd && printenv AGORA_CONTEXT && sed -n '1,240p' /home/faguero/dev/agora-studio/.agents/skills/agora-status/SKILL.md && sed -n '1,280p' /home/faguero/dev/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "pwd && printenv AGORA_CONTEXT && sed -n '1,240p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-status/SKILL.md && sed -n '1,280p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z/CONTEXT.md
     ---
     name: "agora-status"
     description: "Inspect and validate durable Agora project state"
@@ -100,14 +100,14 @@ termination-reason: null
     Execution request: `$ARGUMENTS`
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -167,7 +167,7 @@ termination-reason: null
     codex
     The session assigns me as the `developer` on `read-only-mvp`, currently in `verifying`. I’m now reading every required project, method, role, tool, and work record before selecting the next transition; no state changes have been made.
     exec
-    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md; do if [ -f "$f" ]; then echo "===== $f ====="; sed -n '"'1,10000p' \""'$f"; else echo "===== MISSING: $f ====="; fi; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md; do if [ -f "$f" ]; then echo "===== $f ====="; sed -n '"'1,10000p' \""'$f"; else echo "===== MISSING: $f ====="; fi; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ===== .agora/project.md =====
     ---
@@ -486,17 +486,17 @@ termination-reason: null
     
     2026-08-17T00:35:39.768766Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora work list --swarm studio-mvp' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work list --swarm studio-mvp' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora event list --swarm studio-mvp' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora event list --swarm studio-mvp' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora inbox --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora inbox --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora validate' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora validate' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora status' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora status' in /home/faguero/dev-agora/agora-studio
      succeeded in 90ms:
     [
       {
@@ -532,7 +532,7 @@ termination-reason: null
           "success"
         ],
         "approval_roles": [],
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
         "child_work_refs": [],
         "budget_limits": null,
         "operational_status": "active",
@@ -551,133 +551,133 @@ termination-reason: null
         "type": "swarm.created",
         "detail": "branch=agora/studio-mvp",
         "scope": "swarm:studio-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/events.md"
       },
       {
         "timestamp": "2026-08-16T23:49:33.733776Z",
         "type": "swarm.actor-assigned",
         "detail": "role=spec-owner actor=project:owner",
         "scope": "swarm:studio-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/events.md"
       },
       {
         "timestamp": "2026-08-16T23:49:33.734314Z",
         "type": "swarm.actor-assigned",
         "detail": "role=developer actor=project:agent",
         "scope": "swarm:studio-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/events.md"
       },
       {
         "timestamp": "2026-08-16T23:59:23.836562Z",
         "type": "work.created",
         "detail": "state=drafting actor=project:owner",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:01:04.920592Z",
         "type": "artifact.added",
         "detail": "kind=spec uri=.agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md actor=project:owner",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:08:19.056533Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=scope actor=project:owner",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:08:19.222315Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=behavior actor=project:owner",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:08:19.389693Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=quality actor=project:owner",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:08:19.543154Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=testability actor=project:owner",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:08:19.690534Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=non-mutation actor=project:owner",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:08:32.959515Z",
         "type": "work.transitioned",
         "detail": "from=drafting to=clarified actor=project:owner",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:08:32.960272Z",
         "type": "swarm.status-changed",
         "detail": "from=ready to=running",
         "scope": "swarm:studio-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:10:16.889331Z",
         "type": "work.transitioned",
         "detail": "from=clarified to=planned actor=project:agent",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:11:16.289947Z",
         "type": "work.transitioned",
         "detail": "from=planned to=implementing actor=project:agent",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:12:18.136084Z",
         "type": "work.transitioned",
         "detail": "from=implementing to=verifying actor=project:agent",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:13:52.767440Z",
         "type": "evidence.added",
         "detail": "type=spec-verification result=success actor=project:agent",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:15:33.337689Z",
         "type": "evidence.added",
         "detail": "type=completion-readiness result=success actor=project:agent",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:31:40.687125Z",
         "type": "evidence.added",
         "detail": "type=session-spec-verification result=success actor=project:agent",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:35:09.433414Z",
         "type": "evidence.added",
         "detail": "type=session-developer-verification result=success actor=project:agent",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       }
     ]
     
@@ -808,7 +808,7 @@ termination-reason: null
     codex
     Validation is clean. The durable work already has four successful verification records, all criteria satisfied, and the required spec registered. The developer’s only outgoing state edge is rework back to `implementing`; Agora explicitly forbids choosing that edge merely to avoid the higher-priority Spec Owner decision, so I’m checking the completion gate and approval command surface before stopping.
     exec
-    /usr/bin/zsh -lc "sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     # Especificación del MVP de solo lectura de Agora Studio
     
@@ -1240,7 +1240,7 @@ termination-reason: null
     Ninguna.
     
     exec
-    /usr/bin/zsh -lc 'find .agora/methods/spec-driven -maxdepth 3 -type f -print | sort' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'find .agora/methods/spec-driven -maxdepth 3 -type f -print | sort' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     .agora/methods/spec-driven/METHOD.md
     .agora/methods/spec-driven/PROTOCOL.md
@@ -1257,13 +1257,13 @@ termination-reason: null
     .agora/methods/spec-driven/transitions/06-verifying-completed.md
     
     exec
-    /usr/bin/zsh -lc 'agora method show spec-driven' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora method show spec-driven' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora work show --swarm studio-mvp --work read-only-mvp' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work show --swarm studio-mvp --work read-only-mvp' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora approval --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora approval --help' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora next --actor project:owner' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora next --actor project:owner' in /home/faguero/dev-agora/agora-studio
      exited 2 in 65ms:
     usage: agora method [-h] {install,list} ...
     agora method: error: argument method_command: invalid choice: 'show' (choose from install, list)
@@ -1302,7 +1302,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1357,7 +1357,7 @@ termination-reason: null
     codex
     The completion edge belongs to human actor `project:owner` in the `spec-owner` role and is blocked only by that role’s missing approval. Because responsibility must now move from developer verification to human acceptance, I’m using the Agora handoff skill to record that transfer durably, then I will stop without approving or completing on the owner’s behalf.
     exec
-    /usr/bin/zsh -lc "sed -n '1,320p' /home/faguero/dev/agora-studio/.agents/skills/agora-handoff/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,320p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-handoff/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     name: "agora-handoff"
@@ -1376,7 +1376,7 @@ termination-reason: null
     
     2026-08-17T00:36:11.757585Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "sed -n '1,10000p' .agora/methods/spec-driven/roles/spec-owner.md .agora/methods/spec-driven/gates/completion.md .agora/methods/spec-driven/transitions/06-verifying-completed.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,10000p' .agora/methods/spec-driven/roles/spec-owner.md .agora/methods/spec-driven/gates/completion.md .agora/methods/spec-driven/transitions/06-verifying-completed.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/role/v1"
@@ -1416,12 +1416,12 @@ termination-reason: null
     # Accept the verified increment
     
     exec
-    /usr/bin/zsh -lc "find .agora/swarms/studio-mvp -maxdepth 4 -type f -iname '*handoff*' -o -path '*/handoffs/*' -type f" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "find .agora/swarms/studio-mvp -maxdepth 4 -type f -iname '*handoff*' -o -path '*/handoffs/*' -type f" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     exec
-    /usr/bin/zsh -lc 'agora swarm handoff --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora swarm handoff --help' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora actor list' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora actor list' in /home/faguero/dev-agora/agora-studio
      succeeded in 93ms:
     usage: agora swarm handoff [-h] [--id ID] --swarm SWARM --role ROLE
                                --from FROM_ACTOR --to TO_ACTOR --by BY
@@ -1447,7 +1447,7 @@ termination-reason: null
         "capabilities": [
           "implementation"
         ],
-        "path": "/home/faguero/dev/agora-studio/.agora/actors/agent.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/actors/agent.md",
         "reference": "project:agent",
         "integration": null,
         "provider": null,
@@ -1468,7 +1468,7 @@ termination-reason: null
           "acceptance",
           "specification"
         ],
-        "path": "/home/faguero/dev/agora-studio/.agora/actors/owner.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/actors/owner.md",
         "reference": "project:owner",
         "integration": null,
         "provider": null,
@@ -1527,14 +1527,14 @@ termination-reason: null
     
     2026-08-17T00:36:22.282570Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'printenv AGORA_SESSION' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'printenv AGORA_SESSION' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z/SESSION.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z/SESSION.md
     
     exec
-    /usr/bin/zsh -lc 'agora evidence add --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora evidence add --help' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora usage status --swarm studio-mvp --work read-only-mvp' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora usage status --swarm studio-mvp --work read-only-mvp' in /home/faguero/dev-agora/agora-studio
      succeeded in 58ms:
     usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
                               --result {success,failure} --by BY
@@ -1561,7 +1561,7 @@ termination-reason: null
     
     2026-08-17T00:36:40.707393Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "sed -n '1,10000p' \""'$AGORA_SESSION"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,10000p' \""'$AGORA_SESSION"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/session/v1"
@@ -1574,7 +1574,7 @@ termination-reason: null
     provider: "openai"
     model: "configured-by-codex"
     status: "running"
-    context: "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z/CONTEXT.md"
+    context: "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z/CONTEXT.md"
     launch-command: ["codex","exec","Read the Agora session context from the path in AGORA_CONTEXT. Follow its operational Markdown, perform only the next action permitted for the assigned role, persist artifacts and evidence through Agora, and stop at human approval or unavailable authority."]
     runtime-available: true
     created-at: "2026-08-17T00:35:16.798253Z"
@@ -1600,7 +1600,7 @@ termination-reason: null
     codex
     The owner is compatible with `spec-owner`, but the role is already assigned correctly; a handoff would be false and is therefore not permitted. I’ll persist one bounded developer outcome instead: successful verification of the completion gate’s non-approval prerequisites, linked to the registered spec. I will not add the owner’s approval, transition to `completed`, or mark the work operationally blocked.
     exec
-    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type completion-gate-prerequisites --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type completion-gate-prerequisites --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 100ms:
     {
       "id": "read-only-mvp",
@@ -1636,7 +1636,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1649,13 +1649,13 @@ termination-reason: null
     
     2026-08-17T00:36:52.295648Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora validate' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora validate' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora next --actor project:owner' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora next --actor project:owner' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora event list --swarm studio-mvp --work read-only-mvp' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora event list --swarm studio-mvp --work read-only-mvp' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 85ms:
     [
       {
@@ -1754,112 +1754,112 @@ termination-reason: null
         "type": "work.created",
         "detail": "state=drafting actor=project:owner",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:01:04.920592Z",
         "type": "artifact.added",
         "detail": "kind=spec uri=.agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md actor=project:owner",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:08:19.056533Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=scope actor=project:owner",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:08:19.222315Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=behavior actor=project:owner",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:08:19.389693Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=quality actor=project:owner",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:08:19.543154Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=testability actor=project:owner",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:08:19.690534Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=non-mutation actor=project:owner",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:08:32.959515Z",
         "type": "work.transitioned",
         "detail": "from=drafting to=clarified actor=project:owner",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:10:16.889331Z",
         "type": "work.transitioned",
         "detail": "from=clarified to=planned actor=project:agent",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:11:16.289947Z",
         "type": "work.transitioned",
         "detail": "from=planned to=implementing actor=project:agent",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:12:18.136084Z",
         "type": "work.transitioned",
         "detail": "from=implementing to=verifying actor=project:agent",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:13:52.767440Z",
         "type": "evidence.added",
         "detail": "type=spec-verification result=success actor=project:agent",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:15:33.337689Z",
         "type": "evidence.added",
         "detail": "type=completion-readiness result=success actor=project:agent",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:31:40.687125Z",
         "type": "evidence.added",
         "detail": "type=session-spec-verification result=success actor=project:agent",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:35:09.433414Z",
         "type": "evidence.added",
         "detail": "type=session-developer-verification result=success actor=project:agent",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T00:36:52.201509Z",
         "type": "evidence.added",
         "detail": "type=completion-gate-prerequisites result=success actor=project:agent",
         "scope": "work:studio-mvp/read-only-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md"
       }
     ]
     
@@ -1867,11 +1867,11 @@ termination-reason: null
     codex
     Performed the next developer-authorized action:
     
-    - Recorded successful `completion-gate-prerequisites` evidence against [SPEC.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md).
+    - Recorded successful `completion-gate-prerequisites` evidence against [SPEC.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md).
     - Agora validation passes with no issues.
     - Work remains `verifying`.
     - Stopped at the required human `spec-owner` approval. Only `project:owner` can approve and transition the work to `completed`; no rework or unauthorized transition was performed.
     
-    Durable evidence: [evidence.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md).
+    Durable evidence: [evidence.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md).
     tokens used
     60.855

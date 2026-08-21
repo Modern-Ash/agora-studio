@@ -15,7 +15,7 @@ termination-reason: null
     
     - Work remains `verifying`; no unauthorized transition was made.
     - Registered the governed commit result for commit `83d7fec` as an artifact.
-    - Added successful `repository-commit` evidence in [evidence.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md).
+    - Added successful `repository-commit` evidence in [evidence.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md).
     - `project:owner`, holding the Spec Owner role, must provide final approval before completion.
 
 ## Standard error
@@ -26,7 +26,7 @@ termination-reason: null
     2026-08-17T02:40:42.866612Z  WARN codex_core_skills::loader: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -42,9 +42,9 @@ termination-reason: null
     codex
     I’m using the Agora execution skill because this request is a governed role transition. I’ll load the assigned session context, follow its operational Markdown, and perform only the single next authorized action.
     exec
-    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' .agents/skills/agora-execute/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' .agents/skills/agora-execute/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02401786945242z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02401786945242z/CONTEXT.md
     ---
     name: "agora-execute"
     description: "Execute a permitted transition step for an assigned Agora role"
@@ -86,14 +86,14 @@ termination-reason: null
     Execution request: `$ARGUMENTS`
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,260p' \""'$AGORA_CONTEXT"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,260p' \""'$AGORA_CONTEXT"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -152,9 +152,9 @@ termination-reason: null
     codex
     The session assigns me as the `developer` for `visual-console-mvp`, currently in `verifying`. I’m now reading every required governance, method, role, work, artifact, evidence, and approval file before deriving the permitted transition.
     exec
-    /usr/bin/zsh -lc 'printenv AGORA_SESSION; for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do if [ -f "$f" ]; then wc -l "$f"; else echo "MISSING $f"; fi; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'printenv AGORA_SESSION; for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do if [ -f "$f" ]; then wc -l "$f"; else echo "MISSING $f"; fi; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02401786945242z/SESSION.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02401786945242z/SESSION.md
     15 .agora/project.md
     27 .agora/constitution.md
     26 .agora/PROTOCOL.md
@@ -173,9 +173,9 @@ termination-reason: null
     9 .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md
     
     exec
-    /usr/bin/zsh -lc 'for f in "$AGORA_SESSION" .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do if [ -f "$f" ]; then echo "### FILE: $f"; sed -n '"'1,260p' \""'$f"; fi; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'for f in "$AGORA_SESSION" .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do if [ -f "$f" ]; then echo "### FILE: $f"; sed -n '"'1,260p' \""'$f"; fi; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    ### FILE: /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02401786945242z/SESSION.md
+    ### FILE: /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02401786945242z/SESSION.md
     ---
     schema: "agora/session/v1"
     id: "run-studio-visual-console-visual-console-mvp-20260817t02401786945242z"
@@ -187,7 +187,7 @@ termination-reason: null
     provider: "openai"
     model: "configured-by-codex"
     status: "running"
-    context: "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02401786945242z/CONTEXT.md"
+    context: "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02401786945242z/CONTEXT.md"
     launch-command: ["codex","exec","Read the Agora session context from the path in AGORA_CONTEXT. Follow its operational Markdown, perform only the next action permitted for the assigned role, persist artifacts and evidence through Agora, and stop at human approval or unavailable authority."]
     runtime-available: true
     created-at: "2026-08-17T02:40:42.453916Z"
@@ -529,7 +529,7 @@ termination-reason: null
     | --- | --- | --- | --- |
     
     exec
-    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 74ms:
     [
       {
@@ -555,7 +555,7 @@ termination-reason: null
     codex
     Agora’s transition engine confirms the developer must remain in `verifying`; the only state edge is rework back to `implementing`, which policy forbids choosing merely to bypass the Spec Owner’s final approval. The durable status identifies one remaining developer action: launch the already reviewed and staged governed repository commit, then stop for human approval.
     exec
-    /usr/bin/zsh -lc "agora usage status --swarm studio-visual-console --work visual-console-mvp; git status --short; rg --files .agora/tools/repository .agora/tools | sort | sed -n '1,240p'; agora tool --help" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "agora usage status --swarm studio-visual-console --work visual-console-mvp; git status --short; rg --files .agora/tools/repository .agora/tools | sort | sed -n '1,240p'; agora tool --help" in /home/faguero/dev-agora/agora-studio
      succeeded in 223ms:
     {
       "swarm_id": "studio-visual-console",
@@ -674,7 +674,7 @@ termination-reason: null
       -h, --help            show this help message and exit
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,240p' .agora/tools/repository/TOOL.md; sed -n '1,260p' .agora/tools/repository/operations/commit.md; for d in .agora/tool-runs/*; do if [ -d \""'$d" ]; then echo "### $d"; find "$d" -maxdepth 1 -type f -print -exec sed -n '"'1,220p' {} \\;; fi; done" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,240p' .agora/tools/repository/TOOL.md; sed -n '1,260p' .agora/tools/repository/operations/commit.md; for d in .agora/tool-runs/*; do if [ -d \""'$d" ]; then echo "### $d"; find "$d" -maxdepth 1 -type f -print -exec sed -n '"'1,220p' {} \\;; fi; done" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/tool/v1"
@@ -969,7 +969,7 @@ termination-reason: null
         (empty)
     
     exec
-    /usr/bin/zsh -lc 'tail -n 80 .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md; agora evidence --help; agora approval --help 2>&1 || true; agora work --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'tail -n 80 .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md; agora evidence --help; agora approval --help 2>&1 || true; agora work --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 373ms:
     usage: agora evidence [-h] {add,prepare} ...
     
@@ -1026,7 +1026,7 @@ termination-reason: null
     codex
     The implementation commit already completed successfully as governed run `tool-20260817t02321786944774z` (`83d7fec`), and successful verification evidence is already durable. The actual next action is therefore a responsibility transfer to the human Spec Owner for the completion-gate approval. I’m using the Agora handoff skill to record that transfer without changing work state.
     exec
-    /usr/bin/zsh -lc "sed -n '1,260p' .agents/skills/agora-handoff/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,260p' .agents/skills/agora-handoff/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     name: "agora-handoff"
@@ -1044,7 +1044,7 @@ termination-reason: null
     Handoff request: `$ARGUMENTS`
     
     exec
-    /usr/bin/zsh -lc 'agora swarm handoff --help; agora swarm show studio-visual-console 2>&1 || true' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora swarm handoff --help; agora swarm show studio-visual-console 2>&1 || true' in /home/faguero/dev-agora/agora-studio
      succeeded in 211ms:
     usage: agora swarm handoff [-h] [--id ID] --swarm SWARM --role ROLE
                                --from FROM_ACTOR --to TO_ACTOR --by BY
@@ -1064,7 +1064,7 @@ termination-reason: null
     agora swarm show: error: the following arguments are required: --swarm
     
     exec
-    /usr/bin/zsh -lc 'agora evidence add --help; agora artifact add --help; agora approval delegations --swarm studio-visual-console --work visual-console-mvp 2>&1 || true' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora evidence add --help; agora artifact add --help; agora approval delegations --swarm studio-visual-console --work visual-console-mvp 2>&1 || true' in /home/faguero/dev-agora/agora-studio
      succeeded in 364ms:
     usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
                               --result {success,failure} --by BY
@@ -1094,7 +1094,7 @@ termination-reason: null
     codex
     The handoff contract confirms no reassignment is appropriate: `project:owner` already holds the `spec-owner` role, so transferring the developer role would be the wrong mutation. I’ll instead persist the unrecorded successful commit result as evidence—the one material developer outcome not yet listed—then stop with the Spec Owner approval gate untouched.
     exec
-    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type repository-commit --result success --by "$AGORA_ACTOR" --artifact repo://commit/83d7fec' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type repository-commit --result success --by "$AGORA_ACTOR" --artifact repo://commit/83d7fec' in /home/faguero/dev-agora/agora-studio
      exited 1 in 55ms:
     Evidence references unregistered work artifacts: repo://commit/83d7fec
     
@@ -1102,15 +1102,15 @@ termination-reason: null
     codex
     Agora correctly rejected the evidence reference because the commit URI was not yet registered as a work artifact. I’ll register that exact governed commit artifact first, then attach the evidence to it; this preserves referential integrity and stays within the same verification action.
     exec
-    /usr/bin/zsh -lc 'agora artifact add --swarm studio-visual-console --work visual-console-mvp --kind repository-commit --uri repo://commit/83d7fec --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora artifact add --swarm studio-visual-console --work visual-console-mvp --kind repository-commit --uri repo://commit/83d7fec --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      exited 1 in 73ms:
-    Repository artifact does not exist: repo://commit/83d7fec (/home/faguero/dev/agora-studio/commit/83d7fec)
+    Repository artifact does not exist: repo://commit/83d7fec (/home/faguero/dev-agora/agora-studio/commit/83d7fec)
     
     2026-08-17T02:42:18.069517Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     codex
     The CLI treats `repo://` as a repository-relative file URI, so a raw Git object ID is intentionally invalid there. I’ll use the existing durable governed tool-result file as the artifact; it contains both commit `83d7fec` and the successful exit status.
     exec
-    /usr/bin/zsh -lc 'agora artifact add --swarm studio-visual-console --work visual-console-mvp --kind repository-commit-result --uri repo://.agora/tool-runs/tool-20260817t02321786944774z/RESULT.md --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora artifact add --swarm studio-visual-console --work visual-console-mvp --kind repository-commit-result --uri repo://.agora/tool-runs/tool-20260817t02321786944774z/RESULT.md --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 63ms:
     {
       "id": "visual-console-mvp",
@@ -1151,7 +1151,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1163,7 +1163,7 @@ termination-reason: null
     }
     
     exec
-    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type repository-commit --result success --by "$AGORA_ACTOR" --artifact repo://.agora/tool-runs/tool-20260817t02321786944774z/RESULT.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type repository-commit --result success --by "$AGORA_ACTOR" --artifact repo://.agora/tool-runs/tool-20260817t02321786944774z/RESULT.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 59ms:
     {
       "id": "visual-console-mvp",
@@ -1205,7 +1205,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1222,7 +1222,7 @@ termination-reason: null
     
     - Work remains `verifying`; no unauthorized transition was made.
     - Registered the governed commit result for commit `83d7fec` as an artifact.
-    - Added successful `repository-commit` evidence in [evidence.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md).
+    - Added successful `repository-commit` evidence in [evidence.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md).
     - `project:owner`, holding the Spec Owner role, must provide final approval before completion.
     tokens used
     57,024

@@ -3,27 +3,26 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
-  <meta name="theme-color" content="#121b22">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#060913">
   <title>Agora Studio — Process control</title>
-  <link rel="icon" href="/assets/agora-logo.png" type="image/png">
-  <link rel="stylesheet" href="/assets/styles.css">
-  <script src="/assets/activity-model.js" defer></script>
-  <script src="/assets/lifecycle-model.js" defer></script>
-  <script src="/assets/artifacts-model.js" defer></script>
-  <script src="/assets/dashboard-model.js" defer></script>
-  <script src="/assets/control-model.js" defer></script>
-  <script src="/assets/app.js" defer></script>
+  <link rel="icon" href="/assets/agora-mark.png" type="image/png">
+  <link rel="stylesheet" href="/assets/styles.css?v=0.5.0">
+  <script src="/assets/activity-model.js?v=0.5.0" defer></script>
+  <script src="/assets/lifecycle-model.js?v=0.5.0" defer></script>
+  <script src="/assets/artifacts-model.js?v=0.5.0" defer></script>
+  <script src="/assets/dashboard-model.js?v=0.5.0" defer></script>
+  <script src="/assets/control-model.js?v=0.5.0" defer></script>
+  <script src="/assets/app.js?v=0.5.0" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to process status</a>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Agora Studio">
       <a class="brand" href="/" aria-label="Agora Studio home">
-        <img src="/assets/agora-logo.png" width="44" height="44" alt="">
+        <img src="/assets/agora-logo.png" width="133" height="50" alt="Agora Studio logo">
         <span>
-          <strong>Agora</strong>
-          <small>Studio / Control</small>
+          <small>Studio / Control plane</small>
         </span>
       </a>
 
@@ -40,8 +39,17 @@
         <button class="nav-item" type="button" data-view="actors" disabled>
           <span class="nav-index" aria-hidden="true">04</span><span>Actors</span>
         </button>
+        <button class="nav-item" type="button" data-view="sessions" disabled>
+          <span class="nav-index" aria-hidden="true">05</span><span>Sessions</span>
+        </button>
         <button class="nav-item" type="button" data-view="activity" disabled>
-          <span class="nav-index" aria-hidden="true">05</span><span>Activity</span>
+          <span class="nav-index" aria-hidden="true">06</span><span>Activity</span>
+        </button>
+        <button class="nav-item" type="button" data-view="lifecycle" disabled>
+          <span class="nav-index" aria-hidden="true">07</span><span>Lifecycle</span>
+        </button>
+        <button class="nav-item" type="button" data-view="artifacts" disabled>
+          <span class="nav-index" aria-hidden="true">08</span><span>Artifacts</span>
         </button>
       </nav>
 

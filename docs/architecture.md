@@ -1,6 +1,6 @@
 # Agora Studio architecture
 
-Agora Studio 0.4 is a local-first HTTP and browser adapter over Agora Core 0.7 application
+Agora Studio 0.5 is a local-first HTTP and browser adapter over Agora Core 0.8 application
 services.
 
 ```text
@@ -23,7 +23,7 @@ records.
 
 `ProjectStore` retains one canonical project path in memory only after
 `AgoraReadService.project_overview()` succeeds. `CoreReadGateway` requires the
-`agora-framework>=0.7,<0.8` distribution and validates every consumed DTO's exact schema.
+`agora-framework>=0.8,<0.9` distribution and validates every consumed DTO's exact schema.
 Compatibility failures are explicit and have no CLI or filesystem fallback.
 
 Work detail uses `agora/application/work-item-detail/v2` inside Core's
@@ -66,7 +66,7 @@ atomicity, stale preconditions, and double-submit rejection.
 The Core work-control aggregate checks that work, lifecycle, traceability, and decision-option
 states agree before Studio receives them and identifies the result with a validated snapshot token.
 The browser associates reads with project generation, work identity, request revision, refresh, and
-mutation revision; older responses are ignored or aborted. Core 0.7 binds the prepared action to a
+mutation revision; older responses are ignored or aborted. Core 0.8 binds the prepared action to a
 complete governed-material precondition digest. Studio treats that digest as opaque, never computes
 it, invalidates it on edit, and never retries a stale mutation automatically. `expires_at` is
 currently null; time-based expiry remains a future Core contract decision.

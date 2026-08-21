@@ -11,7 +11,7 @@ termination-reason: null
 
 ## Standard output
 
-    Recorded successful `spec-verification` evidence for [SPEC.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md).
+    Recorded successful `spec-verification` evidence for [SPEC.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md).
     
     The work remains `verifying`. Completion now requires human `spec-owner` approval; I stopped at that authority boundary.
 
@@ -20,7 +20,7 @@ termination-reason: null
     2026-08-17T00:12:31.208701Z ERROR codex_models_manager::cache: failed to load models cache: missing field `base_instructions` at line 95 column 5
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -35,9 +35,9 @@ termination-reason: null
     codex
     I’m using the Agora execution skill because this request is a governed role transition. I’ll read the assigned session context and the skill’s operating rules, then perform exactly one authorized next action and stop at any approval or authority boundary.
     exec
-    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' /home/faguero/dev/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00121786936351z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00121786936351z/CONTEXT.md
     ---
     name: "agora-execute"
     description: "Execute a permitted transition step for an assigned Agora role"
@@ -79,14 +79,14 @@ termination-reason: null
     Execution request: `$ARGUMENTS`
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -145,7 +145,7 @@ termination-reason: null
     codex
     The session assigns me the `developer` role on `read-only-mvp`, currently in `verifying`. I’m now loading every required project, method, role, work, artifact, evidence, and approval record before deriving the permitted transition.
     exec
-    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md; do if [ -f "$f" ]; then wc -l -c "$f"; else echo "MISSING $f"; fi; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md; do if [ -f "$f" ]; then wc -l -c "$f"; else echo "MISSING $f"; fi; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
      15 330 .agora/project.md
       27 1091 .agora/constitution.md
@@ -166,7 +166,7 @@ termination-reason: null
     
     2026-08-17T00:12:59.568445Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md; do echo "### FILE: $f"; sed -n '"'1,400p' \""'$f"; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md; do echo "### FILE: $f"; sed -n '"'1,400p' \""'$f"; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ### FILE: .agora/project.md
     ---
@@ -481,7 +481,7 @@ termination-reason: null
     
     2026-08-17T00:13:08.975097Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'printenv AGORA_ACTOR; printenv AGORA_SESSION; agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'printenv AGORA_ACTOR; printenv AGORA_SESSION; agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 80ms:
     [
       {
@@ -508,7 +508,7 @@ termination-reason: null
     codex
     Agora reports that this session itself holds the active execution lease. The work has no successful evidence yet, so I’m inspecting the `verifying` transition contract and the session limits to determine whether the permitted next action is verification evidence or a rework transition.
     exec
-    /usr/bin/zsh -lc "sed -n '1,240p' \""'$AGORA_SESSION"; rg --files .agora/methods/spec-driven | sort; agora usage status --swarm studio-mvp --work read-only-mvp' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,240p' \""'$AGORA_SESSION"; rg --files .agora/methods/spec-driven | sort; agora usage status --swarm studio-mvp --work read-only-mvp' in /home/faguero/dev-agora/agora-studio
      succeeded in 76ms:
     {
       "swarm_id": "studio-mvp",
@@ -521,7 +521,7 @@ termination-reason: null
     
     2026-08-17T00:13:21.501898Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "sed -n '1,240p' .agora/methods/spec-driven/transitions/05-verifying-implementing.md; sed -n '1,240p' .agora/methods/spec-driven/transitions/06-verifying-completed.md; sed -n '1,240p' .agora/methods/spec-driven/gates/completion.md; if [ -f .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md ]; then sed -n '1,400p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; fi" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,240p' .agora/methods/spec-driven/transitions/05-verifying-implementing.md; sed -n '1,240p' .agora/methods/spec-driven/transitions/06-verifying-completed.md; sed -n '1,240p' .agora/methods/spec-driven/gates/completion.md; if [ -f .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md ]; then sed -n '1,400p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; fi" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/transition/v1"
@@ -956,7 +956,7 @@ termination-reason: null
     
     2026-08-17T00:13:26.850864Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "sed -n '260,520p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; agora evidence add --help; agora validate --help" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '260,520p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; agora evidence add --help; agora validate --help" in /home/faguero/dev-agora/agora-studio
      succeeded in 218ms:
     usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
                               --result {success,failure} --by BY
@@ -977,7 +977,7 @@ termination-reason: null
     
     2026-08-17T00:13:33.225791Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "agora validate; rg -n '"'^### R[0-9]+'"\\.' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; rg -c '"'^### R[0-9]+'"\\.' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; rg -c '"'^#### Escenario:'"' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; rg -n '"'^## Preguntas abiertas|''^Ninguna'"\\."'$'"' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "agora validate; rg -n '"'^### R[0-9]+'"\\.' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; rg -c '"'^### R[0-9]+'"\\.' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; rg -c '"'^#### Escenario:'"' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; rg -n '"'^## Preguntas abiertas|''^Ninguna'"\\."'$'"' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 118ms:
     {
       "ok": true,
@@ -1053,7 +1053,7 @@ termination-reason: null
     codex
     Verification passes: the Agora project validates cleanly, all five work criteria are represented, all 20 requirements have concrete scenarios (22 total), the read-only/non-mutation boundaries are explicit, measurable quality targets are present, and the specification records no open questions. I’m persisting one successful developer verification record against the registered spec, then I will stop for the Spec Owner’s approval authority.
     exec
-    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type spec-verification --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type spec-verification --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 101ms:
     {
       "id": "read-only-mvp",
@@ -1085,7 +1085,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1098,7 +1098,7 @@ termination-reason: null
     
     2026-08-17T00:13:52.848693Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "sed -n '1,160p' .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md; agora next --actor project:owner" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,160p' .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md; agora next --actor project:owner" in /home/faguero/dev-agora/agora-studio
      succeeded in 79ms:
     [
       {
@@ -1123,7 +1123,7 @@ termination-reason: null
     
     2026-08-17T00:13:58.936503Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     codex
-    Recorded successful `spec-verification` evidence for [SPEC.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md).
+    Recorded successful `spec-verification` evidence for [SPEC.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md).
     
     The work remains `verifying`. Completion now requires human `spec-owner` approval; I stopped at that authority boundary.
     tokens used

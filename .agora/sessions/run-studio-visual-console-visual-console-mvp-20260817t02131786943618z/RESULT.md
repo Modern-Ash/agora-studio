@@ -31,7 +31,7 @@ termination-reason: null
     2026-08-17T02:13:38.747398Z  WARN codex_core_skills::loader: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -45,9 +45,9 @@ termination-reason: null
     codex
     I’m using the Agora execution skill because this request is a governed, role-scoped transition. I’ll load the session context and skill instructions, then perform exactly one permitted action and stop at any approval or authority boundary.
     exec
-    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' /home/faguero/dev/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md
     ---
     name: "agora-execute"
     description: "Execute a permitted transition step for an assigned Agora role"
@@ -89,14 +89,14 @@ termination-reason: null
     Execution request: `$ARGUMENTS`
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -155,7 +155,7 @@ termination-reason: null
     codex
     The session assigns me as the developer on `visual-console-mvp`, currently in `clarified`. I’m reading every required governance and work-state file before deriving the allowed transition; no project changes have been made yet.
     exec
-    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do echo "===== $f ====="; sed -n '"'1,320p' \""'$f"; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do echo "===== $f ====="; sed -n '"'1,320p' \""'$f"; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ===== .agora/project.md =====
     ---
@@ -471,7 +471,7 @@ termination-reason: null
     | --- | --- | --- | --- |
     
     exec
-    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 72ms:
     [
       {
@@ -499,7 +499,7 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc "sed -n '1,320p' docs/specs/visual-console-mvp.md
     agora work transition --help
-    agora usage status --swarm studio-visual-console --work visual-console-mvp" in /home/faguero/dev/agora-studio
+    agora usage status --swarm studio-visual-console --work visual-console-mvp" in /home/faguero/dev-agora/agora-studio
      succeeded in 218ms:
     usage: agora work transition [-h] --swarm SWARM --work WORK --to TO --by BY
     
@@ -520,7 +520,7 @@ termination-reason: null
     
     exec
     /usr/bin/zsh -lc "rg -n 'clarified|planned' .agora/methods/spec-driven .agora/swarms/studio-visual-console/work/visual-console-mvp -g '*.md' -g '*.json' -g '*.yaml' -g '*.yml'
-    agora work show --swarm studio-visual-console --work visual-console-mvp 2>&1 || true" in /home/faguero/dev/agora-studio
+    agora work show --swarm studio-visual-console --work visual-console-mvp 2>&1 || true" in /home/faguero/dev-agora/agora-studio
      succeeded in 62ms:
     {
       "id": "visual-console-mvp",
@@ -554,7 +554,7 @@ termination-reason: null
       ],
       "evidence_results": [],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -568,7 +568,7 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc "sed -n '1,200p' .agora/methods/spec-driven/transitions/02-clarified-planned.md
     sed -n '1,200p' .agora/methods/spec-driven/transitions/03-planned-implementing.md
-    sed -n '1,240p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md" in /home/faguero/dev/agora-studio
+    sed -n '1,240p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/transition/v1"
@@ -600,7 +600,7 @@ termination-reason: null
     - 2026-08-17T02:13:23.120307Z | work.transitioned | from=drafting to=clarified actor=project:owner
     
     exec
-    /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to planned --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to planned --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 66ms:
     {
       "id": "visual-console-mvp",
@@ -634,7 +634,7 @@ termination-reason: null
       ],
       "evidence_results": [],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -649,7 +649,7 @@ termination-reason: null
     The governed transition succeeded: `visual-console-mvp` is now `planned`. I’m doing a read-only durability check of the work record and event log, then I’ll stop without beginning implementation.
     exec
     /usr/bin/zsh -lc "agora work show --swarm studio-visual-console --work visual-console-mvp
-    sed -n '1,220p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md" in /home/faguero/dev/agora-studio
+    sed -n '1,220p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 103ms:
     {
       "id": "visual-console-mvp",
@@ -683,7 +683,7 @@ termination-reason: null
       ],
       "evidence_results": [],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",

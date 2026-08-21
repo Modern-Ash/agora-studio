@@ -26,7 +26,7 @@ termination-reason: null
     2026-08-17T00:11:26.466858Z ERROR codex_models_manager::cache: failed to load models cache: missing field `base_instructions` at line 95 column 5
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -40,9 +40,9 @@ termination-reason: null
     codex
     I’m using the Agora execution skill to load the governed session, identify the assigned role and exact permitted transition, then perform only that action. I’ll stop if the protocol reaches a human gate or requires authority this session does not have.
     exec
-    /usr/bin/zsh -lc 'printenv AGORA_CONTEXT && cat .agents/skills/agora-execute/SKILL.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'printenv AGORA_CONTEXT && cat .agents/skills/agora-execute/SKILL.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00111786936286z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00111786936286z/CONTEXT.md
     ---
     name: "agora-execute"
     description: "Execute a permitted transition step for an assigned Agora role"
@@ -84,14 +84,14 @@ termination-reason: null
     Execution request: `$ARGUMENTS`
     
     exec
-    /usr/bin/zsh -lc 'cat "$AGORA_CONTEXT"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'cat "$AGORA_CONTEXT"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -148,7 +148,7 @@ termination-reason: null
     5. Stop when policy, permissions, or a gate cannot be satisfied.
     
     exec
-    /usr/bin/zsh -lc 'wc -l .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'wc -l .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
        15 .agora/project.md
        27 .agora/constitution.md
@@ -169,7 +169,7 @@ termination-reason: null
       294 total
     
     exec
-    /usr/bin/zsh -lc "for agora_file in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md; do sed -n '1,"'$p'"' \""'$agora_file"; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "for agora_file in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md; do sed -n '1,"'$p'"' \""'$agora_file"; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/project/v1"
@@ -469,7 +469,7 @@ termination-reason: null
     codex
     The durable record assigns this session the Developer role on `read-only-mvp`, currently `implementing`. The work’s acceptance criteria are already satisfied and the sole required `spec` artifact is registered; I’m now asking Agora for the authoritative next edge rather than inferring one from the state name.
     exec
-    /usr/bin/zsh -lc 'agora usage status --swarm studio-mvp --work read-only-mvp && agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora usage status --swarm studio-mvp --work read-only-mvp && agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 222ms:
     {
       "swarm_id": "studio-mvp",
@@ -501,7 +501,7 @@ termination-reason: null
     ]
     
     exec
-    /usr/bin/zsh -lc "printenv AGORA_ACTOR AGORA_SESSION && sed -n '1,260p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md && agora --help" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "printenv AGORA_ACTOR AGORA_SESSION && sed -n '1,260p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md && agora --help" in /home/faguero/dev-agora/agora-studio
      succeeded in 69ms:
     usage: agora [-h]
                  {configure,init,quickstart,doctor,self-test,status,validate,next,inbox,run,resume,environment,lock,coordination,upgrade,registry,trust,pack,start,method,tool,delegation,actor,swarm,work,gate,session,action,event,artifact,evidence,usage,approval} ...
@@ -553,7 +553,7 @@ termination-reason: null
     environment. Precedence: Agora defaults < ~/.agora < project .agora < swarm.
     
     exec
-    /usr/bin/zsh -lc "sed -n '260,620p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md && cat \""'$AGORA_SESSION" && agora work --help && agora work transition --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '260,620p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md && cat \""'$AGORA_SESSION" && agora work --help && agora work transition --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 248ms:
     usage: agora work [-h]
                       {create,create-prepare,decompose,decompose-prepare,criterion-satisfy,criterion-satisfy-prepare,transition,transition-prepare,show,list,block,block-prepare,resume,resume-prepare,cancel,cancel-prepare,status-changes} ...
@@ -593,7 +593,7 @@ termination-reason: null
     codex
     Agora’s only outgoing edge for this role is `implementing → verifying`. The specification is complete, has no open questions, and this work explicitly excludes building the product itself, so the permitted action is to advance the specification work into verification—not to change the spec or start implementation. I’m persisting that single governed transition now.
     exec
-    /usr/bin/zsh -lc 'agora work transition --swarm studio-mvp --work read-only-mvp --to verifying --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work transition --swarm studio-mvp --work read-only-mvp --to verifying --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 66ms:
     {
       "id": "read-only-mvp",
@@ -623,7 +623,7 @@ termination-reason: null
       ],
       "evidence_results": [],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -636,7 +636,7 @@ termination-reason: null
     
     2026-08-17T00:12:18.200899Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora work status-changes --swarm studio-mvp --work read-only-mvp && agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work status-changes --swarm studio-mvp --work read-only-mvp && agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 243ms:
     []
     [

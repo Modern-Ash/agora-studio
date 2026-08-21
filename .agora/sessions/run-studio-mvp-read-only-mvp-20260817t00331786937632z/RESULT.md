@@ -18,14 +18,14 @@ termination-reason: null
     - Specification and all five criteria are satisfied.
     - Completion requires approval from the human Spec Owner (`project:owner`).
     
-    Stopped at the human approval boundary without taking the rework transition. Evidence: [evidence.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md).
+    Stopped at the human approval boundary without taking the rework transition. Evidence: [evidence.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md).
 
 ## Standard error
 
     2026-08-17T00:33:52.523024Z ERROR codex_models_manager::cache: failed to load models cache: missing field `base_instructions` at line 95 column 5
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -39,9 +39,9 @@ termination-reason: null
     codex
     I’m using the Agora execution skill because this request is governed by a session context and permits exactly one role-specific transition. I’ll read the skill and session instructions first, then persist only the authorized artifact/evidence and stop at any approval boundary.
     exec
-    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' /home/faguero/dev/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00331786937632z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00331786937632z/CONTEXT.md
     ---
     name: "agora-execute"
     description: "Execute a permitted transition step for an assigned Agora role"
@@ -83,14 +83,14 @@ termination-reason: null
     Execution request: `$ARGUMENTS`
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,280p' \""'$AGORA_CONTEXT"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,280p' \""'$AGORA_CONTEXT"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -151,7 +151,7 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md; do echo "===== $f ====="; sed -n '"'1,400p' \""'$f"; done
     printenv AGORA_ACTOR
-    printenv AGORA_SESSION' in /home/faguero/dev/agora-studio
+    printenv AGORA_SESSION' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ===== .agora/project.md =====
     ---
@@ -467,12 +467,12 @@ termination-reason: null
     | Role | Approved by | Note | Timestamp |
     | --- | --- | --- | --- |
     project:agent
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00331786937632z/SESSION.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00331786937632z/SESSION.md
     
     exec
     /usr/bin/zsh -lc 'wc -l .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md "$AGORA_SESSION"
     sed -n '"'1,240p' \""'$AGORA_SESSION"
-    agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 78ms:
     [
       {
@@ -501,7 +501,7 @@ termination-reason: null
     /usr/bin/zsh -lc "sed -n '1,400p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md
     agora evidence add --help
     agora work --help
-    rg -n \"verifying|completed|approval\" .agora/methods/spec-driven .agora/swarms/studio-mvp/work/read-only-mvp" in /home/faguero/dev/agora-studio
+    rg -n \"verifying|completed|approval\" .agora/methods/spec-driven .agora/swarms/studio-mvp/work/read-only-mvp" in /home/faguero/dev-agora/agora-studio
      succeeded in 213ms:
     usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
                               --result {success,failure} --by BY
@@ -560,7 +560,7 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc "wc -l .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md
     sed -n '401,800p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md
-    for f in .agora/methods/spec-driven/transitions/05-verifying-implementing.md .agora/methods/spec-driven/transitions/06-verifying-completed.md .agora/methods/spec-driven/gates/completion.md .agora/methods/spec-driven/roles/spec-owner.md .agora/swarms/studio-mvp/work/read-only-mvp/events.md; do echo \"===== "'$f ====="; sed -n '"'1,240p' \""'$f"; done' in /home/faguero/dev/agora-studio
+    for f in .agora/methods/spec-driven/transitions/05-verifying-implementing.md .agora/methods/spec-driven/transitions/06-verifying-completed.md .agora/methods/spec-driven/gates/completion.md .agora/methods/spec-driven/roles/spec-owner.md .agora/swarms/studio-mvp/work/read-only-mvp/events.md; do echo \"===== "'$f ====="; sed -n '"'1,240p' \""'$f"; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     428 .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md
     
@@ -660,7 +660,7 @@ termination-reason: null
     2026-08-17T00:34:44.380073Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
     /usr/bin/zsh -lc "agora --help | sed -n '1,240p'
-    agora validate --help" in /home/faguero/dev/agora-studio
+    agora validate --help" in /home/faguero/dev-agora/agora-studio
      succeeded in 209ms:
     usage: agora [-h]
                  {configure,init,adopt,quickstart,doctor,self-test,status,validate,next,inbox,run,resume,environment,lock,coordination,upgrade,registry,trust,pack,start,method,tool,delegation,actor,swarm,work,gate,session,action,event,artifact,evidence,usage,approval} ...
@@ -719,7 +719,7 @@ termination-reason: null
     
     2026-08-17T00:34:54.231040Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora validate' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora validate' in /home/faguero/dev-agora/agora-studio
      succeeded in 101ms:
     {
       "ok": true,
@@ -771,7 +771,7 @@ termination-reason: null
     codex
     The project validates cleanly (`ok: true`, no issues), and the specification still satisfies all five declared criteria with a registered `spec` artifact and no open questions. I’m recording this developer verification as the session’s governed evidence; after that, authority passes to the human Spec Owner for approval and completion.
     exec
-    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type session-developer-verification --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type session-developer-verification --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 70ms:
     {
       "id": "read-only-mvp",
@@ -806,7 +806,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -826,6 +826,6 @@ termination-reason: null
     - Specification and all five criteria are satisfied.
     - Completion requires approval from the human Spec Owner (`project:owner`).
     
-    Stopped at the human approval boundary without taking the rework transition. Evidence: [evidence.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md).
+    Stopped at the human approval boundary without taking the rework transition. Evidence: [evidence.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md).
     tokens used
     31.966

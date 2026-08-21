@@ -4,8 +4,8 @@
 
 # Agora Studio
 
-Agora Studio is the experimental, local-first web control plane for Agora projects. Studio 0.4
-renders operational state through Agora Core 0.7 application services and offers one governed
+Agora Studio is the experimental, local-first web control plane for Agora projects. Studio 0.5
+renders operational state through Agora Core 0.8 application services and offers one governed
 mutation: approving or rejecting an exact gate option calculated by Core.
 
 > [!WARNING]
@@ -15,7 +15,7 @@ mutation: approving or rejecting an exact gate option calculated by Core.
 ## Architecture
 
 ```text
-Browser -> /api/v1 -> Studio API -> AgoraReadService / AgoraCommandService -> Agora Core 0.7
+Browser -> /api/v1 -> Studio API -> AgoraReadService / AgoraCommandService -> Agora Core 0.8
 ```
 
 The browser consumes only `/api/v1`. Studio does not execute Agora CLI, spawn subprocesses, read
@@ -51,7 +51,7 @@ mutation or automatic retry.
 
 Python 3.11, 3.12, and 3.13 are supported.
 
-Agora Core 0.7 is published on PyPI and satisfies Studio's production dependency. Studio 0.4 is
+Agora Core 0.8 is published on PyPI and satisfies Studio's production dependency. Studio 0.5 is
 still under verification in this source tree; until its own release is published, install Studio
 from this checkout rather than claiming a public package version that is not yet available.
 
@@ -87,10 +87,10 @@ python3 -m venv .venv
 | 0.1.x | Transitional/implicit | CLI reads plus gate command v1 | Project-defined |
 | 0.2.x | `agora-framework>=0.5,<0.6` | Core 0.5 read DTOs and gate command v1 | Project-defined and independently versioned |
 | 0.3.x | `agora-framework>=0.6,<0.7` | Work detail v2, work control v1, gate command v2, prepared decision v1, revision detail v1 | Project-defined and independently versioned |
-| 0.4.x | `agora-framework>=0.7,<0.8` | Work control v2, typed gate options v2, gate command v3, prepared decision v2, gate projection v2 | Project-defined and independently versioned |
+| 0.5.x | `agora-framework>=0.8,<0.9` | Work control v3, typed gate options v3, gate command v4, prepared decision v3, gate projection v3 | Project-defined and independently versioned |
 
-CI builds the minimum compatible Core wheel from immutable tag `v0.7.0`. A separate range matrix
-installs both `agora-framework==0.7.0` and the latest published `agora-framework>=0.7,<0.8` wheel,
+CI builds the minimum compatible Core wheel from immutable tag `v0.8.0`. A separate range matrix
+installs both `agora-framework==0.8.0` and the latest published `agora-framework>=0.8,<0.9` wheel,
 so source integration and the actual public package contract are both exercised.
 
 Three versions must not be conflated:
@@ -157,7 +157,7 @@ CI builds and installs real Core and Studio wheels, runs Python 3.11–3.13, exe
 separate job, uploads screenshots and traces only on failure, and checks that production code
 contains no CLI bridge, subprocess access, protocol parser, or direct durable-file read.
 
-See the [Core 0.7 / Studio 0.4 verification record](docs/evidence/core-0.7-studio-0.4-verification.md)
+See the [Core 0.8 / Studio 0.5 verification record](docs/evidence/core-0.7-studio-0.4-verification.md)
 for the exercised contracts, browser coverage, distribution smoke, and deliberate limits. The
 [Core 0.6 / Studio 0.3 record](docs/evidence/core-0.6-studio-0.3-verification.md) remains historical.
 

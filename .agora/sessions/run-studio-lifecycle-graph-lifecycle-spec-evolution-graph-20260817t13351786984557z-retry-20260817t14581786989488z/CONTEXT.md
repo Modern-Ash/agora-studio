@@ -3,7 +3,7 @@
 ## Project
 
 - Name: agora-studio
-- Root: `/home/faguero/dev/agora-studio`
+- Root: `/home/faguero/dev-agora/agora-studio`
 
 ## Runtime
 

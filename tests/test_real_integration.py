@@ -209,7 +209,7 @@ def gate_payload(
     decision: str = "approved", expected_state: str = "verifying"
 ) -> dict[str, object]:
     return {
-        "schema": "agora/application/approve-gate-command/v3",
+        "schema": "agora/application/approve-gate-command/v4",
         "gate_id": "completion",
         "actor_id": "project:owner",
         "decision": decision,
@@ -235,7 +235,11 @@ def confirmation_payload(
         "transition_target": prepared["transition_target"],
         "role_id": prepared["role_id"],
         "evidence_references": prepared["evidence_references"],
+        "evidence_content_sha256": prepared["evidence_content_sha256"],
+        "actor_fingerprint": prepared.get("actor_fingerprint"),
         "precondition_digest": prepared["precondition_digest"],
+        "prepared_at": prepared["prepared_at"],
+        "expires_at": prepared.get("expires_at"),
         "authentication": authentication,
     }
 
@@ -320,7 +324,7 @@ class RealCoreStudioIntegrationTests(unittest.TestCase):
                     "POST", "/api/v1/projects/select", {"path": str(project)}
                 )
                 self.assertEqual(status, 200)
-                self.assertEqual(opened["project"]["core_version"], "0.7.0")
+                self.assertEqual(opened["project"]["core_version"], "0.8.0")
 
                 responses = {}
                 for route in (
@@ -355,7 +359,7 @@ class RealCoreStudioIntegrationTests(unittest.TestCase):
                 self.assertFalse(prepared["preparation"]["authentication_required"])
                 self.assertEqual(
                     prepared["preparation"]["command_schema"],
-                    "agora/application/approve-gate-command/v3",
+                    "agora/application/approve-gate-command/v4",
                 )
                 self.assertRegex(prepared["preparation"]["precondition_digest"], r"^[0-9a-f]{64}$")
 
@@ -367,7 +371,11 @@ class RealCoreStudioIntegrationTests(unittest.TestCase):
                         "precondition_digest": "0" * 64,
                     },
                 )
-                self.assertEqual((status, stale["error"]), (409, "command.stale-precondition"))
+                self.assertEqual(status, 409)
+                self.assertIn(
+                    stale["error"],
+                    ("command.stale-precondition", "command.governed-material-stale"),
+                )
 
                 status, decision = studio.request(
                     "POST",
@@ -391,7 +399,11 @@ class RealCoreStudioIntegrationTests(unittest.TestCase):
                     "/api/v1/work-items/delivery/release/approvals",
                     confirmation_payload(prepared["preparation"]),
                 )
-                self.assertEqual((status, duplicate["error"]), (409, "command.stale-precondition"))
+                self.assertEqual(status, 409)
+                self.assertIn(
+                    duplicate["error"],
+                    ("command.stale-precondition", "command.governed-material-stale"),
+                )
                 status, resolved = studio.request(
                     "POST",
                     "/api/v1/work-items/delivery/release/approvals/prepare",

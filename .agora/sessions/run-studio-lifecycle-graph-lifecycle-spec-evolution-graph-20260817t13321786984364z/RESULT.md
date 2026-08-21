@@ -14,7 +14,7 @@ termination-reason: null
     Performed the single permitted developer action:
     
     - Transitioned `lifecycle-spec-evolution-graph` from `planned` to `implementing`.
-    - Persisted the transition in [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/WORK.md) and [events.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md).
+    - Persisted the transition in [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/WORK.md) and [events.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md).
     - Stopped before implementation, as required by the one-action boundary.
 
 ## Standard error
@@ -22,7 +22,7 @@ termination-reason: null
     2026-08-17T13:32:45.146244Z ERROR codex_models_manager::cache: failed to load models cache: missing field `base_instructions` at line 95 column 5
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -36,9 +36,9 @@ termination-reason: null
     codex
     I’m using the Agora execution skill because this request is governed by a session context and permits exactly one role-specific transition. I’ll read the workspace instructions and session Markdown, then perform and persist only that next permitted action.
     exec
-    /usr/bin/zsh -lc "pwd && rg --files -g 'AGENTS.md' -g '"'!node_modules'"' -g '"'!vendor'"' . .. 2>/dev/null | sed -n '1,80p' && printenv AGORA_CONTEXT" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "pwd && rg --files -g 'AGENTS.md' -g '"'!node_modules'"' -g '"'!vendor'"' . .. 2>/dev/null | sed -n '1,80p' && printenv AGORA_CONTEXT" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio
+    /home/faguero/dev-agora/agora-studio
     ../trivor/trivor-backend/AGENTS.md
     ../trivor/paperclip/export/agents/market-agent/AGENTS.md
     ../trivor/paperclip/export/agents/sales-agent/AGENTS.md
@@ -55,10 +55,10 @@ termination-reason: null
     ../accenture/aria/AGENTS.md
     ../gstack/AGENTS.md
     ../agora/AGENTS.md
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13321786984364z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13321786984364z/CONTEXT.md
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,240p' ../AGENTS.md && wc -l /home/faguero/.codex/skills/agora-execute/SKILL.md .agora/sessions/run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13321786984364z/CONTEXT.md && cat /home/faguero/.codex/skills/agora-execute/SKILL.md && cat .agora/sessions/run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13321786984364z/CONTEXT.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,240p' ../AGENTS.md && wc -l /home/faguero/.codex/skills/agora-execute/SKILL.md .agora/sessions/run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13321786984364z/CONTEXT.md && cat /home/faguero/.codex/skills/agora-execute/SKILL.md && cat .agora/sessions/run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13321786984364z/CONTEXT.md" in /home/faguero/dev-agora/agora-studio
      exited 1 in 0ms:
     <!-- OPENSPEC:START -->
     # OpenSpec Instructions
@@ -82,7 +82,7 @@ termination-reason: null
       62 total
     
     exec
-    /usr/bin/zsh -lc 'wc -l .agents/skills/agora-execute/SKILL.md ../openspec/AGENTS.md && cat .agents/skills/agora-execute/SKILL.md && cat ../openspec/AGENTS.md && cat "$AGORA_CONTEXT"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'wc -l .agents/skills/agora-execute/SKILL.md ../openspec/AGENTS.md && cat .agents/skills/agora-execute/SKILL.md && cat ../openspec/AGENTS.md && cat "$AGORA_CONTEXT"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
        39 .agents/skills/agora-execute/SKILL.md
       456 ../openspec/AGENTS.md
@@ -587,7 +587,7 @@ termination-reason: null
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -648,7 +648,7 @@ termination-reason: null
     codex
     The session assigns the `developer` role to work `lifecycle-spec-evolution-graph`, currently in `planned`. I’m now reading every required durable record before asking Agora to derive the permitted transition; no project change has been made yet.
     exec
-    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/activity.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-lifecycle-graph/SWARM.md .agora/swarms/studio-lifecycle-graph/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/WORK.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/artifacts.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/evidence.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/approvals.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/waivers/defer-delivery-artifacts/WAIVER.md; do wc -l "$f"; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/activity.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-lifecycle-graph/SWARM.md .agora/swarms/studio-lifecycle-graph/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/WORK.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/artifacts.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/evidence.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/approvals.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/waivers/defer-delivery-artifacts/WAIVER.md; do wc -l "$f"; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     15 .agora/project.md
     235 .agora/activity.md
@@ -670,7 +670,7 @@ termination-reason: null
     20 .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/waivers/defer-delivery-artifacts/WAIVER.md
     
     exec
-    /usr/bin/zsh -lc "for f in .agora/project.md .agora/activity.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-lifecycle-graph/SWARM.md .agora/swarms/studio-lifecycle-graph/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/WORK.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/artifacts.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/evidence.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/approvals.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/waivers/defer-delivery-artifacts/WAIVER.md; do printf '\\n===== %s =====\\n' \""'$f"; cat "$f"; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "for f in .agora/project.md .agora/activity.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-lifecycle-graph/SWARM.md .agora/swarms/studio-lifecycle-graph/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/WORK.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/artifacts.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/evidence.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/approvals.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/waivers/defer-delivery-artifacts/WAIVER.md; do printf '\\n===== %s =====\\n' \""'$f"; cat "$f"; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     
     ===== .agora/project.md =====
@@ -1268,7 +1268,7 @@ termination-reason: null
     This decision waives only the named obligations. The transition edge, role authority, WIP policy, and operational status remain enforced.
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,120p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,120p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/activity-ledger/v1"
@@ -1392,7 +1392,7 @@ termination-reason: null
     - 2026-08-17T02:13:23.120957Z | swarm.status-changed | actor=- swarm=studio-visual-console work=- session=- tool-run=- source=repo://.agora/swarms/studio-visual-console/events.md | from=ready to=running
     
     exec
-    /usr/bin/zsh -lc "sed -n '121,260p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '121,260p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     - 2026-08-17T02:13:38.177787Z | session.prepared | actor=project:agent swarm=studio-visual-console work=visual-console-mvp session=run-studio-visual-console-visual-console-mvp-20260817t02131786943618z tool-run=- source=repo://.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/SESSION.md | session=run-studio-visual-console-visual-console-mvp-20260817t02131786943618z actor=project:agent swarm=studio-visual-console
     - 2026-08-17T02:14:24.856508Z | work.transitioned | actor=project:agent swarm=studio-visual-console work=visual-console-mvp session=- tool-run=- source=repo://.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md | from=clarified to=planned actor=project:agent
@@ -1511,7 +1511,7 @@ termination-reason: null
     - 2026-08-17T13:32:44.963713Z | session.prepared | actor=project:agent swarm=studio-lifecycle-graph work=lifecycle-spec-evolution-graph session=run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13321786984364z tool-run=- source=repo://.agora/sessions/run-studio-lifecycle-graph-lifecycle-spec-evolution-graph-20260817t13321786984364z/SESSION.md | Prepared codex/openai/configured-by-codex session for roles developer
     
     exec
-    /usr/bin/zsh -lc 'printenv AGORA_ACTOR AGORA_SESSION && cat "$AGORA_SESSION" && agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'printenv AGORA_ACTOR AGORA_SESSION && cat "$AGORA_SESSION" && agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 66ms:
     [
       {
@@ -1537,7 +1537,7 @@ termination-reason: null
     codex
     Agora derived one authorized edge: `planned → implementing` for the developer. The reported “session already running” blocker refers to this active controller session, so the bounded action is the state transition itself—not implementation or verification in the same turn.
     exec
-    /usr/bin/zsh -lc 'agora work transition --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work transition --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 57ms:
     usage: agora work transition [-h] --swarm SWARM --work WORK --to TO --by BY
     
@@ -1549,7 +1549,7 @@ termination-reason: null
       --by BY
     
     exec
-    /usr/bin/zsh -lc 'agora work transition --swarm studio-lifecycle-graph --work lifecycle-spec-evolution-graph --to implementing --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work transition --swarm studio-lifecycle-graph --work lifecycle-spec-evolution-graph --to implementing --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 59ms:
     {
       "id": "lifecycle-spec-evolution-graph",
@@ -1592,7 +1592,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1604,7 +1604,7 @@ termination-reason: null
     }
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,22p' .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/WORK.md && tail -n 4 .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md && tail -n 4 .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,22p' .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/WORK.md && tail -n 4 .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md && tail -n 4 .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/work/v1"
@@ -1641,7 +1641,7 @@ termination-reason: null
     Performed the single permitted developer action:
     
     - Transitioned `lifecycle-spec-evolution-graph` from `planned` to `implementing`.
-    - Persisted the transition in [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/WORK.md) and [events.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md).
+    - Persisted the transition in [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/WORK.md) and [events.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md).
     - Stopped before implementation, as required by the one-action boundary.
     tokens used
     64.655

@@ -3,11 +3,14 @@
 const API_ROOT = "/api/v1";
 const workTabs = ControlModel.tabs;
 const viewNames = {
-  overview: "Process overview",
+  overview: "Project overview",
   work: "Work control",
   swarms: "Swarms",
   actors: "Actors",
-  activity: "Activity",
+  sessions: "Sessions",
+  activity: "Durable activity",
+  lifecycle: "Lifecycle",
+  artifacts: "Artifacts",
 };
 
 function newGateAction(key = null) {
@@ -52,6 +55,19 @@ const state = {
   selectedRevision: null,
   revisionDetails: new Map(),
   revisionRequest: null,
+  lifecycleLoading: false,
+  lifecycle: null,
+  lifecycleError: "",
+  lifecycleWork: null,
+  selectedLifecycleItem: null,
+  lifecycleLayers: { topology: true, path: true, revisions: true },
+  lifecycleScale: 1,
+  artifactsLoading: false,
+  artifactsRequest: null,
+  artifacts: null,
+  artifactsError: "",
+  artifactsWork: null,
+  selectedArtifactsItem: null,
   view: "overview",
   loading: false,
   csrfToken: "",
@@ -85,6 +101,28 @@ function element(tag, options = {}, children = []) {
     node.append(child instanceof Node ? child : document.createTextNode(String(child)));
   }
   return node;
+}
+
+function svgElement(tag, options = {}, children = []) {
+  const node = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const [name, value] of Object.entries(options)) {
+    if (value === undefined || value === null) continue;
+    if (name === "text") node.textContent = String(value);
+    else if (name === "className") node.setAttribute("class", value);
+    else node.setAttribute(name, String(value));
+  }
+  for (const child of children.flat()) node.append(child);
+  return node;
+}
+
+function keyboardSelect(node, callback) {
+  node.addEventListener("click", callback);
+  node.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      callback();
+    }
+  });
 }
 
 function replaceContent(...children) {
@@ -211,7 +249,7 @@ function loadingRows(label = "Loading durable records") {
 function setLoading(loading, message) {
   state.loading = loading;
   nodes.open.disabled = loading;
-  nodes.refresh.disabled = loading || !state.overview;
+  nodes.refresh.disabled = loading || state.activityLoading || state.lifecycleLoading || state.artifactsLoading || !state.overview;
   nodes.input.setAttribute("aria-busy", String(loading));
   nodes.refresh.classList.toggle("is-loading", loading);
   if (message) announce(message);
@@ -232,11 +270,42 @@ function resetProjectData() {
   state.selectedRevision = null;
   state.revisionRequest = null;
   state.selectedWork = null;
+  state.lifecycleLoading = false;
+  state.lifecycle = null;
+  state.lifecycleError = "";
+  state.artifactsRequest?.abort();
+  state.artifactsRequest = null;
+  state.artifactsLoading = false;
+  state.artifacts = null;
+  state.artifactsError = "";
   state.selectedTab = "summary";
 }
 
 function setSelection(selection) {
-  if (state.selectionPath && state.selectionPath !== selection.path) resetProjectData();
+  if (state.selectionPath && state.selectionPath !== selection.path) {
+    state.generation += 1;
+    state.activity = null;
+    state.activityError = "";
+    state.details = {};
+    state.detailRequests.forEach((req) => req.controller?.abort());
+    state.detailRequests = new Map();
+    state.selectedWork = null;
+    state.selectedTab = "summary";
+    state.selectedRevision = null;
+    state.revisionDetails = new Map();
+    state.lifecycleLoading = false;
+    state.lifecycle = null;
+    state.lifecycleError = "";
+    state.lifecycleWork = null;
+    state.selectedLifecycleItem = null;
+    state.artifactsRequest?.abort();
+    state.artifactsLoading = false;
+    state.artifactsRequest = null;
+    state.artifacts = null;
+    state.artifactsError = "";
+    state.artifactsWork = null;
+    state.selectedArtifactsItem = null;
+  }
   state.selectionPath = selection.path;
   nodes.selection.hidden = false;
   nodes.selectionName.textContent = selection.project;
@@ -245,19 +314,22 @@ function setSelection(selection) {
 }
 
 function syncChrome() {
+  const view = state.view;
+  nodes.title.textContent = viewNames[view] || "Agora Studio";
   nodes.nav.forEach((button) => {
-    const active = button.dataset.view === state.view;
-    button.disabled = !state.overview;
+    const active = button.dataset.view === view;
     button.classList.toggle("is-active", active);
     button.setAttribute("aria-current", active ? "page" : "false");
+    button.disabled = !state.overview;
   });
-  nodes.refresh.disabled = state.loading || !state.overview;
+  nodes.refresh.disabled = state.loading || state.activityLoading || state.lifecycleLoading || state.artifactsLoading || !state.overview;
   const method = state.overview?.status?.default_method;
-  nodes.method.hidden = !method;
-  nodes.method.textContent = method ? `Method / ${method}` : "";
-  nodes.title.textContent = state.selectedWork
-    ? state.overview?.work?.find((work) => DashboardModel.workKey(work) === state.selectedWork)?.title || "Work detail"
-    : viewNames[state.view];
+  if (method) {
+    nodes.method.textContent = method;
+    nodes.method.hidden = false;
+  } else {
+    nodes.method.hidden = true;
+  }
 }
 
 function detailSnapshot() {
@@ -424,12 +496,6 @@ function renderWork() {
 
 function selectedWorkRecord() {
   return state.overview.work.find((work) => DashboardModel.workKey(work) === state.selectedWork) || null;
-}
-
-function definitionList(entries) {
-  return element("dl", { className: "definition-list" }, entries.map(([term, value]) =>
-    element("div", {}, [element("dt", { text: term }), element("dd", { text: display(value) })]),
-  ));
 }
 
 function renderSummaryTab(work, detail) {
@@ -662,6 +728,8 @@ function gateErrorMessage(error) {
     "command.actor-unauthorized": "This actor does not hold the role or authority required by the Method Pack.",
     "command.gate-already-resolved": "This gate decision was already recorded. Refresh before continuing.",
     "command.stale-precondition": "The work state changed after this view loaded. The projection has been refreshed.",
+    "command.governed-material-stale": "The work state changed after this view loaded. The projection has been refreshed.",
+    "lifecycle.precondition-failed": "The work state changed after this view loaded. The projection has been refreshed.",
     "command.evidence-missing": "Required durable evidence is missing or no longer satisfies the gate.",
     "command.signature-required": "This actor requires a signed lifecycle action before the decision can be recorded.",
     "command.persistence-failed": "Core could not persist the complete decision; no partial result is shown.",
@@ -719,7 +787,14 @@ async function prepareGateDecision(work, detail) {
   } catch (error) {
     if (generation !== state.generation || state.gateAction !== action) return;
     action.error = gateErrorMessage(error);
-    if (["command.stale-precondition", "command.gate-already-resolved"].includes(error.code)) {
+    if (
+      [
+        "command.stale-precondition",
+        "command.governed-material-stale",
+        "lifecycle.precondition-failed",
+        "command.gate-already-resolved",
+      ].includes(error.code)
+    ) {
       try {
         await refreshAfterGateDecision(work);
       } catch {
@@ -801,7 +876,14 @@ async function submitGateDecision(work, detail) {
   } catch (error) {
     action.submitting = false;
     action.error = gateErrorMessage(error);
-    if (["command.stale-precondition", "command.gate-already-resolved"].includes(error.code)) {
+    if (
+      [
+        "command.stale-precondition",
+        "command.governed-material-stale",
+        "lifecycle.precondition-failed",
+        "command.gate-already-resolved",
+      ].includes(error.code)
+    ) {
       const preservedError = action.error;
       resetGatePreparation(action);
       action.error = preservedError;
@@ -1140,6 +1222,24 @@ function renderActors() {
   });
 }
 
+function renderSessions() {
+  renderDataTable({
+    key: "sessions",
+    code: "SES",
+    kicker: "05 / Runtime",
+    title: "Sessions",
+    description: "Bounded agent and human executions recorded by Agora.",
+    empty: "No sessions are registered.",
+    columns: [
+      { label: "Session", render: (record) => element("span", { className: "mono", text: record.id, title: record.id }) },
+      { label: "Actor", render: (record) => record.actor },
+      { label: "Context", render: (record) => `${display(record.swarm_id)} / ${display(record.work_id)}` },
+      { label: "Status", render: (record) => statusPill(record.status) },
+      { label: "Created", render: (record) => element("time", { datetime: record.created_at, text: display(record.created_at) }) },
+    ],
+  });
+}
+
 function activityFilter(label, field) {
   const select = element("select", { id: `filter-${field}`, "data-filter": field });
   select.append(element("option", { value: "", text: `All ${label.toLowerCase()}` }));
@@ -1154,14 +1254,14 @@ function activityFilter(label, field) {
 
 function renderActivity() {
   if (state.activityLoading && !state.activity) {
-    return replaceContent(sectionHeading("05 / Durable log", "Activity", "Loading bounded process events."), loadingRows("Loading activity"));
+    return replaceContent(sectionHeading("06 / Durable log", "Activity", "Loading bounded process events."), loadingRows("Loading activity"));
   }
   if (!state.activity) {
-    return replaceContent(sectionHeading("05 / Durable log", "Activity", "A bounded timeline from Agora records."), notice("error", "Activity read failed", state.activityError || "No activity data is available."));
+    return replaceContent(sectionHeading("06 / Durable log", "Activity", "A bounded timeline from Agora records."), notice("error", "Activity read failed", state.activityError || "No activity data is available."));
   }
   const events = DashboardModel.recentActivity(ActivityModel.filterEvents(state.activity.events || [], state.activityFilters), 500);
   replaceContent(
-    sectionHeading("05 / Durable log", "Activity", "Filterable, bounded events with exact durable work and actor references."),
+    sectionHeading("06 / Durable log", "Activity", "Filterable, bounded events with exact durable work and actor references."),
     element("section", { className: "activity-toolbar activity-toolbar-six", "aria-label": "Activity filters" }, [
       activityFilter("Event type", "type"),
       activityFilter("Actor", "actor"),
@@ -1188,6 +1288,562 @@ function renderActivityRows(events) {
   ])));
 }
 
+function lifecycleWorkPicker() {
+  const select = element("select", { id: "lifecycle-work-select", "aria-label": "Work item" });
+  select.append(element("option", { value: "", text: "Select work..." }));
+  (state.overview.work || []).forEach((work) => {
+    const value = `${work.swarm_id}/${work.id}`;
+    select.append(element("option", { value, text: `${work.title || work.id} - ${work.state}`, title: value }));
+  });
+  select.value = state.lifecycleWork ? `${state.lifecycleWork.swarm_id}/${state.lifecycleWork.id}` : "";
+  select.addEventListener("change", () => {
+    const [swarmId, ...workParts] = select.value.split("/");
+    const workId = workParts.join("/");
+    state.lifecycleWork = (state.overview.work || []).find((item) => item.swarm_id === swarmId && item.id === workId) || null;
+    state.selectedLifecycleItem = null;
+    state.revisionDetails = new Map();
+    if (state.lifecycleWork) loadLifecycle("Loading lifecycle for selected work");
+    else {
+      state.lifecycle = null;
+      renderLifecycle();
+    }
+  });
+  return select;
+}
+
+function renderLifecycleSkeleton() {
+  replaceContent(
+    sectionHeading("07 / System map", "Lifecycle", "Loading Method topology, durable path, and specification history."),
+    element("section", { className: "lifecycle-loading", "aria-busy": "true", "aria-label": "Loading lifecycle" }, [
+      element("div", { className: "graph-skeleton" }, [...[0, 1, 2, 3].map(() => element("span"))]),
+    ])
+  );
+}
+
+function lifecycleSelect(kind, item) {
+  state.selectedLifecycleItem = LifecycleModel.itemKey(kind, item);
+  renderLifecycle();
+  announce(`${kind} ${item.id} selected. Lifecycle details updated.`);
+  if (kind === "revision" && !state.revisionDetails.has(item.id)) loadRevisionDetail(item.id);
+}
+
+function lifecycleDetail(projection) {
+  const selected = state.selectedLifecycleItem;
+  if (!selected) {
+    return element("aside", { className: "lifecycle-detail", "aria-label": "Lifecycle detail" }, [
+      element("p", { className: "section-kicker", text: "Inspect the map" }),
+      element("h3", { text: "Select a governed record" }),
+      element("p", { className: "muted", text: "Choose a state, transition, annotation, or specification revision. Exact durable relationships appear here without inferred attribution." }),
+    ]);
+  }
+  const [kind, id] = selected.split(/:(.*)/s);
+  const collections = {
+    state: projection.method.states || [], transition: projection.method.transitions || [],
+    annotation: ((projection.actual_path || {}).annotations) || [], revision: (projection.specification || {}).revisions || [],
+  };
+  const item = (collections[kind] || []).find((record) => record.id === id);
+  if (!item) {
+    state.selectedLifecycleItem = null;
+    return lifecycleDetail(projection);
+  }
+  let facts;
+  if (kind === "state") facts = [["State", item.id], ["Current", item.current ? "Yes" : "No"], ["Initial", item.initial ? "Yes" : "No"], ["Terminal", item.terminal ? "Yes" : "No"]];
+  else if (kind === "transition") facts = [["From", item.from], ["To", item.to], ["Roles", (item.roles || []).join(", ")], ["Gate", item.gate], ["Availability", item.available ? "Available now" : "Not currently available"]];
+  else if (kind === "annotation") facts = [["Type", item.type], ["Time", item.timestamp], ["Actor", item.actor], ["Session", item.session_id]];
+  else facts = [["Revision", item.short_sha], ["Kind", item.kind], ["Time", item.timestamp], ["Author", item.author], ["Work state", item.work_state], ["Approval", item.approved === false ? "Not approved" : "Not recorded"]];
+  const children = [
+    element("p", { className: "section-kicker", text: `Selected ${kind}` }),
+    element("h3", { className: "wrap-anywhere", text: item.subject || item.summary || item.id }),
+    definitionList(facts, "detail-facts"),
+  ];
+  if (kind === "transition") {
+    const selectedTransition = item;
+    const occurrences = ((projection.actual_path || {}).traversals || []).filter((occurrence) => occurrence.from === selectedTransition.from && occurrence.to === selectedTransition.to);
+    if (occurrences.length) children.push(element("section", { className: "related-block", "aria-labelledby": "traversal-detail-title" }, [
+      element("h4", { id: "traversal-detail-title", text: `Durable traversals - ${occurrences.length}` }),
+      element("ul", { className: "related-list" }, occurrences.map((occurrence) => element("li", {}, [
+        element("strong", { text: occurrence.timestamp }),
+        element("span", { text: `${occurrence.actor || "Unattributed"}${occurrence.session_id ? ` - ${occurrence.session_id}` : " - session not recorded"}` }),
+        occurrence.source ? element("a", { href: occurrence.source, className: "source-link mono", text: "Durable source" }) : element("span", { className: "muted", text: "Source not recorded" }),
+      ]))),
+    ]));
+  }
+  if (item.blockers?.length) children.push(element("div", { className: "gate-blockers" }, [element("strong", { text: "Recorded blockers" }), ...item.blockers.map((value) => element("span", { text: value }))]));
+  if (item.source) children.push(element("a", { href: item.source, className: "source-link mono wrap-anywhere", text: item.source }));
+  if (kind === "revision") {
+    const detail = state.revisionDetails.get(item.id);
+    if (detail === "loading") children.push(element("p", { className: "muted", text: "Loading bounded revision detail..." }));
+    else if (detail?.error) children.push(element("p", { className: "inline-error", role: "alert", text: detail.error }));
+    else if (detail?.detail) {
+      children.push(element("div", { className: "revision-summary" }, [
+        element("span", { className: "panel-label", text: `${detail.detail.line_count} diff lines${detail.detail.truncated ? " - truncated" : ""}` }),
+        tags(detail.detail.changed_headings),
+        element("pre", { className: "revision-diff", text: detail.detail.text || "No textual changes are available for this revision." }),
+      ]));
+    }
+  }
+  return element("aside", { className: "lifecycle-detail", "aria-label": "Lifecycle detail" }, children);
+}
+
+function lifecycleGraph(projection) {
+  const layout = LifecycleModel.layout(projection.method, 920);
+  const revisions = (projection.specification || {}).revisions || [];
+  const traversals = (projection.actual_path || {}).traversals || [];
+  const revisionY = layout.height + 58;
+  const graphHeight = layout.height + (state.lifecycleLayers.revisions && revisions.length ? 150 : 20);
+  const width = Math.max(layout.width, state.lifecycleLayers.revisions ? (revisions.length * 120) + 80 : 0);
+  const graph = svgElement("svg", {
+    className: "lifecycle-svg", viewBox: `0 0 ${width} ${graphHeight}`,
+    width: Math.round(width * state.lifecycleScale), height: Math.round(graphHeight * state.lifecycleScale),
+    role: "group", "aria-label": "Method lifecycle and specification evolution graph",
+  });
+  graph.append(svgElement("defs", {}, [svgElement("marker", {
+    id: "graph-arrow", viewBox: "0 0 10 10", refX: "8", refY: "5", markerWidth: "6", markerHeight: "6", orient: "auto-start-reverse",
+  }, [svgElement("path", { d: "M 0 0 L 10 5 L 0 10 z", className: "graph-arrow" })])]));
+  const counts = LifecycleModel.traversalCounts(traversals);
+  layout.edges.forEach((edge) => {
+    const used = counts.get(`${edge.from}\u0000${edge.to}`) || 0;
+    if ((!state.lifecycleLayers.topology && !used) || (!state.lifecycleLayers.path && used && !state.lifecycleLayers.topology)) return;
+    const source = layout.positions[edge.from];
+    const target = layout.positions[edge.to];
+    if (!source || !target) return;
+    const x1 = source.x + 58;
+    const x2 = target.x - 58;
+    const pathData = edge.backEdge
+      ? `M ${x1} ${source.y} C ${x1 + 55} ${source.y + 76}, ${x2 - 55} ${target.y + 76}, ${x2} ${target.y}`
+      : `M ${x1} ${source.y} C ${(x1 + x2) / 2} ${source.y}, ${(x1 + x2) / 2} ${target.y}, ${x2} ${target.y}`;
+    const path = svgElement("path", {
+      d: pathData,
+      className: `graph-edge${used && state.lifecycleLayers.path ? " is-traversed" : ""}${edge.available ? " is-available" : ""}${edge.blockers?.length ? " is-blocked" : ""}`,
+      "marker-end": "url(#graph-arrow)",
+      tabindex: "0", role: "button",
+      "aria-label": `${edge.from} to ${edge.to}; ${used ? `traversed ${used} times` : "not traversed"}${edge.blockers?.length ? "; blocked" : ""}`,
+    });
+    keyboardSelect(path, () => lifecycleSelect("transition", edge));
+    graph.append(path);
+    if (used && state.lifecycleLayers.path) graph.append(svgElement("text", { x: (x1 + x2) / 2, y: (source.y + target.y) / 2 - 8, className: "edge-count", text: `x${used}` }));
+  });
+  if (state.lifecycleLayers.topology || state.lifecycleLayers.path) {
+    (projection.method.states || []).forEach((item) => {
+      const position = layout.positions[item.id];
+      const group = svgElement("g", {
+        className: `graph-node${item.current ? " is-current" : ""}${item.initial ? " is-initial" : ""}${item.terminal ? " is-terminal" : ""}`,
+        transform: `translate(${position.x} ${position.y})`, tabindex: "0", role: "button",
+        "aria-label": `${item.id} state${item.current ? ", current" : ""}${item.initial ? ", initial" : ""}${item.terminal ? ", terminal" : ""}`,
+      }, [
+        svgElement("rect", { x: -58, y: -29, width: 116, height: 58, rx: 6 }),
+        svgElement("text", { x: 0, y: 4, "text-anchor": "middle", text: item.id }),
+        ...(item.current ? [svgElement("text", { x: 0, y: 45, "text-anchor": "middle", className: "node-note", text: "CURRENT" })] : []),
+      ]);
+      keyboardSelect(group, () => lifecycleSelect("state", item));
+      graph.append(group);
+    });
+  }
+  if (state.lifecycleLayers.revisions && revisions.length) {
+    graph.append(svgElement("line", { x1: 30, y1: revisionY, x2: width - 30, y2: revisionY, className: "revision-rail" }));
+    revisions.forEach((item, index) => {
+      const x = 65 + index * Math.max(110, (width - 130) / Math.max(1, revisions.length - 1));
+      const group = svgElement("g", {
+        className: `revision-node${item.uncommitted ? " is-working" : ""}`,
+        transform: `translate(${Math.min(x, width - 65)} ${revisionY})`, tabindex: "0", role: "button",
+        "aria-label": `${item.subject}; ${item.uncommitted ? "uncommitted and unapproved" : item.short_sha}`,
+      }, [
+        svgElement(item.uncommitted ? "rect" : "circle", item.uncommitted ? { x: -9, y: -9, width: 18, height: 18 } : { cx: 0, cy: 0, r: 9 }),
+        svgElement("text", { x: 0, y: 28, "text-anchor": "middle", text: item.short_sha }),
+        svgElement("text", { x: 0, y: 47, "text-anchor": "middle", className: "node-note", text: item.work_state || "STATE UNKNOWN" }),
+      ]);
+      keyboardSelect(group, () => lifecycleSelect("revision", item));
+      graph.append(group);
+    });
+  }
+  return element("div", { className: "graph-scroll", tabindex: "0", "aria-label": "Scrollable lifecycle graph" }, [graph]);
+}
+
+function lifecycleTextView(projection) {
+  const section = element("section", { className: "lifecycle-text", "aria-labelledby": "lifecycle-text-title" }, [
+    element("h3", { id: "lifecycle-text-title", text: "Text equivalent" }),
+    element("p", { className: "muted", text: "The same governed states, transitions, and specification revisions in reading order." }),
+  ]);
+  const traversed = LifecycleModel.traversalCounts(((projection.actual_path || {}).traversals) || []);
+  const tables = [
+    ["States", ["State", "Markers"], (projection.method.states || []).map((item) => [item.id, [item.initial && "Initial", item.current && "Current", item.terminal && "Terminal"].filter(Boolean).join(", ") || "Declared"])],
+    ["Transitions", ["Transition", "Roles / gate", "Traversal", "Status"], (projection.method.transitions || []).map((item) => [
+      `${item.from} -> ${item.to}`, `${(item.roles || []).join(", ") || "Not recorded"}${item.gate ? ` - gate ${item.gate}` : ""}`,
+      `${traversed.get(`${item.from}\u0000${item.to}`) || 0} durable`, item.blockers?.length ? `Blocked: ${item.blockers.join("; ")}` : item.available ? "Available now" : "Allowed",
+    ])],
+    ["Specification revisions", ["Revision", "Author / time", "Work state"], ((projection.specification || {}).revisions || []).map((item) => [
+      item.subject || item.short_sha, `${item.author || "Uncommitted"}${item.timestamp ? ` - ${item.timestamp}` : ""}`, item.work_state || "Not recorded",
+    ])],
+  ];
+  tables.forEach(([title, headings, rows]) => {
+    const table = element("table", { className: "compact-table" }, [
+      element("caption", { text: title }),
+      element("thead", {}, [element("tr", {}, headings.map((heading) => element("th", { scope: "col", text: heading })))]),
+      element("tbody", {}, rows.length ? rows.map((row) => element("tr", {}, row.map((value) => element("td", { text: value })))) : [element("tr", {}, [element("td", { colspan: String(headings.length), text: "Unavailable" })])]),
+    ]);
+    section.append(table);
+  });
+  return section;
+}
+
+function lifecycleToolbar(projection) {
+  const toolbar = element("section", { className: "lifecycle-toolbar", "aria-label": "Lifecycle controls" });
+  toolbar.append(element("label", { className: "work-picker" }, [element("span", { text: "Work item" }), lifecycleWorkPicker()]));
+  const layerControls = element("fieldset", { className: "layer-controls" }, [element("legend", { text: "Layers" })]);
+  [["topology", "Method"], ["path", "Actual path"], ["revisions", "Spec revisions"]].forEach(([key, label]) => {
+    const input = element("input", { type: "checkbox", id: `layer-${key}` });
+    input.checked = state.lifecycleLayers[key];
+    input.addEventListener("change", () => { state.lifecycleLayers[key] = input.checked; renderLifecycle(); });
+    layerControls.append(element("label", { for: input.id }, [input, element("span", { text: label })]));
+  });
+  toolbar.append(layerControls);
+  const fit = element("button", { className: "secondary-button", type: "button", text: "Fit graph" });
+  fit.addEventListener("click", () => { state.lifecycleScale = 0.82; renderLifecycle(); announce("Lifecycle graph fitted to the work surface."); });
+  const reset = element("button", { className: "secondary-button", type: "button", text: "Reset view" });
+  reset.addEventListener("click", () => { state.lifecycleScale = 1; renderLifecycle(); announce("Lifecycle graph view reset."); });
+  toolbar.append(element("div", { className: "graph-actions" }, [fit, reset]));
+  return toolbar;
+}
+
+function renderLifecycle() {
+  if (state.lifecycleLoading && !state.lifecycle) return renderLifecycleSkeleton();
+  const heading = sectionHeading("07 / System map", "Lifecycle", "Allowed topology, traversed history, and Git-backed specification evolution for one work item.");
+  if (!state.lifecycleWork) {
+    replaceContent(heading, element("div", { className: "empty-state compact-empty" }, [
+      element("span", { className: "empty-index", text: "07 / SELECT" }),
+      element("h2", { text: "Choose work to map." }),
+      element("p", { text: "Lifecycle reads stay bounded to one exact swarm and work item." }),
+      element("label", { className: "standalone-work-picker" }, [element("span", { className: "panel-label", text: "Work item" }), lifecycleWorkPicker()]),
+    ]));
+    return;
+  }
+  if (!state.lifecycle && state.lifecycleError) {
+    const retry = element("button", { className: "primary-button", type: "button", text: "Retry" });
+    retry.addEventListener("click", () => loadLifecycle());
+    replaceContent(heading, element("div", { className: "error-panel", role: "alert" }, [element("h2", { text: "The last project read stayed intact." }), element("p", { text: state.lifecycleError }), retry]));
+    return;
+  }
+  if (!state.lifecycle) return renderLifecycleSkeleton();
+  const projection = state.lifecycle;
+  if (!LifecycleModel.selectionExists(projection, state.selectedLifecycleItem)) state.selectedLifecycleItem = null;
+  const children = [heading];
+  if (state.lifecycleError) {
+    const retry = element("button", { className: "secondary-button", type: "button", text: "Retry" });
+    retry.addEventListener("click", () => loadLifecycle());
+    children.push(element("div", { className: "inline-error", role: "alert" }, [element("span", { text: state.lifecycleError }), retry]));
+  }
+  children.push(lifecycleToolbar(projection));
+  if (projection.diagnostics?.length) children.push(element("div", { className: "partial-notice", role: "status" }, [element("strong", { text: "Verified partial view" }), ...projection.diagnostics.map((item) => element("span", { text: item }))]));
+  if (!projection.method.available) {
+    children.push(element("div", { className: "no-matches" }, [element("h3", { text: "Method topology is unavailable." }), element("p", { text: "The durable work state remains visible in the text summary without a guessed graph." })]));
+  }
+  children.push(element("div", { className: "lifecycle-workspace" }, [
+    element("section", { className: "graph-surface", "aria-label": "Lifecycle map" }, [lifecycleGraph(projection)]),
+    lifecycleDetail(projection),
+  ]));
+  if (((projection.actual_path || {}).annotations || []).length) children.push(element("section", { className: "annotation-strip", "aria-labelledby": "annotations-title" }, [
+    element("h3", { id: "annotations-title", text: "Path annotations" }),
+    ...((projection.actual_path || {}).annotations || []).map((item) => {
+      const button = element("button", { type: "button", className: "annotation-button", text: `${item.type} - ${item.summary}` });
+      button.addEventListener("click", () => lifecycleSelect("annotation", item));
+      return button;
+    }),
+  ]));
+  children.push(lifecycleTextView(projection));
+  replaceContent(...children);
+}
+
+async function loadLifecycle(message = "Loading lifecycle") {
+  if (!state.lifecycleWork || state.lifecycleLoading) return;
+  const request = ++state.generation;
+  const projectPath = state.selectionPath;
+  const scope = `${state.lifecycleWork.swarm_id}/${state.lifecycleWork.id}`;
+  state.lifecycleLoading = true;
+  state.lifecycleError = "";
+  nodes.refresh.disabled = true;
+  if (!state.lifecycle) renderLifecycleSkeleton();
+  announce(message);
+  try {
+    const query = `swarm=${encodeURIComponent(state.lifecycleWork.swarm_id)}&work=${encodeURIComponent(state.lifecycleWork.id)}`;
+    const payload = await requestJson(`${API_ROOT}/lifecycle?${query}`);
+    if (request !== state.generation || projectPath !== state.selectionPath || scope !== `${state.lifecycleWork?.swarm_id}/${state.lifecycleWork?.id}`) return;
+    state.lifecycle = payload;
+    state.lifecycleLoading = false;
+    renderLifecycle();
+    announce(`Lifecycle loaded for ${scope}.${payload.availability?.partial ? " Some layers are explicitly unavailable." : ""}`);
+  } catch (error) {
+    if (request !== state.generation || projectPath !== state.selectionPath) return;
+    state.lifecycleError = error.message;
+    state.lifecycleLoading = false;
+    renderLifecycle();
+    announce(`Lifecycle could not be loaded. ${error.message}`);
+  } finally {
+    if (request === state.generation) {
+      state.lifecycleLoading = false;
+      syncChrome();
+    }
+  }
+}
+
+async function loadRevisionDetail(revision) {
+  if (!state.lifecycleWork || state.revisionDetails.has(revision)) return;
+  const request = state.generation;
+  const projectPath = state.selectionPath;
+  state.revisionDetails.set(revision, "loading");
+  renderLifecycle();
+  try {
+    const query = `swarm=${encodeURIComponent(state.lifecycleWork.swarm_id)}&work=${encodeURIComponent(state.lifecycleWork.id)}&revision=${encodeURIComponent(revision)}`;
+    const payload = await requestJson(`${API_ROOT}/specification-revisions/${encodeURIComponent(revision)}?${query}`);
+    if (request !== state.generation || projectPath !== state.selectionPath) return;
+    state.revisionDetails.set(revision, payload);
+  } catch (error) {
+    if (request !== state.generation || projectPath !== state.selectionPath) return;
+    state.revisionDetails.set(revision, { error: error.message });
+  }
+  renderLifecycle();
+}
+
+function artifactsWorkPicker() {
+  const select = element("select", { id: "artifacts-work-select", "aria-label": "Work item" });
+  select.append(element("option", { value: "", text: "Select work..." }));
+  (state.overview.work || []).forEach((work) => {
+    const value = `${work.swarm_id}/${work.id}`;
+    select.append(element("option", { value, text: `${work.title || work.id} - ${work.state}`, title: value }));
+  });
+  select.value = state.artifactsWork ? `${state.artifactsWork.swarm_id}/${state.artifactsWork.id}` : "";
+  select.addEventListener("change", () => {
+    const [swarmId, ...workParts] = select.value.split("/");
+    const workId = workParts.join("/");
+    state.artifactsWork = (state.overview.work || []).find((item) => item.swarm_id === swarmId && item.id === workId) || null;
+    state.selectedArtifactsItem = null;
+    if (state.artifactsWork) loadArtifacts("Loading artifacts for selected work");
+    else {
+      state.artifacts = null;
+      renderArtifacts();
+    }
+  });
+  return select;
+}
+
+function renderArtifactsSkeleton() {
+  replaceContent(
+    sectionHeading("08 / Provenance", "Artifacts", "Loading durable artifacts, evidence, and approvals."),
+    element("section", { className: "activity-loading", "aria-busy": "true", "aria-label": "Loading artifacts" }, [
+      ...[0, 1, 2].map(() => element("div", { className: "skeleton-row" }, [element("span"), element("span"), element("span")])),
+    ])
+  );
+}
+
+function traceabilityNote(item) {
+  if (!ArtifactsModel.hasTraceability(item)) {
+    return element("span", { className: "muted", text: "No linked session or tool run is recorded." });
+  }
+  const trace = item.traceability;
+  return element("div", { className: "trace-note" }, [
+    trace.session_id ? element("span", { text: `Session: ${trace.session_id}` }) : null,
+    trace.tool_run_id ? element("span", { text: `Tool run: ${trace.tool_run_id}` }) : null,
+  ].filter(Boolean));
+}
+
+function artifactsDetail(projection) {
+  const found = ArtifactsModel.findSelected(projection, state.selectedArtifactsItem);
+  if (!found) {
+    return element("aside", { className: "lifecycle-detail", "aria-label": "Artifacts detail" }, [
+      element("p", { className: "section-kicker", text: "Inspect a record" }),
+      element("h3", { text: "Select an artifact, evidence, or approval record" }),
+      element("p", { className: "muted", text: "Full identifiers and, when a durable Agora record establishes it, the originating session or tool run appear here." }),
+    ]);
+  }
+  const { kind, item } = found;
+  let facts;
+  if (kind === "artifact") facts = [["Kind", item.kind], ["URI", item.uri], ["Produced by", item.produced_by], ["Timestamp", item.timestamp]];
+  else if (kind === "evidence") facts = [["Type", item.type], ["Result", item.result], ["Produced by", item.produced_by], ["Timestamp", item.timestamp]];
+  else facts = [["Role", item.role], ["Approved by", item.approved_by], ["Note", item.note], ["Timestamp", item.timestamp]];
+  const children = [
+    element("p", { className: "section-kicker", text: `Selected ${kind}` }),
+    element("h3", { className: "wrap-anywhere", text: item.kind || item.type || item.role }),
+    definitionList(facts, "detail-facts"),
+  ];
+  if (kind === "evidence" && item.artifact_references?.length) {
+    children.push(element("div", { className: "related-block" }, [
+      element("h4", { text: "Artifact references" }),
+      tags(item.artifact_references),
+    ]));
+  }
+  children.push(element("div", { className: "related-block" }, [
+    element("h4", { text: "Traceability" }),
+    traceabilityNote(item),
+  ]));
+  return element("aside", { className: "lifecycle-detail", "aria-label": "Artifacts detail" }, children);
+}
+
+function artifactsSelect(kind, item) {
+  state.selectedArtifactsItem = ArtifactsModel.itemKey(kind, item);
+  renderArtifacts();
+  announce(`${kind} ${item.id} selected. Details updated.`);
+}
+
+function recordButton(kind, item, label, meta, index = 0) {
+  const active = state.selectedArtifactsItem === ArtifactsModel.itemKey(kind, item);
+  const button = element("button", {
+    className: `event-button family-${kind}${active ? " is-selected" : ""}`,
+    type: "button",
+    "aria-current": active ? "true" : "false",
+    "aria-label": `${label}. ${meta}`,
+  }, [
+    element("span", { className: "event-index", text: String(index + 1).padStart(2, "0") }),
+    element("span", { className: "event-copy" }, [
+      element("span", { className: "event-head" }, [element("strong", { text: label })]),
+      element("span", { className: "event-meta", text: meta }),
+    ]),
+  ]);
+  keyboardSelect(button, () => artifactsSelect(kind, item));
+  return button;
+}
+
+function renderArtifactsSection(title, description, emptyMessage, items, rowBuilder) {
+  const body = items.length
+    ? element("ol", { className: "timeline-list", "aria-label": title }, items.map((item, index) => element("li", { className: "timeline-item" }, [rowBuilder(item, index)])))
+    : element("p", { className: "empty-table", text: emptyMessage });
+  return element("section", { className: "panel", "aria-label": title }, [
+    element("h3", { text: title }),
+    element("p", { className: "muted", text: description }),
+    body,
+  ]);
+}
+
+function renderApprovalsSection(projection) {
+  const satisfaction = projection.approvals.satisfaction;
+  const records = projection.approvals.records;
+  if (!satisfaction.length) {
+    return element("section", { className: "panel", "aria-label": "Approvals" }, [
+      element("h3", { text: "Approvals" }),
+      element("p", { className: "empty-table", text: "No approval roles are required for this work item." }),
+    ]);
+  }
+  const list = element("ol", { className: "timeline-list", "aria-label": "Required approval roles" });
+  satisfaction.forEach(({ role, satisfied }, index) => {
+    const record = records.find((item) => item.role === role);
+    const label = `${satisfied ? "Satisfied" : "Missing"} - ${role}`;
+    if (record) {
+      list.append(element("li", { className: "timeline-item" }, [
+        recordButton("approval", record, label, `${record.approved_by} - ${record.timestamp}`, index),
+      ]));
+    } else {
+      list.append(element("li", { className: "timeline-item" }, [
+        element("div", { className: "event-button family-approval is-unsatisfied", role: "text", "aria-label": label }, [
+          element("span", { className: "event-index", text: String(index + 1).padStart(2, "0") }),
+          element("span", { className: "event-copy" }, [element("span", { className: "event-head" }, [element("strong", { text: label })]), element("span", { className: "event-meta", text: "No approval record yet" })]),
+        ]),
+      ]));
+    }
+  });
+  return element("section", { className: "panel", "aria-label": "Approvals" }, [
+    element("h3", { text: "Approvals" }),
+    element("p", { className: "muted", text: "Required roles and their durable satisfaction state." }),
+    list,
+  ]);
+}
+
+function renderArtifacts() {
+  if (state.artifactsLoading && !state.artifacts) return renderArtifactsSkeleton();
+  const heading = sectionHeading("08 / Provenance", "Artifacts", "Registered artifacts, evidence, and required approvals for one selected work item.");
+  if (!state.artifactsWork) {
+    replaceContent(heading, element("div", { className: "empty-state compact-empty" }, [
+      element("span", { className: "empty-index", text: "08 / SELECT" }),
+      element("h2", { text: "Choose work to inspect." }),
+      element("p", { text: "Artifacts, evidence, and approvals stay bounded to one exact swarm and work item." }),
+      element("label", { className: "standalone-work-picker" }, [element("span", { className: "panel-label", text: "Work item" }), artifactsWorkPicker()]),
+    ]));
+    return;
+  }
+  if (!state.artifacts && state.artifactsError) {
+    const retry = element("button", { className: "primary-button", type: "button", text: "Retry" });
+    retry.addEventListener("click", () => loadArtifacts());
+    replaceContent(heading, element("div", { className: "error-panel", role: "alert" }, [element("h2", { text: "The last project read stayed intact." }), element("p", { text: state.artifactsError }), retry]));
+    return;
+  }
+  if (!state.artifacts) return renderArtifactsSkeleton();
+  const projection = state.artifacts;
+  if (!ArtifactsModel.selectionExists(projection, state.selectedArtifactsItem)) state.selectedArtifactsItem = null;
+  const children = [heading];
+  if (state.artifactsError) {
+    const retry = element("button", { className: "secondary-button", type: "button", text: "Retry" });
+    retry.addEventListener("click", () => loadArtifacts());
+    children.push(element("div", { className: "inline-error", role: "alert" }, [element("span", { text: state.artifactsError }), retry]));
+  }
+  children.push(element("section", { className: "lifecycle-toolbar", "aria-label": "Artifacts controls" }, [
+    element("label", { className: "work-picker" }, [element("span", { text: "Work item" }), artifactsWorkPicker()]),
+  ]));
+  if (projection.diagnostics?.length) children.push(element("div", { className: "partial-notice", role: "status" }, [element("strong", { text: "Verified partial view" }), ...projection.diagnostics.map((item) => element("span", { text: item }))]));
+
+  const artifactsSection = renderArtifactsSection(
+    "Artifacts", "Every artifact registered durably for this work item.", "No artifacts are registered for this work item.",
+    projection.artifacts, (item, index) => recordButton("artifact", item, item.kind, `${item.uri} - ${item.produced_by}`, index)
+  );
+  const evidenceSection = renderArtifactsSection(
+    "Evidence", "Every evidence record registered durably for this work item.", "No evidence has been recorded for this work item.",
+    projection.evidence, (item, index) => recordButton("evidence", item, `${item.result === "success" ? "pass" : "fail"} ${item.type}`, `${item.result} - ${item.produced_by}`, index)
+  );
+  const approvalsSection = renderApprovalsSection(projection);
+
+  children.push(element("div", { className: "lifecycle-workspace" }, [
+    element("div", { className: "artifacts-panels" }, [artifactsSection, evidenceSection, approvalsSection]),
+    artifactsDetail(projection),
+  ]));
+  replaceContent(...children);
+}
+
+async function loadArtifacts(message = "Loading artifacts") {
+  if (!state.artifactsWork) return;
+  state.artifactsRequest?.abort();
+  const controller = new AbortController();
+  const request = ++state.generation;
+  const projectPath = state.selectionPath;
+  const scope = `${state.artifactsWork.swarm_id}/${state.artifactsWork.id}`;
+  state.artifactsLoading = true;
+  state.artifactsError = "";
+  state.artifactsRequest = controller;
+  nodes.refresh.disabled = true;
+  if (!state.artifacts) renderArtifactsSkeleton();
+  announce(message);
+  try {
+    const query = `swarm=${encodeURIComponent(state.artifactsWork.swarm_id)}&work=${encodeURIComponent(state.artifactsWork.id)}`;
+    const payload = await requestJson(`${API_ROOT}/artifacts?${query}`, { signal: controller.signal });
+    if (request !== state.generation || projectPath !== state.selectionPath || scope !== `${state.artifactsWork?.swarm_id}/${state.artifactsWork?.id}`) return;
+    state.artifacts = payload;
+    state.artifactsLoading = false;
+    state.artifactsRequest = null;
+    renderArtifacts();
+    announce(`Artifacts loaded for ${scope}: ${payload.artifacts.length} artifacts, ${payload.evidence.length} evidence records, ${payload.approvals.satisfaction.length} required approval roles.`);
+  } catch (error) {
+    if (controller.signal.aborted) return;
+    if (request !== state.generation || projectPath !== state.selectionPath) return;
+    state.artifactsError = error.message;
+    state.artifactsLoading = false;
+    state.artifactsRequest = null;
+    renderArtifacts();
+    announce(`Artifacts could not be loaded. ${error.message}`);
+  } finally {
+    if (state.artifactsRequest === controller) state.artifactsRequest = null;
+    if (request === state.generation) {
+      state.artifactsLoading = false;
+      syncChrome();
+    }
+  }
+}
+
+function definitionList(entries, className = "definition-list") {
+  const list = element("dl", { className });
+  entries.forEach(([label, value]) => {
+    list.append(element("div", {}, [
+      element("dt", { text: label }),
+      element("dd", { className: "mono wrap-anywhere", text: display(value, "Not recorded"), title: display(value, "Not recorded") }),
+    ]));
+  });
+  return list;
+}
+
 function render() {
   syncChrome();
   if (!state.overview) return;
@@ -1195,6 +1851,9 @@ function render() {
   else if (state.view === "work") renderWork();
   else if (state.view === "swarms") renderSwarms();
   else if (state.view === "actors") renderActors();
+  else if (state.view === "sessions") renderSessions();
+  else if (state.view === "lifecycle") renderLifecycle();
+  else if (state.view === "artifacts") renderArtifacts();
   else renderActivity();
 }
 
@@ -1215,6 +1874,12 @@ function switchView(view) {
   document.querySelector("#main-content").focus({ preventScroll: true });
   announce(`${viewNames[view]} is visible.`);
   if (view === "activity" && !state.activity) loadActivity();
+  if (view === "lifecycle") {
+    if (state.lifecycleWork && !state.lifecycle) loadLifecycle();
+  }
+  if (view === "artifacts") {
+    if (state.artifactsWork && !state.artifacts) loadArtifacts();
+  }
 }
 
 function openWork(work) {
@@ -1363,8 +2028,14 @@ nodes.form.addEventListener("submit", async (event) => {
 });
 
 nodes.refresh.addEventListener("click", () => {
-  resetProjectData();
-  loadOverview("Refreshing verified process status");
+  if (state.view === "lifecycle" && state.lifecycleWork) {
+    loadLifecycle("Refreshing lifecycle");
+  } else if (state.view === "artifacts" && state.artifactsWork) {
+    loadArtifacts("Refreshing artifacts");
+  } else {
+    resetProjectData();
+    loadOverview("Refreshing verified process status");
+  }
 });
 
 nodes.nav.forEach((button) => button.addEventListener("click", () => {

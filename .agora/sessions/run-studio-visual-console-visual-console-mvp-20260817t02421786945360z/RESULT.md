@@ -15,7 +15,7 @@ termination-reason: null
     
     - 20 tests passed.
     - JavaScript syntax and `git diff --check` passed.
-    - Successful evidence recorded in [evidence.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md).
+    - Successful evidence recorded in [evidence.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md).
     - `agora validate` reports no issues.
     
     Work remains `verifying`. The only missing completion gate is human `spec-owner` approval by `project:owner`; no unauthorized transition was attempted.
@@ -28,7 +28,7 @@ termination-reason: null
     2026-08-17T02:42:40.583914Z  WARN codex_core_skills::loader: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -42,15 +42,15 @@ termination-reason: null
     codex
     I’m using the Agora execution and status skills because this request is governed by the session’s assigned role and durable transition state. I’ll read the context and applicable instructions, perform exactly one permitted action, persist its artifacts/evidence, then stop at any approval or authority boundary.
     exec
-    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' \""'$AGORA_CONTEXT" && sed -n '"'1,260p' /home/faguero/dev/agora-studio/.agents/skills/agora-execute/SKILL.md && sed -n '1,260p' /home/faguero/dev/agora-studio/.agents/skills/agora-status/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' \""'$AGORA_CONTEXT" && sed -n '"'1,260p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-execute/SKILL.md && sed -n '1,260p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-status/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02421786945360z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02421786945360z/CONTEXT.md
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -162,10 +162,10 @@ termination-reason: null
     Query target: `$ARGUMENTS`
     
     exec
-    /usr/bin/zsh -lc 'printenv AGORA_ACTOR; printenv AGORA_SESSION; for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do echo "===== $f ====="; sed -n '"'1,2000p' \""'$f"; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'printenv AGORA_ACTOR; printenv AGORA_SESSION; for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do echo "===== $f ====="; sed -n '"'1,2000p' \""'$f"; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     project:agent
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02421786945360z/SESSION.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02421786945360z/SESSION.md
     ===== .agora/project.md =====
     ---
     schema: "agora/project/v1"
@@ -491,7 +491,7 @@ termination-reason: null
     codex
     The durable work is already in `verifying`: all criteria are marked satisfied, verification and commit evidence exist, and the remaining completion gate is likely Spec Owner approval. I’m now validating the records and asking Agora for the single role-permitted next transition before making any mutation.
     exec
-    /usr/bin/zsh -lc "sed -n '1,240p' \""'$AGORA_SESSION"; agora status; agora next --actor "$AGORA_ACTOR"; agora inbox --actor "$AGORA_ACTOR"; agora swarm list; agora work list --swarm studio-visual-console; agora actor list; agora session list; agora event list --swarm studio-visual-console --work visual-console-mvp; agora validate; agora usage status --swarm studio-visual-console --work visual-console-mvp' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,240p' \""'$AGORA_SESSION"; agora status; agora next --actor "$AGORA_ACTOR"; agora inbox --actor "$AGORA_ACTOR"; agora swarm list; agora work list --swarm studio-visual-console; agora actor list; agora session list; agora event list --swarm studio-visual-console --work visual-console-mvp; agora validate; agora usage status --swarm studio-visual-console --work visual-console-mvp' in /home/faguero/dev-agora/agora-studio
      succeeded in 1493ms:
     {
       "project": "agora-studio",
@@ -583,7 +583,7 @@ termination-reason: null
           "developer": "project:agent"
         },
         "objective": "Build the local read-only foundation of Agora Studio",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation"
       },
       {
         "id": "studio-mvp",
@@ -599,7 +599,7 @@ termination-reason: null
           "developer": "project:agent"
         },
         "objective": "Build a local-first GUI for visualizing and operating Agora projects while keeping Markdown and Git as the source of truth",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp"
       },
       {
         "id": "studio-visual-console",
@@ -615,7 +615,7 @@ termination-reason: null
           "developer": "project:agent"
         },
         "objective": "Build the first operational visual console for Agora Studio, allowing developers to select a local Agora project and inspect its governed delivery state without mutating it.",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console"
       }
     ]
     [
@@ -659,7 +659,7 @@ termination-reason: null
           "success"
         ],
         "approval_roles": [],
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
         "child_work_refs": [],
         "budget_limits": null,
         "operational_status": "active",
@@ -678,7 +678,7 @@ termination-reason: null
         "capabilities": [
           "implementation"
         ],
-        "path": "/home/faguero/dev/agora-studio/.agora/actors/agent.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/actors/agent.md",
         "reference": "project:agent",
         "integration": null,
         "provider": null,
@@ -699,7 +699,7 @@ termination-reason: null
           "acceptance",
           "specification"
         ],
-        "path": "/home/faguero/dev/agora-studio/.agora/actors/owner.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/actors/owner.md",
         "reference": "project:owner",
         "integration": null,
         "provider": null,
@@ -768,8 +768,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -802,8 +802,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01241786940679z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01241786940679z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01241786940679z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01241786940679z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -836,8 +836,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "failed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -870,8 +870,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -904,8 +904,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "failed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -938,8 +938,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -972,8 +972,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00101786936228z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00101786936228z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00101786936228z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00101786936228z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1006,8 +1006,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00111786936286z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00111786936286z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00111786936286z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00111786936286z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1040,8 +1040,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00121786936351z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00121786936351z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00121786936351z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00121786936351z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1074,8 +1074,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1108,8 +1108,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1142,8 +1142,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00171786936661z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00171786936661z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00171786936661z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00171786936661z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1176,8 +1176,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00191786936761z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00191786936761z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00191786936761z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00191786936761z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1210,8 +1210,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00301786937413z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00301786937413z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00301786937413z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00301786937413z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1244,8 +1244,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1278,8 +1278,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00331786937632z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00331786937632z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00331786937632z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00331786937632z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1312,8 +1312,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1346,8 +1346,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00371786937827z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00371786937827z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00371786937827z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00371786937827z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1380,8 +1380,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00381786937911z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00381786937911z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00381786937911z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00381786937911z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1414,8 +1414,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00391786937978z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00391786937978z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00391786937978z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00391786937978z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1448,8 +1448,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00411786938068z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00411786938068z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00411786938068z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00411786938068z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1482,8 +1482,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1516,8 +1516,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1550,8 +1550,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1584,8 +1584,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1618,8 +1618,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02341786944859z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02341786944859z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02341786944859z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02341786944859z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1652,8 +1652,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02361786944979z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02361786944979z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02361786944979z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02361786944979z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1686,8 +1686,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02381786945087z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02381786945087z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02381786945087z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02381786945087z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1720,8 +1720,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02401786945242z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02401786945242z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02401786945242z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02401786945242z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1754,8 +1754,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "running",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02421786945360z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02421786945360z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02421786945360z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02421786945360z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1783,182 +1783,182 @@ termination-reason: null
         "type": "work.created",
         "detail": "state=drafting actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:01.446533Z",
         "type": "artifact.added",
         "detail": "kind=spec uri=docs/specs/visual-console-mvp.md actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:03.862001Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=visual-shell actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:07.370265Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=project-selection actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:09.548435Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=project-overview actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:11.703629Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=delivery-browser actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:14.063100Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=responsive-accessible actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:16.596682Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=read-only-safety actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:20.602163Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=verification actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:23.120307Z",
         "type": "work.transitioned",
         "detail": "from=drafting to=clarified actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:14:24.856508Z",
         "type": "work.transitioned",
         "detail": "from=clarified to=planned actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:15:13.547263Z",
         "type": "work.transitioned",
         "detail": "from=planned to=implementing actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:26:11.763637Z",
         "type": "artifact.added",
         "detail": "kind=verification-report uri=repo://docs/evidence/visual-console-mvp-verification.md actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:26:17.911715Z",
         "type": "evidence.added",
         "detail": "type=automated-verification result=success actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:26:49.018523Z",
         "type": "work.block",
         "detail": "from=active to=blocked actor=project:agent change=change-20260817t022649018214z",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:32:42.234761Z",
         "type": "work.resume",
         "detail": "from=blocked to=active actor=project:agent change=change-20260817t023242234486z",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:32:54.780641Z",
         "type": "tool.prepared",
         "detail": "run=tool-20260817t02321786944774z tool=repository operation=commit actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:32:54.803165Z",
         "type": "tool.completed",
         "detail": "run=tool-20260817t02321786944774z exit-code=0",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:34:01.312056Z",
         "type": "work.transitioned",
         "detail": "from=implementing to=verifying actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:36:13.084731Z",
         "type": "evidence.added",
         "detail": "type=automated-verification result=success actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:37:57.365712Z",
         "type": "evidence.added",
         "detail": "type=automated-verification result=success actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:39:29.189378Z",
         "type": "tool.prepared",
         "detail": "run=tool-20260817t02391786945169z tool=repository operation=status actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:39:29.201232Z",
         "type": "tool.completed",
         "detail": "run=tool-20260817t02391786945169z exit-code=0",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:40:27.232879Z",
         "type": "evidence.added",
         "detail": "type=automated-verification result=success actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:42:27.695839Z",
         "type": "artifact.added",
         "detail": "kind=repository-commit-result uri=repo://.agora/tool-runs/tool-20260817t02321786944774z/RESULT.md actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:42:27.914163Z",
         "type": "evidence.added",
         "detail": "type=repository-commit result=success actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       }
     ]
     {
@@ -2019,7 +2019,7 @@ termination-reason: null
     codex
     Agora confirms the Developer has no forward transition from `verifying`; the only listed edge is rework back to `implementing`, which policy forbids selecting merely to avoid the higher-priority human decision. I’m using the Agora handoff skill to durably transfer final acceptance responsibility to `project:owner`, then I’ll stop.
     exec
-    /usr/bin/zsh -lc "sed -n '1,300p' .agents/skills/agora-handoff/SKILL.md; agora handoff --help; agora handoff create --help; agora approval --help; agora work transition --help" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,300p' .agents/skills/agora-handoff/SKILL.md; agora handoff --help; agora handoff create --help; agora approval --help; agora work transition --help" in /home/faguero/dev-agora/agora-studio
      succeeded in 567ms:
     usage: agora [-h]
                  {configure,init,adopt,quickstart,doctor,self-test,status,validate,next,inbox,run,resume,environment,lock,coordination,upgrade,registry,trust,pack,start,method,tool,delegation,actor,swarm,work,gate,session,action,event,artifact,evidence,usage,approval} ...
@@ -2054,7 +2054,7 @@ termination-reason: null
     
     2026-08-17T02:43:16.008599Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora swarm handoff --help; agora swarm --help; agora approval add --help; agora approval prepare --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora swarm handoff --help; agora swarm --help; agora approval add --help; agora approval prepare --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 529ms:
     usage: agora swarm handoff [-h] [--id ID] --swarm SWARM --role ROLE
                                --from FROM_ACTOR --to TO_ACTOR --by BY
@@ -2114,7 +2114,7 @@ termination-reason: null
     2026-08-17T02:43:19.534606Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     2026-08-17T02:43:27.162115Z  WARN codex_analytics::client: events failed with status 503 Service Unavailable: upstream connect error or disconnect/reset before headers. retried and the latest reset reason: connection timeout
     exec
-    /usr/bin/zsh -lc "agora next --actor project:owner; agora inbox --actor project:owner; agora swarm handoffs --swarm studio-visual-console; git status --short --branch; sed -n '1,260p' docs/evidence/visual-console-mvp-verification.md; sed -n '1,220p' .agora/tool-runs/tool-20260817t02321786944774z/RESULT.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "agora next --actor project:owner; agora inbox --actor project:owner; agora swarm handoffs --swarm studio-visual-console; git status --short --branch; sed -n '1,260p' docs/evidence/visual-console-mvp-verification.md; sed -n '1,220p' .agora/tool-runs/tool-20260817t02321786944774z/RESULT.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 372ms:
     [
       {
@@ -2275,7 +2275,7 @@ termination-reason: null
     
     2026-08-17T02:43:32.220602Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora evidence add --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora evidence add --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 68ms:
     usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
                               --result {success,failure} --by BY
@@ -2294,11 +2294,11 @@ termination-reason: null
     codex
     The Spec Owner’s durable inbox confirms the exact blocker: only `missing-approvals=[spec-owner]`; all criteria, artifacts, and successful evidence gates are satisfied. Since the Developer’s permitted action is “continue verifying,” I’ll run the declared automated checks once, record that verification through Agora, and then stop without attempting approval or completion.
     exec
-    /usr/bin/zsh -lc 'python3 -m unittest discover -s tests -v && node --check agora_studio/static/app.js && git diff --check' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'python3 -m unittest discover -s tests -v && node --check agora_studio/static/app.js && git diff --check' in /home/faguero/dev-agora/agora-studio
      succeeded in 23ms:
     2026-08-17T02:43:43.151312Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type automated-verification --result success --by "$AGORA_ACTOR" --artifact repo://docs/evidence/visual-console-mvp-verification.md && agora validate && agora next --actor "$AGORA_ACTOR" && agora next --actor project:owner' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type automated-verification --result success --by "$AGORA_ACTOR" --artifact repo://docs/evidence/visual-console-mvp-verification.md && agora validate && agora next --actor "$AGORA_ACTOR" && agora next --actor project:owner' in /home/faguero/dev-agora/agora-studio
      succeeded in 582ms:
     {
       "id": "visual-console-mvp",
@@ -2341,7 +2341,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -2443,7 +2443,7 @@ termination-reason: null
     
     - 20 tests passed.
     - JavaScript syntax and `git diff --check` passed.
-    - Successful evidence recorded in [evidence.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md).
+    - Successful evidence recorded in [evidence.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md).
     - `agora validate` reports no issues.
     
     Work remains `verifying`. The only missing completion gate is human `spec-owner` approval by `project:owner`; no unauthorized transition was attempted.

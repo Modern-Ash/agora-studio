@@ -14,7 +14,7 @@ termination-reason: null
     Completed the single permitted Agora action:
     
     - Transitioned `activity-timeline-mvp` from `clarified` to `planned` as `project:agent`.
-    - Persisted the transition in [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/WORK.md).
+    - Persisted the transition in [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/WORK.md).
     - `agora validate` passes with no issues.
     - Stopped before the next `planned → implementing` action.
 
@@ -23,7 +23,7 @@ termination-reason: null
     2026-08-17T12:17:47.976990Z ERROR codex_models_manager::cache: failed to load models cache: missing field `base_instructions` at line 95 column 5
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -37,9 +37,9 @@ termination-reason: null
     codex
     I’m using the Agora execution workflow because you asked me to advance exactly one role-authorized action and persist its evidence. I’ll first read the complete session context and the skill instructions, then stop at any approval or authority boundary.
     exec
-    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' .agents/skills/agora-execute/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' .agents/skills/agora-execute/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12171786979867z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12171786979867z/CONTEXT.md
     ---
     name: "agora-execute"
     description: "Execute a permitted transition step for an assigned Agora role"
@@ -81,15 +81,15 @@ termination-reason: null
     Execution request: `$ARGUMENTS`
     
     exec
-    /usr/bin/zsh -lc 'context_path="$AGORA_CONTEXT"; wc -l "$context_path"; sed -n '"'1,400p' \""'$context_path"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'context_path="$AGORA_CONTEXT"; wc -l "$context_path"; sed -n '"'1,400p' \""'$context_path"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    62 /home/faguero/dev/agora-studio/.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12171786979867z/CONTEXT.md
+    62 /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12171786979867z/CONTEXT.md
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -150,7 +150,7 @@ termination-reason: null
     codex
     The session assigns me as the developer on `activity-timeline-mvp`, currently in `clarified`. I’m now loading every required governance, method, handoff, and work record before asking Agora for the permitted transition.
     exec
-    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/activity.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-activity-timeline/SWARM.md .agora/swarms/studio-activity-timeline/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-activity-timeline/handoffs/activity-spec-to-ai/HANDOFF.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/WORK.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/artifacts.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/evidence.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/approvals.md; do if [ -f "$f" ]; then echo "===== $f ====="; sed -n '"'1,1000p' \""'$f"; else echo "===== MISSING: $f ====="; fi; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/activity.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-activity-timeline/SWARM.md .agora/swarms/studio-activity-timeline/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-activity-timeline/handoffs/activity-spec-to-ai/HANDOFF.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/WORK.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/artifacts.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/evidence.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/approvals.md; do if [ -f "$f" ]; then echo "===== $f ====="; sed -n '"'1,1000p' \""'$f"; else echo "===== MISSING: $f ====="; fi; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ===== .agora/project.md =====
     ---
@@ -671,7 +671,7 @@ termination-reason: null
     | --- | --- | --- | --- |
     
     exec
-    /usr/bin/zsh -lc "wc -l .agora/activity.md .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-activity-timeline/SWARM.md .agora/swarms/studio-activity-timeline/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-activity-timeline/handoffs/activity-spec-to-ai/HANDOFF.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/WORK.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/artifacts.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/evidence.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/approvals.md && sed -n '1,120p' .agora/activity.md && sed -n '121,260p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "wc -l .agora/activity.md .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-activity-timeline/SWARM.md .agora/swarms/studio-activity-timeline/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-activity-timeline/handoffs/activity-spec-to-ai/HANDOFF.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/WORK.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/artifacts.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/evidence.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/approvals.md && sed -n '1,120p' .agora/activity.md && sed -n '121,260p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
       180 .agora/activity.md
        15 .agora/project.md
@@ -874,7 +874,7 @@ termination-reason: null
     - 2026-08-17T12:17:47.794748Z | session.prepared | actor=project:agent swarm=studio-activity-timeline work=activity-timeline-mvp session=run-studio-activity-timeline-activity-timeline-mvp-20260817t12171786979867z tool-run=- source=repo://.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12171786979867z/SESSION.md | Prepared codex/openai/configured-by-codex session for roles developer
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,60p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,60p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/activity-ledger/v1"
@@ -938,7 +938,7 @@ termination-reason: null
     - 2026-08-17T00:39:38.452455Z | session.completed | actor=project:agent swarm=studio-mvp work=read-only-mvp session=run-studio-mvp-read-only-mvp-20260817t00381786937911z tool-run=- source=repo://.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00381786937911z/RESULT.md | session=run-studio-mvp-read-only-mvp-20260817t00381786937911z exit-code=0
     
     exec
-    /usr/bin/zsh -lc "sed -n '61,120p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '61,120p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     - 2026-08-17T00:39:38.457876Z | session.prepared | actor=project:agent swarm=studio-mvp work=read-only-mvp session=run-studio-mvp-read-only-mvp-20260817t00391786937978z tool-run=- source=repo://.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00391786937978z/SESSION.md | session=run-studio-mvp-read-only-mvp-20260817t00391786937978z actor=project:agent swarm=studio-mvp
     - 2026-08-17T00:40:55.832727Z | evidence.added | actor=project:agent swarm=studio-mvp work=read-only-mvp session=- tool-run=- source=repo://.agora/swarms/studio-mvp/work/read-only-mvp/events.md | type=human-approval-boundary result=success actor=project:agent
@@ -1002,7 +1002,7 @@ termination-reason: null
     - 2026-08-17T02:13:23.120957Z | swarm.status-changed | actor=- swarm=studio-visual-console work=- session=- tool-run=- source=repo://.agora/swarms/studio-visual-console/events.md | from=ready to=running
     
     exec
-    /usr/bin/zsh -lc "sed -n '121,180p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '121,180p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     - 2026-08-17T02:13:38.177787Z | session.prepared | actor=project:agent swarm=studio-visual-console work=visual-console-mvp session=run-studio-visual-console-visual-console-mvp-20260817t02131786943618z tool-run=- source=repo://.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/SESSION.md | session=run-studio-visual-console-visual-console-mvp-20260817t02131786943618z actor=project:agent swarm=studio-visual-console
     - 2026-08-17T02:14:24.856508Z | work.transitioned | actor=project:agent swarm=studio-visual-console work=visual-console-mvp session=- tool-run=- source=repo://.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md | from=clarified to=planned actor=project:agent
@@ -1066,7 +1066,7 @@ termination-reason: null
     - 2026-08-17T12:17:47.794748Z | session.prepared | actor=project:agent swarm=studio-activity-timeline work=activity-timeline-mvp session=run-studio-activity-timeline-activity-timeline-mvp-20260817t12171786979867z tool-run=- source=repo://.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12171786979867z/SESSION.md | Prepared codex/openai/configured-by-codex session for roles developer
     
     exec
-    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR" && agora usage status --swarm studio-activity-timeline --work activity-timeline-mvp' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR" && agora usage status --swarm studio-activity-timeline --work activity-timeline-mvp' in /home/faguero/dev-agora/agora-studio
      succeeded in 259ms:
     [
       {
@@ -1100,7 +1100,7 @@ termination-reason: null
     codex
     Agora’s controller confirms the only target is `clarified → planned`; no budget limit applies. I’m checking the accepted specification and the precedent for this Method Pack transition so the planning record is substantive, while avoiding any implementation work.
     exec
-    /usr/bin/zsh -lc "sed -n '1,400p' docs/specs/activity-timeline-mvp.md; sed -n '1,260p' .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md; sed -n '1,260p' .agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z/RESULT.md; agora work transition --help" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,400p' docs/specs/activity-timeline-mvp.md; sed -n '1,260p' .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md; sed -n '1,260p' .agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z/RESULT.md; agora work transition --help" in /home/faguero/dev-agora/agora-studio
      succeeded in 62ms:
     usage: agora work transition [-h] --swarm SWARM --work WORK --to TO --by BY
     
@@ -1114,7 +1114,7 @@ termination-reason: null
     codex
     The clarified specification is complete, and established Agora sessions treat this edge as the governed planning action itself—no separate plan artifact or repository change is required. I’m recording only `clarified → planned`, then I’ll validate durable state and stop before implementation.
     exec
-    /usr/bin/zsh -lc 'agora work transition --swarm studio-activity-timeline --work activity-timeline-mvp --to planned --by "$AGORA_ACTOR" && agora validate && agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work transition --swarm studio-activity-timeline --work activity-timeline-mvp --to planned --by "$AGORA_ACTOR" && agora validate && agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 412ms:
     {
       "id": "activity-timeline-mvp",
@@ -1150,7 +1150,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1231,7 +1231,7 @@ termination-reason: null
     Completed the single permitted Agora action:
     
     - Transitioned `activity-timeline-mvp` from `clarified` to `planned` as `project:agent`.
-    - Persisted the transition in [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/WORK.md).
+    - Persisted the transition in [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/WORK.md).
     - `agora validate` passes with no issues.
     - Stopped before the next `planned → implementing` action.
     tokens used

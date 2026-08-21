@@ -27,11 +27,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Check out Core 0.7 source
+      - name: Check out Core 0.8 source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: Modern-Ash/agora
-          ref: v0.7.0
+          ref: v0.8.0
           path: core
           persist-credentials: false
 
@@ -65,7 +65,7 @@ jobs:
           "$RUNNER_TEMP/agora-studio-wheel/bin/python" -m pip install --no-deps dist/*.whl
           cd "$RUNNER_TEMP"
           "./agora-studio-wheel/bin/agora-studio" --version
-          "./agora-studio-wheel/bin/python" -c "from importlib.metadata import version; assert version('agora-studio') == '0.4.0'; assert version('agora-framework').startswith('0.7.')"
+          "./agora-studio-wheel/bin/python" -c "from importlib.metadata import version; assert version('agora-studio') == '0.5.0'; assert version('agora-framework').startswith('0.8.')"
           "./agora-studio-wheel/bin/python" -c "from importlib.resources import files; root = files('agora_studio') / 'static'; assert (root / 'index.html').is_file(); assert (root / 'control-model.js').is_file(); assert (root / 'agora-mark.png').is_file()"
 
   wheel-integration:
@@ -82,7 +82,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: Modern-Ash/agora
-          ref: v0.7.0
+          ref: v0.8.0
           path: core
           persist-credentials: false
 
@@ -109,7 +109,7 @@ jobs:
         run: |
           cd "$RUNNER_TEMP"
           agora-studio --version
-          python -c "from importlib.metadata import version; assert version('agora-framework') == '0.7.0'; assert version('agora-studio') == '0.4.0'"
+          python -c "from importlib.metadata import version; assert version('agora-framework') == '0.8.0'; assert version('agora-studio') == '0.5.0'"
 
   core-range:
     name: Core ${{ matrix.core }}
@@ -120,9 +120,9 @@ jobs:
       matrix:
         include:
           - core: minimum
-            requirement: agora-framework==0.7.0
+            requirement: agora-framework==0.8.0
           - core: latest-compatible
-            requirement: agora-framework>=0.7,<0.8
+            requirement: agora-framework>=0.8,<0.9
 
     steps:
       - name: Check out Studio
@@ -156,11 +156,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Check out Core 0.7 source
+      - name: Check out Core 0.8 source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: Modern-Ash/agora
-          ref: v0.7.0
+          ref: v0.8.0
           path: core
           persist-credentials: false
 
@@ -188,7 +188,7 @@ jobs:
           E2E_ARTIFACT_DIR: ${{ github.workspace }}/test-results/e2e
         run: |
           cd "$RUNNER_TEMP"
-          "$RUNNER_TEMP/agora-studio-e2e/bin/python" -c "from importlib.metadata import version; assert version('agora-framework').startswith('0.7.'); assert version('agora-studio') == '0.4.0'"
+          "$RUNNER_TEMP/agora-studio-e2e/bin/python" -c "from importlib.metadata import version; assert version('agora-framework').startswith('0.8.'); assert version('agora-studio') == '0.5.0'"
           "$RUNNER_TEMP/agora-studio-e2e/bin/python" "$GITHUB_WORKSPACE/e2e/test_chromium.py" -v
 
       - name: Upload screenshots and traces on failure

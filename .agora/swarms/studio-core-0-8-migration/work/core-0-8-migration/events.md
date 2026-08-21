@@ -1,0 +1,32 @@
+# Work events
+
+- 2026-08-20T23:43:41.471352Z | work.created | state=drafting actor=project:specification-agent
+- 2026-08-20T23:45:07.476724Z | artifact.added | kind=spec uri=docs/specs/core-0.8-studio-migration.md actor=project:specification-agent
+- 2026-08-20T23:45:35.314695Z | work.role-handed-off | handoff=core-0-8-spec-human-review role=spec-owner from=project:specification-agent to=project:owner by=project:specification-agent
+- 2026-08-20T23:50:42.051601Z | artifact.added | kind=spec uri=repo://docs/specs/core-0.8-studio-migration.md actor=project:owner
+- 2026-08-20T23:50:42.280499Z | artifact.added | kind=clarification-record uri=repo://docs/evidence/core-0.8-spec-clarification.md actor=project:owner
+- 2026-08-20T23:50:42.491956Z | evidence.added | type=human-clarification result=success actor=project:owner
+- 2026-08-20T23:50:42.700435Z | work.criterion-satisfied | criterion=scope actor=project:owner
+- 2026-08-20T23:51:34.346600Z | artifact.added | kind=process-trace uri=repo://docs/evidence/core-0.8-agora-method-trace.md actor=project:owner
+- 2026-08-20T23:53:49.116133Z | artifact.added | kind=consistency-report uri=repo://docs/evidence/core-0.8-spec-consistency.md actor=project:owner
+- 2026-08-20T23:53:49.334612Z | evidence.added | type=specification-consistency result=success actor=project:owner
+- 2026-08-20T23:53:49.567349Z | work.criterion-satisfied | criterion=compatibility actor=project:owner
+- 2026-08-20T23:53:49.780736Z | work.criterion-satisfied | criterion=read-contracts actor=project:owner
+- 2026-08-20T23:53:49.989153Z | work.criterion-satisfied | criterion=gate-flow actor=project:owner
+- 2026-08-20T23:53:50.225695Z | work.criterion-satisfied | criterion=operational-errors actor=project:owner
+- 2026-08-20T23:53:50.448932Z | work.criterion-satisfied | criterion=evidence-integrity actor=project:owner
+- 2026-08-20T23:53:50.672009Z | work.criterion-satisfied | criterion=boundaries actor=project:owner
+- 2026-08-20T23:53:50.890832Z | work.criterion-satisfied | criterion=verification actor=project:owner
+- 2026-08-20T23:53:51.099809Z | work.criterion-satisfied | criterion=documentation actor=project:owner
+- 2026-08-20T23:54:18.765001Z | artifact.added | kind=spec uri=repo://docs/specs/core-0.8-studio-migration.md actor=project:owner
+- 2026-08-20T23:54:18.974078Z | work.transitioned | from=drafting to=clarified actor=project:owner
+- 2026-08-20T23:54:35.531789Z | artifact.added | kind=process-trace uri=repo://docs/evidence/core-0.8-agora-method-trace.md actor=project:owner
+- 2026-08-20T23:55:43.402946Z | artifact.added | kind=consistency-report uri=repo://docs/evidence/core-0.8-spec-consistency.md actor=project:owner
+- 2026-08-20T23:55:43.591326Z | evidence.added | type=consistency-check result=success actor=project:owner
+- 2026-08-21T00:01:22.307971Z | artifact.added | kind=spec uri=repo://docs/plans/core-0.8-studio-migration.md actor=project:agent
+- 2026-08-21T00:01:36.319013Z | work.transitioned | from=clarified to=planned actor=project:agent
+- 2026-08-21T00:02:40.697993Z | work.transitioned | from=planned to=implementing actor=project:agent
+- 2026-08-21T00:14:32.839400Z | work.transitioned | from=implementing to=verifying actor=project:agent
+- 2026-08-21T00:16:41.145839Z | artifact.added | kind=consistency-report uri=repo://docs/evidence/core-0.8-studio-migration-verification.md actor=project:agent
+- 2026-08-21T00:17:36.930509Z | approval.added | role=spec-owner actor=project:owner delegation=none
+- 2026-08-21T00:17:37.118620Z | work.transitioned | from=verifying to=completed actor=project:owner
