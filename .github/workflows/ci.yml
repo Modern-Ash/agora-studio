@@ -27,11 +27,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Check out Core 0.7 source
+      - name: Check out Core 0.8 source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: Modern-Ash/agora
-          ref: v0.7.0
+          ref: v0.8.0
           path: core
           persist-credentials: false
 
@@ -82,7 +82,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: Modern-Ash/agora
-          ref: v0.7.0
+          ref: v0.8.0
           path: core
           persist-credentials: false
 
@@ -156,11 +156,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Check out Core 0.7 source
+      - name: Check out Core 0.8 source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: Modern-Ash/agora
-          ref: v0.7.0
+          ref: v0.8.0
           path: core
           persist-credentials: false
 
