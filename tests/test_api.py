@@ -19,7 +19,7 @@ class FakeCommands:
         if self.error:
             raise self.error
         return {
-            "schema": "agora/application/gate-decision-projection/v2",
+            "schema": "agora/application/gate-decision-projection/v3",
             "project_identity": selection.project,
             "swarm_id": swarm_id,
             "work_id": work_id,
@@ -30,7 +30,7 @@ class FakeCommands:
             "reason": request.reason,
             "evidence_references": list(request.evidence_references),
             "precondition_digest": request.precondition_digest,
-            "lifecycle": {"schema": "agora/application/lifecycle-projection/v2"},
+            "lifecycle": {"schema": "agora/application/lifecycle-projection/v3"},
             "activity": {"schema": "agora/application/activity-entry/v1"},
         }
 
@@ -39,7 +39,7 @@ class FakeCommands:
         if self.error:
             raise self.error
         return {
-            "schema": "agora/application/prepared-gate-decision/v2",
+            "schema": "agora/application/prepared-gate-decision/v3",
             "project_identity": selection.project,
             "swarm_id": swarm_id,
             "work_id": work_id,
@@ -53,7 +53,7 @@ class FakeCommands:
 
 def command_payload(**changes: object) -> dict[str, object]:
     payload: dict[str, object] = {
-        "schema": "agora/application/approve-gate-command/v3",
+        "schema": "agora/application/approve-gate-command/v4",
         "gate_id": "completion",
         "actor_id": "project:owner",
         "decision": "approved",
@@ -121,7 +121,7 @@ class ApiContractTests(unittest.TestCase):
                     self.assertNotIn("missing_roles", payload["approvals"])
                     self.assertEqual(
                         payload["approvals"]["gate_decision_options"]["schema"],
-                        "agora/application/gate-decision-options-projection/v2",
+                        "agora/application/gate-decision-options-projection/v3",
                     )
 
     def test_legacy_aliases_are_removed(self) -> None:
@@ -158,7 +158,11 @@ class ApiContractTests(unittest.TestCase):
             self.store,
             "POST",
             route,
-            command_payload(precondition_digest="b" * 64),
+            command_payload(
+                precondition_digest="b" * 64,
+                evidence_content_sha256={"repo://report": "c" * 64},
+                prepared_at="2026-08-20T12:00:00Z",
+            ),
             commands=commands,
         )
         self.assertEqual(status, 200)
@@ -176,7 +180,7 @@ class ApiContractTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(
             prepared["preparation"]["schema"],
-            "agora/application/prepared-gate-decision/v2",
+            "agora/application/prepared-gate-decision/v3",
         )
 
         commands.error = CommandAdapterError(
@@ -186,7 +190,11 @@ class ApiContractTests(unittest.TestCase):
             self.store,
             "POST",
             route,
-            command_payload(precondition_digest="b" * 64),
+            command_payload(
+                precondition_digest="b" * 64,
+                evidence_content_sha256={"repo://report": "c" * 64},
+                prepared_at="2026-08-20T12:00:00Z",
+            ),
             commands=commands,
         )
         self.assertEqual(status, 409)
@@ -199,7 +207,11 @@ class ApiContractTests(unittest.TestCase):
             self.store,
             "POST",
             route,
-            command_payload(precondition_digest="b" * 64),
+            command_payload(
+                precondition_digest="b" * 64,
+                evidence_content_sha256={"repo://report": "c" * 64},
+                prepared_at="2026-08-20T12:00:00Z",
+            ),
             commands=commands,
         )
         self.assertEqual(status, 503)
@@ -212,7 +224,11 @@ class ApiContractTests(unittest.TestCase):
             self.store,
             "POST",
             route,
-            command_payload(precondition_digest="b" * 64),
+            command_payload(
+                precondition_digest="b" * 64,
+                evidence_content_sha256={"repo://report": "c" * 64},
+                prepared_at="2026-08-20T12:00:00Z",
+            ),
             commands=commands,
         )
         self.assertEqual(status, 428)
@@ -225,7 +241,11 @@ class ApiContractTests(unittest.TestCase):
             self.store,
             "POST",
             route,
-            command_payload(precondition_digest="b" * 64),
+            command_payload(
+                precondition_digest="b" * 64,
+                evidence_content_sha256={"repo://report": "c" * 64},
+                prepared_at="2026-08-20T12:00:00Z",
+            ),
             commands=commands,
         )
         self.assertEqual(status, 426)

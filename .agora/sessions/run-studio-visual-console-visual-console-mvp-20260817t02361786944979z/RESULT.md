@@ -15,7 +15,7 @@ termination-reason: null
     
     - 20 tests passed.
     - JavaScript syntax and `git diff --check` passed.
-    - Fresh successful evidence recorded against [visual-console-mvp-verification.md](/home/faguero/dev/agora-studio/docs/evidence/visual-console-mvp-verification.md).
+    - Fresh successful evidence recorded against [visual-console-mvp-verification.md](/home/faguero/dev-agora/agora-studio/docs/evidence/visual-console-mvp-verification.md).
     - `agora validate` reports no issues.
     
     Work remains in `verifying`. Stopped because only human `project:owner` in the `spec-owner` role can approve and transition it to `completed`.
@@ -28,7 +28,7 @@ termination-reason: null
     2026-08-17T02:36:20.020972Z  WARN codex_core_skills::loader: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -44,7 +44,7 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc "printenv AGORA_CONTEXT
     pwd
-    rg --files -g 'AGENTS.md' -g '"'!node_modules'"' -g '"'!dist'"' . .. 2>/dev/null | head -50" in /home/faguero/dev/agora-studio
+    rg --files -g 'AGENTS.md' -g '"'!node_modules'"' -g '"'!dist'"' . .. 2>/dev/null | head -50" in /home/faguero/dev-agora/agora-studio
      succeeded in 7ms:
     ../agora/AGENTS.md
     ../agora-pr20/AGENTS.md
@@ -67,7 +67,7 @@ termination-reason: null
     /usr/bin/zsh -lc "sed -n '1,240p' ../AGENTS.md
     sed -n '1,260p' .agents/skills/agora-status/SKILL.md
     sed -n '1,300p' .agents/skills/agora-execute/SKILL.md
-    sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev/agora-studio
+    sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     <!-- OPENSPEC:START -->
     # OpenSpec Instructions
@@ -146,7 +146,7 @@ termination-reason: null
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -205,7 +205,7 @@ termination-reason: null
     codex
     The session assigns me the developer role on `visual-console-mvp`, currently in `verifying`. I’m now reading every required governance, method, role, work, artifact, evidence, and approval record before asking Agora for the single permitted next transition.
     exec
-    /usr/bin/zsh -lc 'wc -l .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'wc -l .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
        15 .agora/project.md
        27 .agora/constitution.md
@@ -226,7 +226,7 @@ termination-reason: null
       301 total
     
     exec
-    /usr/bin/zsh -lc "for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do printf '\\n===== %s =====\\n' \""'$f"; sed -n '"'1,400p' \""'$f"; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do printf '\\n===== %s =====\\n' \""'$f"; sed -n '"'1,400p' \""'$f"; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     
     ===== .agora/project.md =====
@@ -570,7 +570,7 @@ termination-reason: null
     agora next --actor "$AGORA_ACTOR"
     agora inbox --actor "$AGORA_ACTOR"
     agora validate
-    agora event list --swarm studio-visual-console --work visual-console-mvp' in /home/faguero/dev/agora-studio
+    agora event list --swarm studio-visual-console --work visual-console-mvp' in /home/faguero/dev-agora/agora-studio
      succeeded in 954ms:
     usage: agora [-h]
                  {configure,init,adopt,quickstart,doctor,self-test,status,validate,next,inbox,run,resume,environment,lock,coordination,upgrade,registry,trust,pack,start,method,tool,delegation,actor,swarm,work,gate,session,action,event,artifact,evidence,usage,approval} ...
@@ -748,140 +748,140 @@ termination-reason: null
         "type": "work.created",
         "detail": "state=drafting actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:01.446533Z",
         "type": "artifact.added",
         "detail": "kind=spec uri=docs/specs/visual-console-mvp.md actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:03.862001Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=visual-shell actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:07.370265Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=project-selection actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:09.548435Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=project-overview actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:11.703629Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=delivery-browser actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:14.063100Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=responsive-accessible actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:16.596682Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=read-only-safety actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:20.602163Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=verification actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:23.120307Z",
         "type": "work.transitioned",
         "detail": "from=drafting to=clarified actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:14:24.856508Z",
         "type": "work.transitioned",
         "detail": "from=clarified to=planned actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:15:13.547263Z",
         "type": "work.transitioned",
         "detail": "from=planned to=implementing actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:26:11.763637Z",
         "type": "artifact.added",
         "detail": "kind=verification-report uri=repo://docs/evidence/visual-console-mvp-verification.md actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:26:17.911715Z",
         "type": "evidence.added",
         "detail": "type=automated-verification result=success actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:26:49.018523Z",
         "type": "work.block",
         "detail": "from=active to=blocked actor=project:agent change=change-20260817t022649018214z",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:32:42.234761Z",
         "type": "work.resume",
         "detail": "from=blocked to=active actor=project:agent change=change-20260817t023242234486z",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:32:54.780641Z",
         "type": "tool.prepared",
         "detail": "run=tool-20260817t02321786944774z tool=repository operation=commit actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:32:54.803165Z",
         "type": "tool.completed",
         "detail": "run=tool-20260817t02321786944774z exit-code=0",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:34:01.312056Z",
         "type": "work.transitioned",
         "detail": "from=implementing to=verifying actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:36:13.084731Z",
         "type": "evidence.added",
         "detail": "type=automated-verification result=success actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       }
     ]
     
@@ -898,7 +898,7 @@ termination-reason: null
     agora usage status --swarm studio-visual-console --work visual-console-mvp
     sed -n '"'1,320p' docs/evidence/visual-console-mvp-verification.md
     sed -n '1,320p' docs/specs/visual-console-mvp.md
-    rg -n \"pytest|unittest|npm test|verification|test\" README* pyproject.toml package.json Makefile . -g '"'!node_modules'"' -g '"'!.git'"' -g '"'!.agora/sessions/**'"' | head -240" in /home/faguero/dev/agora-studio
+    rg -n \"pytest|unittest|npm test|verification|test\" README* pyproject.toml package.json Makefile . -g '"'!node_modules'"' -g '"'!.git'"' -g '"'!.agora/sessions/**'"' | head -240" in /home/faguero/dev-agora/agora-studio
      succeeded in 847ms:
     [
       {
@@ -908,7 +908,7 @@ termination-reason: null
         "capabilities": [
           "implementation"
         ],
-        "path": "/home/faguero/dev/agora-studio/.agora/actors/agent.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/actors/agent.md",
         "reference": "project:agent",
         "integration": null,
         "provider": null,
@@ -929,7 +929,7 @@ termination-reason: null
           "acceptance",
           "specification"
         ],
-        "path": "/home/faguero/dev/agora-studio/.agora/actors/owner.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/actors/owner.md",
         "reference": "project:owner",
         "integration": null,
         "provider": null,
@@ -1000,7 +1000,7 @@ termination-reason: null
           "developer": "project:agent"
         },
         "objective": "Build the local read-only foundation of Agora Studio",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation"
       },
       {
         "id": "studio-mvp",
@@ -1016,7 +1016,7 @@ termination-reason: null
           "developer": "project:agent"
         },
         "objective": "Build a local-first GUI for visualizing and operating Agora projects while keeping Markdown and Git as the source of truth",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp"
       },
       {
         "id": "studio-visual-console",
@@ -1032,7 +1032,7 @@ termination-reason: null
           "developer": "project:agent"
         },
         "objective": "Build the first operational visual console for Agora Studio, allowing developers to select a local Agora project and inspect its governed delivery state without mutating it.",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console"
       }
     ]
     [
@@ -1072,7 +1072,7 @@ termination-reason: null
           "success"
         ],
         "approval_roles": [],
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
         "child_work_refs": [],
         "budget_limits": null,
         "operational_status": "active",
@@ -1095,7 +1095,7 @@ termination-reason: null
         "category": "ci",
         "executable": "cictl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/ci-cd",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/ci-cd",
         "operations": [
           "cancel-run",
           "create-deployment",
@@ -1123,7 +1123,7 @@ termination-reason: null
         "category": "cloud",
         "executable": "cloudctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/cloud-infrastructure",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/cloud-infrastructure",
         "operations": [
           "apply-plan",
           "destroy-resource",
@@ -1150,7 +1150,7 @@ termination-reason: null
         "category": "code-review",
         "executable": "reviewctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/code-review",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/code-review",
         "operations": [
           "approve",
           "checks",
@@ -1180,7 +1180,7 @@ termination-reason: null
         "category": "documentation",
         "executable": "docsctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/knowledge-base",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/knowledge-base",
         "operations": [
           "archive",
           "create",
@@ -1208,7 +1208,7 @@ termination-reason: null
         "category": "observability",
         "executable": "observectl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/observability",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/observability",
         "operations": [
           "create-incident",
           "query-metrics",
@@ -1236,7 +1236,7 @@ termination-reason: null
         "category": "portfolio",
         "executable": "portfolioctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/portfolio-management",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/portfolio-management",
         "operations": [
           "add-item",
           "archive-item",
@@ -1264,7 +1264,7 @@ termination-reason: null
         "category": "release",
         "executable": "releasectl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/release-management",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/release-management",
         "operations": [
           "list-releases",
           "publish-release",
@@ -1290,7 +1290,7 @@ termination-reason: null
         "category": "repository",
         "executable": "git",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/repository",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/repository",
         "operations": [
           "commit",
           "create-branch",
@@ -1317,7 +1317,7 @@ termination-reason: null
         "category": "repository-governance",
         "executable": "repo-policyctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/repository-governance",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/repository-governance",
         "operations": [
           "inspect-repository",
           "list-rulesets",
@@ -1344,7 +1344,7 @@ termination-reason: null
         "category": "security",
         "executable": "securityctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/security-scanning",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/security-scanning",
         "operations": [
           "list-code-alerts",
           "list-dependency-alerts",
@@ -1369,7 +1369,7 @@ termination-reason: null
         "category": "issue-tracker",
         "executable": "workctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/work-management",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/work-management",
         "operations": [
           "comment",
           "create",
@@ -1680,7 +1680,7 @@ termination-reason: null
     agora work transition --help
     agora evidence add --help
     agora approval --help
-    rg -n 'verifying|completed|approval|transitions' .agora/methods/spec-driven -g '*.md' -g '*.json' -g '*.yaml' -g '*.yml'" in /home/faguero/dev/agora-studio
+    rg -n 'verifying|completed|approval|transitions' .agora/methods/spec-driven -g '*.md' -g '*.json' -g '*.yaml' -g '*.yml'" in /home/faguero/dev-agora/agora-studio
      succeeded in 511ms:
     usage: agora method [-h] {install,list} ...
     
@@ -1743,7 +1743,7 @@ termination-reason: null
     /usr/bin/zsh -lc "sed -n '1,220p' .agora/methods/spec-driven/transitions/05-verifying-implementing.md
     sed -n '1,220p' .agora/methods/spec-driven/transitions/06-verifying-completed.md
     sed -n '1,220p' .agora/methods/spec-driven/gates/completion.md
-    sed -n '1,220p' .agora/methods/spec-driven/roles/spec-owner.md" in /home/faguero/dev/agora-studio
+    sed -n '1,220p' .agora/methods/spec-driven/roles/spec-owner.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/transition/v1"
@@ -1796,7 +1796,7 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc 'python3 -m unittest discover -s tests -v
     node --check agora_studio/static/app.js
-    git diff --check' in /home/faguero/dev/agora-studio
+    git diff --check' in /home/faguero/dev-agora/agora-studio
      succeeded in 25ms:
     2026-08-17T02:37:47.966696Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
@@ -1804,7 +1804,7 @@ termination-reason: null
     agora validate
     agora next --actor "$AGORA_ACTOR"
     agora inbox --actor project:owner
-    agora event list --swarm studio-visual-console --work visual-console-mvp' in /home/faguero/dev/agora-studio
+    agora event list --swarm studio-visual-console --work visual-console-mvp' in /home/faguero/dev-agora/agora-studio
      succeeded in 732ms:
     {
       "id": "visual-console-mvp",
@@ -1843,7 +1843,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1944,147 +1944,147 @@ termination-reason: null
         "type": "work.created",
         "detail": "state=drafting actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:01.446533Z",
         "type": "artifact.added",
         "detail": "kind=spec uri=docs/specs/visual-console-mvp.md actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:03.862001Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=visual-shell actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:07.370265Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=project-selection actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:09.548435Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=project-overview actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:11.703629Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=delivery-browser actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:14.063100Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=responsive-accessible actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:16.596682Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=read-only-safety actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:20.602163Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=verification actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:23.120307Z",
         "type": "work.transitioned",
         "detail": "from=drafting to=clarified actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:14:24.856508Z",
         "type": "work.transitioned",
         "detail": "from=clarified to=planned actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:15:13.547263Z",
         "type": "work.transitioned",
         "detail": "from=planned to=implementing actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:26:11.763637Z",
         "type": "artifact.added",
         "detail": "kind=verification-report uri=repo://docs/evidence/visual-console-mvp-verification.md actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:26:17.911715Z",
         "type": "evidence.added",
         "detail": "type=automated-verification result=success actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:26:49.018523Z",
         "type": "work.block",
         "detail": "from=active to=blocked actor=project:agent change=change-20260817t022649018214z",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:32:42.234761Z",
         "type": "work.resume",
         "detail": "from=blocked to=active actor=project:agent change=change-20260817t023242234486z",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:32:54.780641Z",
         "type": "tool.prepared",
         "detail": "run=tool-20260817t02321786944774z tool=repository operation=commit actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:32:54.803165Z",
         "type": "tool.completed",
         "detail": "run=tool-20260817t02321786944774z exit-code=0",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:34:01.312056Z",
         "type": "work.transitioned",
         "detail": "from=implementing to=verifying actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:36:13.084731Z",
         "type": "evidence.added",
         "detail": "type=automated-verification result=success actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:37:57.365712Z",
         "type": "evidence.added",
         "detail": "type=automated-verification result=success actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       }
     ]
     
@@ -2094,7 +2094,7 @@ termination-reason: null
     
     - 20 tests passed.
     - JavaScript syntax and `git diff --check` passed.
-    - Fresh successful evidence recorded against [visual-console-mvp-verification.md](/home/faguero/dev/agora-studio/docs/evidence/visual-console-mvp-verification.md).
+    - Fresh successful evidence recorded against [visual-console-mvp-verification.md](/home/faguero/dev-agora/agora-studio/docs/evidence/visual-console-mvp-verification.md).
     - `agora validate` reports no issues.
     
     Work remains in `verifying`. Stopped because only human `project:owner` in the `spec-owner` role can approve and transition it to `completed`.

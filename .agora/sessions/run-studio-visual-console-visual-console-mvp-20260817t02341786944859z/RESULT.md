@@ -18,7 +18,7 @@ termination-reason: null
     - Work remains in `verifying`.
     - Stopped at the Spec Owner approval boundary; the developer may only return failed work to `implementing`.
     
-    See [evidence.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md) and [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md).
+    See [evidence.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md) and [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md).
 
 ## Standard error
 
@@ -28,7 +28,7 @@ termination-reason: null
     2026-08-17T02:34:19.805102Z  WARN codex_core_skills::loader: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -42,9 +42,9 @@ termination-reason: null
     codex
     I’m using the Agora execution skill because this request is explicitly role- and transition-governed. I’ll read the session context and its operational instructions, then perform only the single next permitted action and stop at any approval or authority boundary.
     exec
-    /usr/bin/zsh -lc "printf '%s\\n' \""'$AGORA_CONTEXT" && sed -n '"'1,260p' /home/faguero/dev/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "printf '%s\\n' \""'$AGORA_CONTEXT" && sed -n '"'1,260p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02341786944859z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02341786944859z/CONTEXT.md
     ---
     name: "agora-execute"
     description: "Execute a permitted transition step for an assigned Agora role"
@@ -87,14 +87,14 @@ termination-reason: null
     
     2026-08-17T02:35:01.702539Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -154,7 +154,7 @@ termination-reason: null
     codex
     The session assigns the `developer` role to work `visual-console-mvp`, currently in `verifying`. I’m now reading every required governance and work file before asking Agora for the authoritative next transition.
     exec
-    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do if [ -f "$f" ]; then wc -l -c "$f"; else printf '"'MISSING %s\\n' \""'$f"; fi; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do if [ -f "$f" ]; then wc -l -c "$f"; else printf '"'MISSING %s\\n' \""'$f"; fi; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
      15 330 .agora/project.md
       27 1091 .agora/constitution.md
@@ -175,7 +175,7 @@ termination-reason: null
     
     2026-08-17T02:35:13.926401Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do if [ -f "$f" ]; then printf '"'\\n===== %s =====\\n' \""'$f"; sed -n '"'1,400p' \""'$f"; fi; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do if [ -f "$f" ]; then printf '"'\\n===== %s =====\\n' \""'$f"; sed -n '"'1,400p' \""'$f"; fi; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     
     ===== .agora/project.md =====
@@ -512,7 +512,7 @@ termination-reason: null
     
     2026-08-17T02:35:20.700743Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "printf 'AGORA_ACTOR=%s\\nAGORA_SESSION=%s\\n' \""'$AGORA_ACTOR" "$AGORA_SESSION" && agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "printf 'AGORA_ACTOR=%s\\nAGORA_SESSION=%s\\n' \""'$AGORA_ACTOR" "$AGORA_SESSION" && agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 60ms:
     [
       {
@@ -537,7 +537,7 @@ termination-reason: null
     
     2026-08-17T02:35:25.305364Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_SESSION" && agora usage status --swarm studio-visual-console --work visual-console-mvp' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_SESSION" && agora usage status --swarm studio-visual-console --work visual-console-mvp' in /home/faguero/dev-agora/agora-studio
      succeeded in 75ms:
     {
       "swarm_id": "studio-visual-console",
@@ -552,7 +552,7 @@ termination-reason: null
     codex
     Agora identifies one active developer action: continue verification. The durable work status says the immediate step is a governed repository commit by the reviewed external writer; I’m checking the registered operation contract and existing tool-run records so I can launch exactly that action, if its policy is already satisfied.
     exec
-    /usr/bin/zsh -lc "rg --files .agora/tools .agora/swarms/studio-visual-console/work/visual-console-mvp .agora/sessions | sort && rg -n \"external repository writer|repository/commit|visual-console-mvp|staged\" .agora docs -g '*.md' -g '*.json' -g '*.yaml' -g '*.yml'" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "rg --files .agora/tools .agora/swarms/studio-visual-console/work/visual-console-mvp .agora/sessions | sort && rg -n \"external repository writer|repository/commit|visual-console-mvp|staged\" .agora docs -g '*.md' -g '*.json' -g '*.yaml' -g '*.yml'" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     .agora/sessions/README.md
     .agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z/CONTEXT.md
@@ -734,7 +734,7 @@ termination-reason: null
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z/RESULT.md:297:    - Create commits through `repository/commit`; its message must satisfy the configured Conventional
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/SESSION.md:3:id: "run-studio-visual-console-visual-console-mvp-20260817t02141786943675z"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/SESSION.md:6:work: "visual-console-mvp"
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/SESSION.md:12:context: "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/SESSION.md:12:context: "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/SESSION.md:30:# Agora session run-studio-visual-console-visual-console-mvp-20260817t02141786943675z
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00171786936661z/RESULT.md:77:    `repository/commit` operation with a Conventional Commits 1.0.0 message. Do not bypass its input
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00171786936661z/RESULT.md:260:    Use the governed `repository/commit` Tool Pack operation when the acting role has
@@ -747,17 +747,17 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02341786944859z/CONTEXT.md:52:- `.agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:3:session: "run-studio-visual-console-visual-console-mvp-20260817t02141786943675z"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:10:# Session result run-studio-visual-console-visual-console-mvp-20260817t02141786943675z
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:14:    Transitioned `visual-console-mvp` from `planned` to `implementing` as `project:agent` using Agora. The durable state is recorded in [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6).
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:43:    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:14:    Transitioned `visual-console-mvp` from `planned` to `implementing` as `project:agent` using Agora. The durable state is recorded in [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6).
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:43:    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:74:    `repository/commit` operation with a Conventional Commits 1.0.0 message. Do not bypass its input
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:87:    60 /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:87:    60 /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:117:    - Id: `visual-console-mvp`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:120:    - Path: `.agora/swarms/studio-visual-console/work/visual-console-mvp`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:136:    - `.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:137:    - `.agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:138:    - `.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:139:    - `.agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md`
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:149:    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/SESSION.md
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:149:    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/SESSION.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:152:    The session assigns `project:agent` the `developer` role on `visual-console-mvp`, currently `planned`. I’m now reading every protocol, role, tool, work, and evidence file required by the session before deriving the single allowed transition.
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:154:    /usr/bin/zsh -lc "for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:251:    Use the governed `repository/commit` Tool Pack operation when the acting role has
@@ -768,15 +768,15 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:466:        "work_id": "visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:473:          "Session run-studio-visual-console-visual-console-mvp-20260817t02141786943675z is already running"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:475:        "session_id": "run-studio-visual-console-visual-console-mvp-20260817t02141786943675z",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:495:    /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to implementing --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:495:    /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to implementing --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:498:      "id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:529:      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:541:    /usr/bin/zsh -lc "rg -n '"'^state:|work.transitioned|planned|implementing'"' .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/events.md" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:529:      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:541:    /usr/bin/zsh -lc "rg -n '"'^state:|work.transitioned|planned|implementing'"' .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/events.md" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:543:    .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6:state: "implementing"
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:546:    Transitioned `visual-console-mvp` from `planned` to `implementing` as `project:agent` using Agora. The durable state is recorded in [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6).
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md:546:    Transitioned `visual-console-mvp` from `planned` to `implementing` as `project:agent` using Agora. The durable state is recorded in [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6).
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02341786944859z/SESSION.md:3:id: "run-studio-visual-console-visual-console-mvp-20260817t02341786944859z"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02341786944859z/SESSION.md:6:work: "visual-console-mvp"
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02341786944859z/SESSION.md:12:context: "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02341786944859z/CONTEXT.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02341786944859z/SESSION.md:12:context: "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02341786944859z/CONTEXT.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02341786944859z/SESSION.md:30:# Agora session run-studio-visual-console-visual-console-mvp-20260817t02341786944859z
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md:30:- Id: `visual-console-mvp`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md:33:- Path: `.agora/swarms/studio-visual-console/work/visual-console-mvp`
@@ -786,7 +786,7 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md:52:- `.agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/SESSION.md:3:id: "run-studio-visual-console-visual-console-mvp-20260817t02131786943618z"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/SESSION.md:6:work: "visual-console-mvp"
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/SESSION.md:12:context: "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/SESSION.md:12:context: "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/SESSION.md:30:# Agora session run-studio-visual-console-visual-console-mvp-20260817t02131786943618z
     .agora/tool-runs/tool-20260817t02321786944774z/RESULT.md:15:     create mode 100644 .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md
     .agora/tool-runs/tool-20260817t02321786944774z/RESULT.md:16:     create mode 100644 .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md
@@ -814,7 +814,7 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:3:session: "run-studio-visual-console-visual-console-mvp-20260817t02131786943618z"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:10:# Session result run-studio-visual-console-visual-console-mvp-20260817t02131786943618z
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:16:    - Work: `studio-visual-console/visual-console-mvp`
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:50:    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:50:    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:81:    `repository/commit` operation with a Conventional Commits 1.0.0 message. Do not bypass its input
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:123:    - Id: `visual-console-mvp`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:126:    - Path: `.agora/swarms/studio-visual-console/work/visual-console-mvp`
@@ -823,7 +823,7 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:144:    - `.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:145:    - `.agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:156:    The session assigns me as the developer on `visual-console-mvp`, currently in `clarified`. I’m reading every required governance and work-state file before deriving the allowed transition; no project changes have been made yet.
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:158:    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do echo "===== $f ====="; sed -n '"'1,320p' \""'$f"; done' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:158:    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do echo "===== $f ====="; sed -n '"'1,320p' \""'$f"; done' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:256:    Use the governed `repository/commit` Tool Pack operation when the acting role has
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:285:    - Create commits through `repository/commit`; its message must satisfy the configured Conventional
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:404:    ===== .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md =====
@@ -837,22 +837,22 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:490:          "Session run-studio-visual-console-visual-console-mvp-20260817t02131786943618z is already running"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:492:        "session_id": "run-studio-visual-console-visual-console-mvp-20260817t02131786943618z",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:500:    /usr/bin/zsh -lc "sed -n '1,320p' docs/specs/visual-console-mvp.md
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:502:    agora usage status --swarm studio-visual-console --work visual-console-mvp" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:502:    agora usage status --swarm studio-visual-console --work visual-console-mvp" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:514:      "work_id": "visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:522:    /usr/bin/zsh -lc "rg -n 'clarified|planned' .agora/methods/spec-driven .agora/swarms/studio-visual-console/work/visual-console-mvp -g '*.md' -g '*.json' -g '*.yaml' -g '*.yml'
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:523:    agora work show --swarm studio-visual-console --work visual-console-mvp 2>&1 || true" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:523:    agora work show --swarm studio-visual-console --work visual-console-mvp 2>&1 || true" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:526:      "id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:557:      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:571:    sed -n '1,240p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:557:      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:571:    sed -n '1,240p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:592:    - 2026-08-17T02:13:01.446533Z | artifact.added | kind=spec uri=docs/specs/visual-console-mvp.md actor=project:owner
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:603:    /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to planned --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:603:    /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to planned --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:606:      "id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:637:      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:637:      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:649:    The governed transition succeeded: `visual-console-mvp` is now `planned`. I’m doing a read-only durability check of the work record and event log, then I’ll stop without beginning implementation.
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:651:    /usr/bin/zsh -lc "agora work show --swarm studio-visual-console --work visual-console-mvp
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:652:    sed -n '1,220p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:652:    sed -n '1,220p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:655:      "id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:686:      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:686:      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:699:    - 2026-08-17T02:13:01.446533Z | artifact.added | kind=spec uri=docs/specs/visual-console-mvp.md actor=project:owner
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md:713:    - Work: `studio-visual-console/visual-console-mvp`
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z/RESULT.md:135:    `repository/commit` operation with a Conventional Commits 1.0.0 message. Do not bypass its input
@@ -878,7 +878,7 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/CONTEXT.md:52:- `.agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/SESSION.md:3:id: "run-studio-visual-console-visual-console-mvp-20260817t02331786944785z"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/SESSION.md:6:work: "visual-console-mvp"
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/SESSION.md:12:context: "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/CONTEXT.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/SESSION.md:12:context: "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/CONTEXT.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/SESSION.md:30:# Agora session run-studio-visual-console-visual-console-mvp-20260817t02331786944785z
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md:30:- Id: `visual-console-mvp`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md:33:- Path: `.agora/swarms/studio-visual-console/work/visual-console-mvp`
@@ -901,7 +901,7 @@ termination-reason: null
     .agora/commands/execute.md:31:`repository/commit` operation with a Conventional Commits 1.0.0 message. Do not bypass its input
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/SESSION.md:3:id: "run-studio-visual-console-visual-console-mvp-20260817t02151786943725z"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/SESSION.md:6:work: "visual-console-mvp"
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/SESSION.md:12:context: "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/SESSION.md:12:context: "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/SESSION.md:30:# Agora session run-studio-visual-console-visual-console-mvp-20260817t02151786943725z
     .agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z/RESULT.md:126:    `repository/commit` operation with a Conventional Commits 1.0.0 message. Do not bypass its input
     .agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z/RESULT.md:317:    Use the governed `repository/commit` Tool Pack operation when the acting role has
@@ -919,10 +919,10 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:3:session: "run-studio-visual-console-visual-console-mvp-20260817t02331786944785z"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:10:# Session result run-studio-visual-console-visual-console-mvp-20260817t02331786944785z
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:14:    Transitioned `visual-console-mvp` from `implementing` to `verifying`.
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:20:    Stopped at the human approval boundary without selecting an unnecessary rework path. See [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md) and [events.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md).
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:20:    Stopped at the human approval boundary without selecting an unnecessary rework path. See [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md) and [events.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md).
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:76:    `repository/commit` operation with a Conventional Commits 1.0.0 message. Do not bypass its input
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:89:    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/CONTEXT.md
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:91:    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/SESSION.md
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:89:    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/CONTEXT.md
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:91:    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/SESSION.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:125:    - Id: `visual-console-mvp`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:128:    - Path: `.agora/swarms/studio-visual-console/work/visual-console-mvp`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:144:    - `.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md`
@@ -931,9 +931,9 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:147:    - `.agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:158:    id: "run-studio-visual-console-visual-console-mvp-20260817t02331786944785z"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:161:    work: "visual-console-mvp"
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:167:    context: "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/CONTEXT.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:167:    context: "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/CONTEXT.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:185:    # Agora session run-studio-visual-console-visual-console-mvp-20260817t02331786944785z
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:192:    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do wc -l "$f"; sed -n '"'1,400p' \""'$f"; done' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:192:    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do wc -l "$f"; sed -n '"'1,400p' \""'$f"; done' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:290:    Use the governed `repository/commit` Tool Pack operation when the acting role has
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:319:    - Create commits through `repository/commit`; its message must satisfy the configured Conventional
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:440:    36 .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md
@@ -950,9 +950,9 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:528:          "Session run-studio-visual-console-visual-console-mvp-20260817t02331786944785z is already running"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:530:        "session_id": "run-studio-visual-console-visual-console-mvp-20260817t02331786944785z",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:536:    Agora selected one action: continue the developer’s `implementing → verifying` path. The durable work status says the implementation has already been reviewed and staged, so I’m checking the staged scope, remaining budget, and the governed repository operation before creating any history.
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:538:    /usr/bin/zsh -lc 'git status --short --branch && agora usage status --swarm studio-visual-console --work visual-console-mvp && find .agora/tools/repository -maxdepth 2 -type f -print | sort' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:538:    /usr/bin/zsh -lc 'git status --short --branch && agora usage status --swarm studio-visual-console --work visual-console-mvp && find .agora/tools/repository -maxdepth 2 -type f -print | sort' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:542:      "work_id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:556:    /usr/bin/zsh -lc "sed -n '1,240p' .agora/tools/repository/operations/commit.md && sed -n '1,240p' .agora/tools/repository/TOOL.md && git status --porcelain=v1 && git diff --cached --name-status && git diff --name-status && find .agora/tool-runs/tool-20260817t02321786944774z -maxdepth 2 -type f -print -exec sed -n '1,220p' {} \\; && sed -n '1,220p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md && file q && sed -n '1,80p' q" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:556:    /usr/bin/zsh -lc "sed -n '1,240p' .agora/tools/repository/operations/commit.md && sed -n '1,240p' .agora/tools/repository/TOOL.md && git status --porcelain=v1 && git diff --cached --name-status && git diff --name-status && find .agora/tool-runs/tool-20260817t02321786944774z -maxdepth 2 -type f -print -exec sed -n '1,220p' {} \\; && sed -n '1,220p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md && file q && sed -n '1,80p' q" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:572:    Creates a Git commit from already staged changes. Agora validates the complete message against the
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:593:     M .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:595:    ?? .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/
@@ -980,16 +980,16 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:684:    - 2026-08-17T02:13:01.446533Z | artifact.added | kind=spec uri=docs/specs/visual-console-mvp.md actor=project:owner
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:695:    - 2026-08-17T02:26:11.763637Z | artifact.added | kind=verification-report uri=repo://docs/evidence/visual-console-mvp-verification.md actor=project:agent
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:716:    The governed commit already completed successfully as `83d7fec` (`feat(studio): add visual operations console`), and its tool-run record confirms the staged implementation was committed. The next permitted state mutation is therefore the developer transition from `implementing` to `verifying`; I’m recording that now, then I’ll stop so Agora can derive the subsequent gate.
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:718:    /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to verifying --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:718:    /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to verifying --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:721:      "id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:755:      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:755:      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:759:      "status_reason": "An external repository writer reviewed the implementation, staged the intended files, and can launch the governed commit.",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:772:        "id": "studio-visual-console/visual-console-mvp:developer",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:777:        "work_id": "visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:784:          "Session run-studio-visual-console-visual-console-mvp-20260817t02331786944785z is already running"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:786:        "session_id": "run-studio-visual-console-visual-console-mvp-20260817t02331786944785z",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:793:    Transitioned `visual-console-mvp` from `implementing` to `verifying`.
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:799:    Stopped at the human approval boundary without selecting an unnecessary rework path. See [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md) and [events.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md).
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md:799:    Stopped at the human approval boundary without selecting an unnecessary rework path. See [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md) and [events.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md).
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00411786938068z/RESULT.md:70:    `repository/commit` operation with a Conventional Commits 1.0.0 message. Do not bypass its input
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00411786938068z/RESULT.md:249:    Use the governed `repository/commit` Tool Pack operation when the acting role has
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00411786938068z/RESULT.md:279:    - Create commits through `repository/commit`; its message must satisfy the configured Conventional
@@ -1009,10 +1009,10 @@ termination-reason: null
     .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md:15:- 2026-08-17T02:26:11.763637Z | artifact.added | kind=verification-report uri=repo://docs/evidence/visual-console-mvp-verification.md actor=project:agent
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3:session: "run-studio-visual-console-visual-console-mvp-20260817t02151786943725z"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:10:# Session result run-studio-visual-console-visual-console-mvp-20260817t02151786943725z
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:19:    - Registered the [verification report](/home/faguero/dev/agora-studio/docs/evidence/visual-console-mvp-verification.md) as successful Agora evidence.
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:22:    Agora remains in `implementing`, operationally `blocked`, because `.git` is read-only and Git cannot create `index.lock`. The blocker is recorded in [STATUS.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/change-20260817t022649018214z/STATUS.md).
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:19:    - Registered the [verification report](/home/faguero/dev-agora/agora-studio/docs/evidence/visual-console-mvp-verification.md) as successful Agora evidence.
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:22:    Agora remains in `implementing`, operationally `blocked`, because `.git` is read-only and Git cannot create `index.lock`. The blocker is recorded in [STATUS.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/change-20260817t022649018214z/STATUS.md).
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:24:    A writer with Git metadata access must stage the implementation and invoke governed `repository/commit`; work can then resume toward `verifying`.
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:51:    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:51:    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:82:    `repository/commit` operation with a Conventional Commits 1.0.0 message. Do not bypass its input
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:140:    - Id: `visual-console-mvp`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:143:    - Path: `.agora/swarms/studio-visual-console/work/visual-console-mvp`
@@ -1020,9 +1020,9 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:160:    - `.agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:161:    - `.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:162:    - `.agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md`
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:172:    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/SESSION.md
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:172:    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/SESSION.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:175:    The session assigns me the `developer` role on `visual-console-mvp`, currently in `implementing`. I’m now reading the full required protocol, work contract, and session limits before deriving the one permitted transition.
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:177:    /usr/bin/zsh -lc 'tail -n +1 .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md "$AGORA_SESSION"' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:177:    /usr/bin/zsh -lc 'tail -n +1 .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md "$AGORA_SESSION"' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:278:    Use the governed `repository/commit` Tool Pack operation when the acting role has
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:308:    - Create commits through `repository/commit`; its message must satisfy the configured Conventional
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:435:    ==> .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md <==
@@ -1031,55 +1031,55 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:483:    | spec | docs/specs/visual-console-mvp.md | project:owner | 2026-08-17T02:13:01.446349Z |
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:485:    ==> .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md <==
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:496:    ==> .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md <==
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:507:    ==> /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/SESSION.md <==
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:507:    ==> /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/SESSION.md <==
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:510:    id: "run-studio-visual-console-visual-console-mvp-20260817t02151786943725z"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:513:    work: "visual-console-mvp"
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:519:    context: "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:519:    context: "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:537:    # Agora session run-studio-visual-console-visual-console-mvp-20260817t02151786943725z
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:552:    /usr/bin/zsh -lc 'agora event list --swarm studio-visual-console --work visual-console-mvp' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:552:    /usr/bin/zsh -lc 'agora event list --swarm studio-visual-console --work visual-console-mvp' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:562:        "id": "studio-visual-console/visual-console-mvp:developer",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:567:        "work_id": "visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:574:          "Session run-studio-visual-console-visual-console-mvp-20260817t02151786943725z is already running"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:576:        "session_id": "run-studio-visual-console-visual-console-mvp-20260817t02151786943725z",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:686:        "id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:717:        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:717:        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:822:        "scope": "work:studio-visual-console/visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:823:        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:823:        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:828:        "detail": "kind=spec uri=docs/specs/visual-console-mvp.md actor=project:owner",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:829:        "scope": "work:studio-visual-console/visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:830:        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:830:        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:836:        "scope": "work:studio-visual-console/visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:837:        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:837:        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:843:        "scope": "work:studio-visual-console/visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:844:        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:844:        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:850:        "scope": "work:studio-visual-console/visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:851:        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:851:        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:857:        "scope": "work:studio-visual-console/visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:858:        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:858:        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:864:        "scope": "work:studio-visual-console/visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:865:        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:865:        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:871:        "scope": "work:studio-visual-console/visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:872:        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:872:        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:878:        "scope": "work:studio-visual-console/visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:879:        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:879:        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:885:        "scope": "work:studio-visual-console/visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:886:        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:886:        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:892:        "scope": "work:studio-visual-console/visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:893:        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:893:        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:899:        "scope": "work:studio-visual-console/visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:900:        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:900:        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1621:        "id": "run-studio-visual-console-visual-console-mvp-20260817t02131786943618z",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1624:        "work_id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1632:        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1633:        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1632:        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1633:        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1655:        "id": "run-studio-visual-console-visual-console-mvp-20260817t02141786943675z",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1658:        "work_id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1666:        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1667:        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1666:        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1667:        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1689:        "id": "run-studio-visual-console-visual-console-mvp-20260817t02151786943725z",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1692:        "work_id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1700:        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1701:        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1700:        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1701:        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1765:          "studio-visual-console/visual-console-mvp"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1770:          "run-studio-visual-console-visual-console-mvp-20260817t02151786943725z"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1787:    ?? .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/
@@ -1087,12 +1087,12 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1789:    ?? .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1792:    ?? docs/specs/visual-console-mvp.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1808:    docs/specs/visual-console-mvp.md
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1815:    /usr/bin/zsh -lc 'tail -n +1 .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1815:    /usr/bin/zsh -lc 'tail -n +1 .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1817:    ==> .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md <==
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1820:    session: "run-studio-visual-console-visual-console-mvp-20260817t02131786943618z"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1827:    # Session result run-studio-visual-console-visual-console-mvp-20260817t02131786943618z
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1833:        - Work: `studio-visual-console/visual-console-mvp`
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1867:        /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1867:        /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1898:        `repository/commit` operation with a Conventional Commits 1.0.0 message. Do not bypass its input
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1940:        - Id: `visual-console-mvp`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1943:        - Path: `.agora/swarms/studio-visual-console/work/visual-console-mvp`
@@ -1101,7 +1101,7 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1961:        - `.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1962:        - `.agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1973:        The session assigns me as the developer on `visual-console-mvp`, currently in `clarified`. I’m reading every required governance and work-state file before deriving the allowed transition; no project changes have been made yet.
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1975:        /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do echo "===== $f ====="; sed -n '"'1,320p' \""'$f"; done' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:1975:        /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do echo "===== $f ====="; sed -n '"'1,320p' \""'$f"; done' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2073:        Use the governed `repository/commit` Tool Pack operation when the acting role has
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2102:        - Create commits through `repository/commit`; its message must satisfy the configured Conventional
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2221:        ===== .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md =====
@@ -1115,38 +1115,38 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2307:              "Session run-studio-visual-console-visual-console-mvp-20260817t02131786943618z is already running"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2309:            "session_id": "run-studio-visual-console-visual-console-mvp-20260817t02131786943618z",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2317:        /usr/bin/zsh -lc "sed -n '1,320p' docs/specs/visual-console-mvp.md
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2319:        agora usage status --swarm studio-visual-console --work visual-console-mvp" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2319:        agora usage status --swarm studio-visual-console --work visual-console-mvp" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2331:          "work_id": "visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2339:        /usr/bin/zsh -lc "rg -n 'clarified|planned' .agora/methods/spec-driven .agora/swarms/studio-visual-console/work/visual-console-mvp -g '*.md' -g '*.json' -g '*.yaml' -g '*.yml'
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2340:        agora work show --swarm studio-visual-console --work visual-console-mvp 2>&1 || true" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2340:        agora work show --swarm studio-visual-console --work visual-console-mvp 2>&1 || true" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2343:          "id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2374:          "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2388:        sed -n '1,240p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2374:          "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2388:        sed -n '1,240p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2409:        - 2026-08-17T02:13:01.446533Z | artifact.added | kind=spec uri=docs/specs/visual-console-mvp.md actor=project:owner
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2420:        /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to planned --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2420:        /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to planned --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2423:          "id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2454:          "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2454:          "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2466:        The governed transition succeeded: `visual-console-mvp` is now `planned`. I’m doing a read-only durability check of the work record and event log, then I’ll stop without beginning implementation.
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2468:        /usr/bin/zsh -lc "agora work show --swarm studio-visual-console --work visual-console-mvp
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2469:        sed -n '1,220p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2469:        sed -n '1,220p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2472:          "id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2503:          "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2503:          "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2516:        - 2026-08-17T02:13:01.446533Z | artifact.added | kind=spec uri=docs/specs/visual-console-mvp.md actor=project:owner
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2530:        - Work: `studio-visual-console/visual-console-mvp`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2540:    ==> .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md <==
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2543:    session: "run-studio-visual-console-visual-console-mvp-20260817t02141786943675z"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2550:    # Session result run-studio-visual-console-visual-console-mvp-20260817t02141786943675z
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2554:        Transitioned `visual-console-mvp` from `planned` to `implementing` as `project:agent` using Agora. The durable state is recorded in [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6).
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2583:        /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2554:        Transitioned `visual-console-mvp` from `planned` to `implementing` as `project:agent` using Agora. The durable state is recorded in [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6).
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2583:        /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2614:        `repository/commit` operation with a Conventional Commits 1.0.0 message. Do not bypass its input
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2627:        60 /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2627:        60 /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2657:        - Id: `visual-console-mvp`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2660:        - Path: `.agora/swarms/studio-visual-console/work/visual-console-mvp`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2676:        - `.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2677:        - `.agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2678:        - `.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md`
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2679:        - `.agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md`
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2689:        /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/SESSION.md
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2689:        /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/SESSION.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2692:        The session assigns `project:agent` the `developer` role on `visual-console-mvp`, currently `planned`. I’m now reading every protocol, role, tool, work, and evidence file required by the session before deriving the single allowed transition.
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2694:        /usr/bin/zsh -lc "for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:2791:        Use the governed `repository/commit` Tool Pack operation when the acting role has
@@ -1157,14 +1157,14 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3006:            "work_id": "visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3013:              "Session run-studio-visual-console-visual-console-mvp-20260817t02141786943675z is already running"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3015:            "session_id": "run-studio-visual-console-visual-console-mvp-20260817t02141786943675z",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3035:        /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to implementing --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3035:        /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to implementing --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3038:          "id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3069:          "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3081:        /usr/bin/zsh -lc "rg -n '"'^state:|work.transitioned|planned|implementing'"' .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/events.md" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3069:          "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3081:        /usr/bin/zsh -lc "rg -n '"'^state:|work.transitioned|planned|implementing'"' .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/events.md" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3083:        .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6:state: "implementing"
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3086:        Transitioned `visual-console-mvp` from `planned` to `implementing` as `project:agent` using Agora. The durable state is recorded in [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6).
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3093:    /usr/bin/zsh -lc "sed -n '1,320p' docs/specs/visual-console-mvp.md" in /home/faguero/dev/agora-studio
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3241:    /usr/bin/zsh -lc 'agora usage status --swarm studio-visual-console --work visual-console-mvp' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3086:        Transitioned `visual-console-mvp` from `planned` to `implementing` as `project:agent` using Agora. The durable state is recorded in [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6).
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3093:    /usr/bin/zsh -lc "sed -n '1,320p' docs/specs/visual-console-mvp.md" in /home/faguero/dev-agora/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3241:    /usr/bin/zsh -lc 'agora usage status --swarm studio-visual-console --work visual-console-mvp' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3245:      "work_id": "visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3997:    +- 2026-08-17T02:13:38.177787Z | session.prepared | session=run-studio-visual-console-visual-console-mvp-20260817t02131786943618z actor=project:agent swarm=studio-visual-console
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:3998:    +- 2026-08-17T02:14:35.673585Z | session.completed | session=run-studio-visual-console-visual-console-mvp-20260817t02131786943618z exit-code=0
@@ -1176,23 +1176,23 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:23110:    ?? .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:23111:    ?? .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:23115:    ?? docs/specs/visual-console-mvp.md
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:25639:    /home/faguero/dev/agora-studio/docs/evidence/visual-console-mvp-verification.md
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:25639:    /home/faguero/dev-agora/agora-studio/docs/evidence/visual-console-mvp-verification.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:26662:    diff --git a/docs/evidence/visual-console-mvp-verification.md b/docs/evidence/visual-console-mvp-verification.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:26666:    +++ b/docs/evidence/visual-console-mvp-verification.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:27926:    diff --git a/docs/evidence/visual-console-mvp-verification.md b/docs/evidence/visual-console-mvp-verification.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:27930:    +++ b/docs/evidence/visual-console-mvp-verification.md
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:28170:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type automated-verification --result success --artifact repo://docs/evidence/visual-console-mvp-verification.md --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:28170:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type automated-verification --result success --artifact repo://docs/evidence/visual-console-mvp-verification.md --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:28172:    Evidence references unregistered work artifacts: repo://docs/evidence/visual-console-mvp-verification.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:29196:    diff --git a/docs/evidence/visual-console-mvp-verification.md b/docs/evidence/visual-console-mvp-verification.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:29200:    +++ b/docs/evidence/visual-console-mvp-verification.md
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:29442:    /usr/bin/zsh -lc 'agora artifact add --swarm studio-visual-console --work visual-console-mvp --kind verification-report --uri repo://docs/evidence/visual-console-mvp-verification.md --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:29442:    /usr/bin/zsh -lc 'agora artifact add --swarm studio-visual-console --work visual-console-mvp --kind verification-report --uri repo://docs/evidence/visual-console-mvp-verification.md --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:29445:      "id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:29477:      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:29477:      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:30510:    diff --git a/docs/evidence/visual-console-mvp-verification.md b/docs/evidence/visual-console-mvp-verification.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:30514:    +++ b/docs/evidence/visual-console-mvp-verification.md
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:30754:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type automated-verification --result success --artifact repo://docs/evidence/visual-console-mvp-verification.md --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:30754:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type automated-verification --result success --artifact repo://docs/evidence/visual-console-mvp-verification.md --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:30757:      "id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:30791:      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:30791:      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:31824:    diff --git a/docs/evidence/visual-console-mvp-verification.md b/docs/evidence/visual-console-mvp-verification.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:31828:    +++ b/docs/evidence/visual-console-mvp-verification.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:33089:    diff --git a/docs/evidence/visual-console-mvp-verification.md b/docs/evidence/visual-console-mvp-verification.md
@@ -1200,13 +1200,13 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:33333:    Implementation and evidence are complete, but the repository history gate cannot be satisfied: the workspace permits source edits while `.git/index.lock` is on a read-only filesystem, so the governed commit cannot even be staged. Per Agora’s execution rule, I will not transition to `verifying` with uncommitted implementation; I’m recording this exact authority blocker and stopping.
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:34370:    diff --git a/docs/evidence/visual-console-mvp-verification.md b/docs/evidence/visual-console-mvp-verification.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:34374:    +++ b/docs/evidence/visual-console-mvp-verification.md
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:34614:    /usr/bin/zsh -lc 'agora work block --swarm studio-visual-console --work visual-console-mvp --by "$AGORA_ACTOR" --reason "Implementation and automated verification are complete, but repository persistence is unavailable: .git is mounted read-only and Git cannot create index.lock to stage the governed commit. A writer with Git metadata access must stage and invoke repository/commit before verification."' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:34614:    /usr/bin/zsh -lc 'agora work block --swarm studio-visual-console --work visual-console-mvp --by "$AGORA_ACTOR" --reason "Implementation and automated verification are complete, but repository persistence is unavailable: .git is mounted read-only and Git cannot create index.lock to stage the governed commit. A writer with Git metadata access must stage and invoke repository/commit before verification."' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:34619:      "subject": "studio-visual-console/visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:34624:      "reason": "Implementation and automated verification are complete, but repository persistence is unavailable: .git is mounted read-only and Git cannot create index.lock to stage the governed commit. A writer with Git metadata access must stage and invoke repository/commit before verification.",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:34627:      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/change-20260817t022649018214z/STATUS.md"
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:34627:      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/change-20260817t022649018214z/STATUS.md"
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:35652:    diff --git a/docs/evidence/visual-console-mvp-verification.md b/docs/evidence/visual-console-mvp-verification.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:35656:    +++ b/docs/evidence/visual-console-mvp-verification.md
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:35896:    /usr/bin/zsh -lc 'tail -n +1 .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/change-20260817t022649018214z/STATUS.md && git status --short' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:35896:    /usr/bin/zsh -lc 'tail -n +1 .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/change-20260817t022649018214z/STATUS.md && git status --short' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:35898:    ==> .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md <==
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:35908:    | spec | docs/specs/visual-console-mvp.md | project:owner | 2026-08-17T02:13:01.446349Z |
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:35909:    | verification-report | repo://docs/evidence/visual-console-mvp-verification.md | project:agent | 2026-08-17T02:26:11.763441Z |
@@ -1221,22 +1221,22 @@ termination-reason: null
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:35954:    ?? docs/evidence/visual-console-mvp-verification.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:35955:    ?? docs/specs/visual-console-mvp.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:36013:        "id": "visual-console-mvp",
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:36047:        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:36047:        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:36051:        "status_reason": "Implementation and automated verification are complete, but repository persistence is unavailable: .git is mounted read-only and Git cannot create index.lock to stage the governed commit. A writer with Git metadata access must stage and invoke repository/commit before verification.",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:36060:        "id": "studio-visual-console/visual-console-mvp:resume:developer",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:36065:        "work_id": "visual-console-mvp",
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:36070:          "Implementation and automated verification are complete, but repository persistence is unavailable: .git is mounted read-only and Git cannot create index.lock to stage the governed commit. A writer with Git metadata access must stage and invoke repository/commit before verification."
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:37099:    diff --git a/docs/evidence/visual-console-mvp-verification.md b/docs/evidence/visual-console-mvp-verification.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:37103:    +++ b/docs/evidence/visual-console-mvp-verification.md
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:37348:    - Registered the [verification report](/home/faguero/dev/agora-studio/docs/evidence/visual-console-mvp-verification.md) as successful Agora evidence.
-    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:37351:    Agora remains in `implementing`, operationally `blocked`, because `.git` is read-only and Git cannot create `index.lock`. The blocker is recorded in [STATUS.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/change-20260817t022649018214z/STATUS.md).
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:37348:    - Registered the [verification report](/home/faguero/dev-agora/agora-studio/docs/evidence/visual-console-mvp-verification.md) as successful Agora evidence.
+    .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:37351:    Agora remains in `implementing`, operationally `blocked`, because `.git` is read-only and Git cannot create `index.lock`. The blocker is recorded in [STATUS.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/change-20260817t022649018214z/STATUS.md).
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:37353:    A writer with Git metadata access must stage the implementation and invoke governed `repository/commit`; work can then resume toward `verifying`.
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:38376:    diff --git a/docs/evidence/visual-console-mvp-verification.md b/docs/evidence/visual-console-mvp-verification.md
     .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/RESULT.md:38380:    +++ b/docs/evidence/visual-console-mvp-verification.md
     
     2026-08-17T02:35:36.348369Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "printf '%s\\n' '===== repository tool ====='; sed -n '1,260p' .agora/tools/repository/TOOL.md; printf '%s\\n' '===== commit operation ====='; sed -n '1,260p' .agora/tools/repository/operations/commit.md; printf '%s\\n' '===== status operation ====='; sed -n '1,260p' .agora/tools/repository/operations/status.md; printf '%s\\n' '===== work events ====='; sed -n '1,320p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md; printf '%s\\n' '===== interactions ====='; sed -n '1,320p' .agora/swarms/studio-visual-console/work/visual-console-mvp/interactions.md; printf '%s\\n' '===== status changes ====='; for f in .agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/*/STATUS.md; do sed -n '1,240p' \""'$f"; done; printf '"'%s\\n' '===== previous session tail ====='; tail -n 160 .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "printf '%s\\n' '===== repository tool ====='; sed -n '1,260p' .agora/tools/repository/TOOL.md; printf '%s\\n' '===== commit operation ====='; sed -n '1,260p' .agora/tools/repository/operations/commit.md; printf '%s\\n' '===== status operation ====='; sed -n '1,260p' .agora/tools/repository/operations/status.md; printf '%s\\n' '===== work events ====='; sed -n '1,320p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md; printf '%s\\n' '===== interactions ====='; sed -n '1,320p' .agora/swarms/studio-visual-console/work/visual-console-mvp/interactions.md; printf '%s\\n' '===== status changes ====='; for f in .agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/*/STATUS.md; do sed -n '1,240p' \""'$f"; done; printf '"'%s\\n' '===== previous session tail ====='; tail -n 160 .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02331786944785z/RESULT.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ===== repository tool =====
     ---
@@ -1414,7 +1414,7 @@ termination-reason: null
         q: empty
         
         exec
-        /usr/bin/zsh -lc 'agora work transition --help' in /home/faguero/dev/agora-studio
+        /usr/bin/zsh -lc 'agora work transition --help' in /home/faguero/dev-agora/agora-studio
          succeeded in 69ms:
         usage: agora work transition [-h] --swarm SWARM --work WORK --to TO --by BY
         
@@ -1428,7 +1428,7 @@ termination-reason: null
         codex
         The governed commit already completed successfully as `83d7fec` (`feat(studio): add visual operations console`), and its tool-run record confirms the staged implementation was committed. The next permitted state mutation is therefore the developer transition from `implementing` to `verifying`; I’m recording that now, then I’ll stop so Agora can derive the subsequent gate.
         exec
-        /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to verifying --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+        /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to verifying --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
          succeeded in 88ms:
         {
           "id": "visual-console-mvp",
@@ -1465,7 +1465,7 @@ termination-reason: null
             "success"
           ],
           "approval_roles": [],
-          "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+          "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
           "child_work_refs": [],
           "budget_limits": null,
           "operational_status": "active",
@@ -1478,7 +1478,7 @@ termination-reason: null
         
         2026-08-17T02:34:01.383507Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
         exec
-        /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+        /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
          succeeded in 66ms:
         [
           {
@@ -1509,13 +1509,13 @@ termination-reason: null
         - Existing automated verification evidence: success
         - Current actor can only return work to `implementing`; completion requires Spec Owner approval.
         
-        Stopped at the human approval boundary without selecting an unnecessary rework path. See [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md) and [events.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md).
+        Stopped at the human approval boundary without selecting an unnecessary rework path. See [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md) and [events.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md).
         tokens used
         37,306
     
     2026-08-17T02:35:44.740447Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "sed -n '1,280p' docs/evidence/visual-console-mvp-verification.md && printf '%s\\n' '===== tool invoke help =====' && agora tool invoke --help && printf '%s\\n' '===== evidence add help =====' && agora evidence add --help" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,280p' docs/evidence/visual-console-mvp-verification.md && printf '%s\\n' '===== tool invoke help =====' && agora tool invoke --help && printf '%s\\n' '===== evidence add help =====' && agora evidence add --help" in /home/faguero/dev-agora/agora-studio
      succeeded in 219ms:
     usage: agora tool invoke [-h] [--id ID] --tool TOOL --operation OPERATION
                              --actor ACTOR --swarm SWARM [--work WORK]
@@ -1552,11 +1552,11 @@ termination-reason: null
     codex
     The governed commit is already durable (`83d7fec`), and the developer has no forward state transition from `verifying`; the only transition available is failure rework. I’ll perform the permitted verification action by rerunning the recorded automated checks against the committed implementation, add the result as Agora evidence, and then stop at Spec Owner approval.
     exec
-    /usr/bin/zsh -lc 'python3 -m unittest discover -s tests -v && node --check agora_studio/static/app.js' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'python3 -m unittest discover -s tests -v && node --check agora_studio/static/app.js' in /home/faguero/dev-agora/agora-studio
      succeeded in 16ms:
     2026-08-17T02:36:08.569311Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type automated-verification --result success --artifact repo://docs/evidence/visual-console-mvp-verification.md --by "$AGORA_ACTOR" && agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type automated-verification --result success --artifact repo://docs/evidence/visual-console-mvp-verification.md --by "$AGORA_ACTOR" && agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 222ms:
     {
       "id": "visual-console-mvp",
@@ -1594,7 +1594,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1634,6 +1634,6 @@ termination-reason: null
     - Work remains in `verifying`.
     - Stopped at the Spec Owner approval boundary; the developer may only return failed work to `implementing`.
     
-    See [evidence.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md) and [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md).
+    See [evidence.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md) and [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md).
     tokens used
     38,649

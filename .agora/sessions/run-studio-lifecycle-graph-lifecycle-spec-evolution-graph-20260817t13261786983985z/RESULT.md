@@ -13,7 +13,7 @@ termination-reason: null
 
     Completed the single permitted planning action.
     
-    - Registered [implementation plan](/home/faguero/dev/agora-studio/docs/plans/lifecycle-spec-evolution-graph.md) through Agora.
+    - Registered [implementation plan](/home/faguero/dev-agora/agora-studio/docs/plans/lifecycle-spec-evolution-graph.md) through Agora.
     - Transitioned work from `clarified` to `planned`.
     - `agora validate` passes with no issues.
     - Stopped before the next `planned → implementing` action. No implementation or tests were performed.
@@ -23,7 +23,7 @@ termination-reason: null
     2026-08-17T13:26:25.947419Z ERROR codex_models_manager::cache: failed to load models cache: missing field `base_instructions` at line 95 column 5
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -38,7 +38,7 @@ termination-reason: null
     I’m using the Agora workflow skills because this request is governed by the session’s assigned role and transition rules. I’ll load the session context first, then perform exactly its next permitted action and stop at any approval or authority boundary.
     exec
     /usr/bin/zsh -lc "printenv AGORA_CONTEXT
-    rg --files -g 'AGENTS.md' -g '"'!node_modules'"' -g '"'!vendor'"' . .." in /home/faguero/dev/agora-studio
+    rg --files -g 'AGENTS.md' -g '"'!node_modules'"' -g '"'!vendor'"' . .." in /home/faguero/dev-agora/agora-studio
      succeeded in 4ms:
     ../openspec/AGENTS.md
     ../AGENTS.md
@@ -61,7 +61,7 @@ termination-reason: null
     /usr/bin/zsh -lc "sed -n '1,240p' ../AGENTS.md
     sed -n '1,320p' \""'$AGORA_CONTEXT"
     sed -n '"'1,260p' .agents/skills/agora-status/SKILL.md
-    sed -n '1,320p' .agents/skills/agora-execute/SKILL.md" in /home/faguero/dev/agora-studio
+    sed -n '1,320p' .agents/skills/agora-execute/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     <!-- OPENSPEC:START -->
     # OpenSpec Instructions
@@ -85,7 +85,7 @@ termination-reason: null
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -201,7 +201,7 @@ termination-reason: null
     codex
     The session assigns the `developer` role to work `lifecycle-spec-evolution-graph`, currently in `clarified`. I’m now loading every required governance file and the repository’s specification rules before asking Agora for the authoritative next transition.
     exec
-    /usr/bin/zsh -lc 'wc -l ../openspec/AGENTS.md .agora/project.md .agora/activity.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-lifecycle-graph/SWARM.md .agora/swarms/studio-lifecycle-graph/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/WORK.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/artifacts.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/evidence.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/approvals.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/waivers/defer-delivery-artifacts/WAIVER.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'wc -l ../openspec/AGENTS.md .agora/project.md .agora/activity.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-lifecycle-graph/SWARM.md .agora/swarms/studio-lifecycle-graph/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/WORK.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/artifacts.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/evidence.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/approvals.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/waivers/defer-delivery-artifacts/WAIVER.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
        456 ../openspec/AGENTS.md
         15 .agora/project.md
@@ -225,7 +225,7 @@ termination-reason: null
       1005 total
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,520p' ../openspec/AGENTS.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,520p' ../openspec/AGENTS.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     # OpenSpec Instructions
     
@@ -685,7 +685,7 @@ termination-reason: null
     Remember: Specs are truth. Changes are proposals. Keep them in sync.
     
     exec
-    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/activity.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-lifecycle-graph/SWARM.md .agora/swarms/studio-lifecycle-graph/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/WORK.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/artifacts.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/evidence.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/approvals.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/waivers/defer-delivery-artifacts/WAIVER.md; do echo "===== $f ====="; sed -n '"'1,520p' \""'$f"; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/activity.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-lifecycle-graph/SWARM.md .agora/swarms/studio-lifecycle-graph/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/WORK.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/artifacts.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/evidence.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/approvals.md .agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/waivers/defer-delivery-artifacts/WAIVER.md; do echo "===== $f ====="; sed -n '"'1,520p' \""'$f"; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ===== .agora/project.md =====
     ---
@@ -1256,9 +1256,9 @@ termination-reason: null
     This decision waives only the named obligations. The transition edge, role authority, WIP policy, and operational status remain enforced.
     
     exec
-    /usr/bin/zsh -lc "sed -n '181,280p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '181,280p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc "sed -n '1,90p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,90p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     - 2026-08-17T12:19:06.141167Z | work.transitioned | actor=project:agent swarm=studio-activity-timeline work=activity-timeline-mvp session=- tool-run=- source=repo://.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/events.md | from=clarified to=planned actor=project:agent
     - 2026-08-17T12:19:12.612470Z | session.completed | actor=project:agent swarm=studio-activity-timeline work=activity-timeline-mvp session=run-studio-activity-timeline-activity-timeline-mvp-20260817t12171786979867z tool-run=- source=repo://.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12171786979867z/SUMMARY.md | Session completed; exit-code=0; output-bytes=195350; result-sha256=5546de7cae0c4089f924f57a2d91ef6b0e95be800b67744d2fca7a83e3ade9d2
@@ -1401,7 +1401,7 @@ termination-reason: null
     - 2026-08-17T01:24:39.607675Z | session.prepared | actor=project:agent swarm=studio-foundation work=foundation session=run-studio-foundation-foundation-20260817t01241786940679z tool-run=- source=repo://.agora/sessions/run-studio-foundation-foundation-20260817t01241786940679z/SESSION.md | session=run-studio-foundation-foundation-20260817t01241786940679z actor=project:agent swarm=studio-foundation
     
     exec
-    /usr/bin/zsh -lc "sed -n '91,180p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '91,180p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     - 2026-08-17T01:25:30.589286Z | work.transitioned | actor=project:agent swarm=studio-foundation work=foundation session=- tool-run=- source=repo://.agora/swarms/studio-foundation/work/foundation/events.md | from=planned to=implementing actor=project:agent
     - 2026-08-17T01:25:40.057660Z | session.completed | actor=project:agent swarm=studio-foundation work=foundation session=run-studio-foundation-foundation-20260817t01241786940679z tool-run=- source=repo://.agora/sessions/run-studio-foundation-foundation-20260817t01241786940679z/RESULT.md | session=run-studio-foundation-foundation-20260817t01241786940679z exit-code=0
@@ -1495,7 +1495,7 @@ termination-reason: null
     - 2026-08-17T12:17:47.794748Z | session.prepared | actor=project:agent swarm=studio-activity-timeline work=activity-timeline-mvp session=run-studio-activity-timeline-activity-timeline-mvp-20260817t12171786979867z tool-run=- source=repo://.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12171786979867z/SESSION.md | Prepared codex/openai/configured-by-codex session for roles developer
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,75p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,75p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/activity-ledger/v1"
@@ -1574,7 +1574,7 @@ termination-reason: null
     - 2026-08-17T01:08:36.684930Z | work.criterion-satisfied | actor=project:owner swarm=studio-foundation work=foundation session=- tool-run=- source=repo://.agora/swarms/studio-foundation/work/foundation/events.md | criterion=startup actor=project:owner
     
     exec
-    /usr/bin/zsh -lc "sed -n '76,150p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '76,150p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     - 2026-08-17T01:08:36.845662Z | work.criterion-satisfied | actor=project:owner swarm=studio-foundation work=foundation session=- tool-run=- source=repo://.agora/swarms/studio-foundation/work/foundation/events.md | criterion=selection actor=project:owner
     - 2026-08-17T01:08:37.003118Z | work.criterion-satisfied | actor=project:owner swarm=studio-foundation work=foundation session=- tool-run=- source=repo://.agora/swarms/studio-foundation/work/foundation/events.md | criterion=invalid-project actor=project:owner
@@ -1653,7 +1653,7 @@ termination-reason: null
     - 2026-08-17T02:40:42.447696Z | session.completed | actor=project:agent swarm=studio-visual-console work=visual-console-mvp session=run-studio-visual-console-visual-console-mvp-20260817t02381786945087z tool-run=- source=repo://.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02381786945087z/RESULT.md | session=run-studio-visual-console-visual-console-mvp-20260817t02381786945087z exit-code=0
     
     exec
-    /usr/bin/zsh -lc "sed -n '151,260p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '151,260p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     - 2026-08-17T02:40:42.454159Z | session.prepared | actor=project:agent swarm=studio-visual-console work=visual-console-mvp session=run-studio-visual-console-visual-console-mvp-20260817t02401786945242z tool-run=- source=repo://.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02401786945242z/SESSION.md | session=run-studio-visual-console-visual-console-mvp-20260817t02401786945242z actor=project:agent swarm=studio-visual-console
     - 2026-08-17T02:42:27.695839Z | artifact.added | actor=project:agent swarm=studio-visual-console work=visual-console-mvp session=- tool-run=- source=repo://.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md | kind=repository-commit-result uri=repo://.agora/tool-runs/tool-20260817t02321786944774z/RESULT.md actor=project:agent
@@ -1738,7 +1738,7 @@ termination-reason: null
     printenv AGORA_SESSION
     agora status
     agora next --actor "$AGORA_ACTOR"
-    agora inbox --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    agora inbox --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 387ms:
     {
       "project": "agora-studio",
@@ -1818,7 +1818,7 @@ termination-reason: null
     []
     
     exec
-    /usr/bin/zsh -lc 'agora --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 55ms:
     usage: agora [-h]
                  {setup,configure,init,adopt,quickstart,doctor,self-test,status,validate,next,inbox,run,resume,environment,lock,coordination,upgrade,registry,trust,pack,start,method,tool,delegation,actor,swarm,work,gate,session,action,event,activity,artifact,evidence,usage,approval} ...
@@ -1877,12 +1877,12 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc 'agora actor list
     agora swarm list
-    agora work list' in /home/faguero/dev/agora-studio
+    agora work list' in /home/faguero/dev-agora/agora-studio
     exec
     /usr/bin/zsh -lc 'agora validate
-    agora usage status --swarm studio-lifecycle-graph --work lifecycle-spec-evolution-graph' in /home/faguero/dev/agora-studio
+    agora usage status --swarm studio-lifecycle-graph --work lifecycle-spec-evolution-graph' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora event list --swarm studio-lifecycle-graph --work lifecycle-spec-evolution-graph' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora event list --swarm studio-lifecycle-graph --work lifecycle-spec-evolution-graph' in /home/faguero/dev-agora/agora-studio
      succeeded in 70ms:
     [
       {
@@ -1890,105 +1890,105 @@ termination-reason: null
         "type": "work.created",
         "detail": "state=drafting actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:17:53.858021Z",
         "type": "artifact.added",
         "detail": "kind=spec uri=repo://docs/specs/lifecycle-spec-evolution-graph.md actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:17:58.433736Z",
         "type": "artifact.added",
         "detail": "kind=spec uri=repo://docs/specs/lifecycle-spec-evolution-graph.md actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:21:00.762129Z",
         "type": "gate.waived",
         "detail": "waiver=defer-delivery-artifacts gate=spec-clarified actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:31.419716Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=method-graph actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:31.568273Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=actual-path actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:31.717026Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=spec-versions actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:31.862830Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=traceability actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:32.009604Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=interaction actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:32.154419Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=safety actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:32.299465Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=states actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:32.451102Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=accessibility actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:32.595317Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=tests actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:38.110038Z",
         "type": "evidence.added",
         "detail": "type=specification-clarification result=success actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:43.692970Z",
         "type": "work.transitioned",
         "detail": "from=drafting to=clarified actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       }
     ]
     
@@ -2057,7 +2057,7 @@ termination-reason: null
         "capabilities": [
           "implementation"
         ],
-        "path": "/home/faguero/dev/agora-studio/.agora/actors/agent.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/actors/agent.md",
         "reference": "project:agent",
         "integration": null,
         "provider": null,
@@ -2078,7 +2078,7 @@ termination-reason: null
           "acceptance",
           "specification"
         ],
-        "path": "/home/faguero/dev/agora-studio/.agora/actors/owner.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/actors/owner.md",
         "reference": "project:owner",
         "integration": null,
         "provider": null,
@@ -2099,7 +2099,7 @@ termination-reason: null
           "acceptance",
           "specification"
         ],
-        "path": "/home/faguero/dev/agora-studio/.agora/actors/specification-agent.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/actors/specification-agent.md",
         "reference": "project:specification-agent",
         "integration": "codex",
         "provider": "openai",
@@ -2170,7 +2170,7 @@ termination-reason: null
           "developer": "project:agent"
         },
         "objective": "Build a read-only governed activity timeline for Agora Studio so developers can understand what humans, agents, swarms, sessions, and tools did and why.",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-activity-timeline"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-activity-timeline"
       },
       {
         "id": "studio-foundation",
@@ -2186,7 +2186,7 @@ termination-reason: null
           "developer": "project:agent"
         },
         "objective": "Build the local read-only foundation of Agora Studio",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation"
       },
       {
         "id": "studio-lifecycle-graph",
@@ -2202,7 +2202,7 @@ termination-reason: null
           "developer": "project:agent"
         },
         "objective": "Visualize the governed lifecycle and specification evolution of Agora work",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph"
       },
       {
         "id": "studio-mvp",
@@ -2218,7 +2218,7 @@ termination-reason: null
           "developer": "project:agent"
         },
         "objective": "Build a local-first GUI for visualizing and operating Agora projects while keeping Markdown and Git as the source of truth",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp"
       },
       {
         "id": "studio-visual-console",
@@ -2234,7 +2234,7 @@ termination-reason: null
           "developer": "project:agent"
         },
         "objective": "Build the first operational visual console for Agora Studio, allowing developers to select a local Agora project and inspect its governed delivery state without mutating it.",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console"
       }
     ]
     [
@@ -2276,7 +2276,7 @@ termination-reason: null
         "approval_roles": [
           "spec-owner"
         ],
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp",
         "child_work_refs": [],
         "budget_limits": null,
         "operational_status": "active",
@@ -2319,7 +2319,7 @@ termination-reason: null
         "approval_roles": [
           "spec-owner"
         ],
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation",
         "child_work_refs": [],
         "budget_limits": null,
         "operational_status": "active",
@@ -2369,7 +2369,7 @@ termination-reason: null
           "success"
         ],
         "approval_roles": [],
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph",
         "child_work_refs": [],
         "budget_limits": null,
         "operational_status": "active",
@@ -2419,7 +2419,7 @@ termination-reason: null
         "approval_roles": [
           "spec-owner"
         ],
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
         "child_work_refs": [],
         "budget_limits": null,
         "operational_status": "active",
@@ -2472,7 +2472,7 @@ termination-reason: null
         "approval_roles": [
           "spec-owner"
         ],
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
         "child_work_refs": [],
         "budget_limits": null,
         "operational_status": "active",
@@ -2492,7 +2492,7 @@ termination-reason: null
     agora artifact add --help
     agora evidence add --help
     agora tool list
-    agora tool invoke --help' in /home/faguero/dev/agora-studio
+    agora tool invoke --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 795ms:
     usage: agora method [-h] {install,list} ...
     agora method: error: argument method_command: invalid choice: 'show' (choose from install, list)
@@ -2535,7 +2535,7 @@ termination-reason: null
         "category": "ci",
         "executable": "cictl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/ci-cd",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/ci-cd",
         "operations": [
           "cancel-run",
           "create-deployment",
@@ -2563,7 +2563,7 @@ termination-reason: null
         "category": "cloud",
         "executable": "cloudctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/cloud-infrastructure",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/cloud-infrastructure",
         "operations": [
           "apply-plan",
           "destroy-resource",
@@ -2590,7 +2590,7 @@ termination-reason: null
         "category": "code-review",
         "executable": "reviewctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/code-review",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/code-review",
         "operations": [
           "approve",
           "checks",
@@ -2620,7 +2620,7 @@ termination-reason: null
         "category": "documentation",
         "executable": "docsctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/knowledge-base",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/knowledge-base",
         "operations": [
           "archive",
           "create",
@@ -2648,7 +2648,7 @@ termination-reason: null
         "category": "observability",
         "executable": "observectl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/observability",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/observability",
         "operations": [
           "create-incident",
           "query-metrics",
@@ -2676,7 +2676,7 @@ termination-reason: null
         "category": "portfolio",
         "executable": "portfolioctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/portfolio-management",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/portfolio-management",
         "operations": [
           "add-item",
           "archive-item",
@@ -2704,7 +2704,7 @@ termination-reason: null
         "category": "release",
         "executable": "releasectl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/release-management",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/release-management",
         "operations": [
           "list-releases",
           "publish-release",
@@ -2730,7 +2730,7 @@ termination-reason: null
         "category": "repository",
         "executable": "git",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/repository",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/repository",
         "operations": [
           "commit",
           "create-branch",
@@ -2757,7 +2757,7 @@ termination-reason: null
         "category": "repository-governance",
         "executable": "repo-policyctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/repository-governance",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/repository-governance",
         "operations": [
           "inspect-repository",
           "list-rulesets",
@@ -2784,7 +2784,7 @@ termination-reason: null
         "category": "security",
         "executable": "securityctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/security-scanning",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/security-scanning",
         "operations": [
           "list-code-alerts",
           "list-dependency-alerts",
@@ -2809,7 +2809,7 @@ termination-reason: null
         "category": "issue-tracker",
         "executable": "workctl",
         "scope": "project",
-        "path": "/home/faguero/dev/agora-studio/.agora/tools/work-management",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/tools/work-management",
         "operations": [
           "comment",
           "create",
@@ -2850,7 +2850,7 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc "sed -n '1,240p' \""'$AGORA_SESSION"
     agora tool invoke --tool repository --operation status --actor "$AGORA_ACTOR" --swarm studio-lifecycle-graph --work lifecycle-spec-evolution-graph --launch
-    agora tool invoke --tool repository --operation current-branch --actor "$AGORA_ACTOR" --swarm studio-lifecycle-graph --work lifecycle-spec-evolution-graph --launch' in /home/faguero/dev/agora-studio
+    agora tool invoke --tool repository --operation current-branch --actor "$AGORA_ACTOR" --swarm studio-lifecycle-graph --work lifecycle-spec-evolution-graph --launch' in /home/faguero/dev-agora/agora-studio
      exited 1 in 217ms:
     {
       "id": "tool-20260817t13281786984081z",
@@ -2870,7 +2870,7 @@ termination-reason: null
       ],
       "runtime_available": true,
       "status": "completed",
-      "path": "/home/faguero/dev/agora-studio/.agora/tool-runs/tool-20260817t13281786984081z",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/tool-runs/tool-20260817t13281786984081z",
       "created_at": "2026-08-17T13:28:01.422472Z",
       "result_kind": "repository-status",
       "exit_code": 0,
@@ -2889,7 +2889,7 @@ termination-reason: null
     sed -n '1,320p' docs/specs/lifecycle-spec-evolution-graph.md
     sed -n '1,240p' openspec/project.md
     openspec list
-    openspec list --specs" in /home/faguero/dev/agora-studio
+    openspec list --specs" in /home/faguero/dev-agora/agora-studio
      succeeded in 206ms:
     
     ✖ Error: No OpenSpec changes directory found. Run 'openspec init' first.
@@ -2898,7 +2898,7 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc 'rg --files agora_studio tests docs | sort
     wc -l agora_studio/*.py agora_studio/static/* tests/*.py
-    rg -n "''^(class |def |async def )|''^  (async )?def |''^const |''^function |''^export |describe'"\\(|test\\(\" agora_studio tests agora_studio/static -g '*.py' -g '*.js'" in /home/faguero/dev/agora-studio
+    rg -n "''^(class |def |async def )|''^  (async )?def |''^const |''^function |''^export |describe'"\\(|test\\(\" agora_studio tests agora_studio/static -g '*.py' -g '*.js'" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     agora_studio/__init__.py
     agora_studio/__main__.py
@@ -3030,7 +3030,7 @@ termination-reason: null
     
     exec
     /usr/bin/zsh -lc "find docs -maxdepth 3 -type f -print | sort
-    find .agora/swarms -path '*/artifacts.md' -type f -print -exec sed -n '1,80p' {} \\;" in /home/faguero/dev/agora-studio
+    find .agora/swarms -path '*/artifacts.md' -type f -print -exec sed -n '1,80p' {} \\;" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     docs/evidence/activity-timeline-mvp-verification.md
     docs/evidence/studio-foundation-verification.md
@@ -3119,7 +3119,7 @@ termination-reason: null
     /usr/bin/zsh -lc "sed -n '1,380p' agora_studio/core.py
     sed -n '1,260p' agora_studio/server.py
     sed -n '1,120p' agora_studio/static/activity-model.js
-    sed -n '1,180p' agora_studio/static/index.html" in /home/faguero/dev/agora-studio
+    sed -n '1,180p' agora_studio/static/index.html" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     """Project selection and the strictly read-only Agora CLI boundary."""
     
@@ -3758,7 +3758,7 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc "sed -n '1,260p' pyproject.toml
     sed -n '1,300p' README.md
-    find .agora/methods/spec-driven -maxdepth 3 -type f -print -exec sed -n '1,180p' {} \\;" in /home/faguero/dev/agora-studio
+    find .agora/methods/spec-driven -maxdepth 3 -type f -print -exec sed -n '1,180p' {} \\;" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     [build-system]
     requires = ["setuptools>=77"]
@@ -3972,7 +3972,7 @@ termination-reason: null
     sed -n '280,680p' agora_studio/static/app.js
     sed -n '1,280p' tests/test_activity_timeline.py
     sed -n '1,240p' tests/test_foundation.py
-    sed -n '1,220p' tests/test_visual_console.py" in /home/faguero/dev/agora-studio
+    sed -n '1,220p' tests/test_visual_console.py" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     "use strict";
     
@@ -5218,7 +5218,7 @@ termination-reason: null
     
     exec
     /usr/bin/zsh -lc "sed -n '500,680p' agora_studio/static/app.js
-    sed -n '1,260p' tests/test_activity_timeline.py" in /home/faguero/dev/agora-studio
+    sed -n '1,260p' tests/test_activity_timeline.py" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
         });
         children.push(timeline);
@@ -5592,7 +5592,7 @@ termination-reason: null
     The worktree already contains substantial uncommitted Activity and console changes, so the plan treats those as the baseline and isolates this feature in new lifecycle-specific modules and tests. It also makes provenance deliberately conservative: work state may be reconstructed from ordered transitions, but actors, sessions, commits, and approvals are linked only by exact durable identifiers.
     apply patch
     patch: completed
-    /home/faguero/dev/agora-studio/docs/plans/lifecycle-spec-evolution-graph.md
+    /home/faguero/dev-agora/agora-studio/docs/plans/lifecycle-spec-evolution-graph.md
     diff --git a/docs/plans/lifecycle-spec-evolution-graph.md b/docs/plans/lifecycle-spec-evolution-graph.md
     new file mode 100644
     index 0000000000000000000000000000000000000000..c08016dd7fc161721d01c4f11e2bb9de5b34dbc6
@@ -5984,7 +5984,7 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc "sed -n '1,360p' docs/plans/lifecycle-spec-evolution-graph.md
     agora artifact add --swarm studio-lifecycle-graph --work lifecycle-spec-evolution-graph --kind implementation-plan --uri repo://docs/plans/lifecycle-spec-evolution-graph.md --by \""'$AGORA_ACTOR"
-    agora validate' in /home/faguero/dev/agora-studio
+    agora validate' in /home/faguero/dev-agora/agora-studio
      succeeded in 269ms:
     {
       "id": "lifecycle-spec-evolution-graph",
@@ -6027,7 +6027,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -6284,7 +6284,7 @@ termination-reason: null
     /usr/bin/zsh -lc 'agora work transition --swarm studio-lifecycle-graph --work lifecycle-spec-evolution-graph --to planned --by "$AGORA_ACTOR"
     agora validate
     agora next --actor "$AGORA_ACTOR"
-    agora event list --swarm studio-lifecycle-graph --work lifecycle-spec-evolution-graph' in /home/faguero/dev/agora-studio
+    agora event list --swarm studio-lifecycle-graph --work lifecycle-spec-evolution-graph' in /home/faguero/dev-agora/agora-studio
      succeeded in 545ms:
     {
       "id": "lifecycle-spec-evolution-graph",
@@ -6327,7 +6327,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -6409,133 +6409,133 @@ termination-reason: null
         "type": "work.created",
         "detail": "state=drafting actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:17:53.858021Z",
         "type": "artifact.added",
         "detail": "kind=spec uri=repo://docs/specs/lifecycle-spec-evolution-graph.md actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:17:58.433736Z",
         "type": "artifact.added",
         "detail": "kind=spec uri=repo://docs/specs/lifecycle-spec-evolution-graph.md actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:21:00.762129Z",
         "type": "gate.waived",
         "detail": "waiver=defer-delivery-artifacts gate=spec-clarified actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:31.419716Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=method-graph actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:31.568273Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=actual-path actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:31.717026Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=spec-versions actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:31.862830Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=traceability actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:32.009604Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=interaction actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:32.154419Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=safety actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:32.299465Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=states actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:32.451102Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=accessibility actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:32.595317Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=tests actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:38.110038Z",
         "type": "evidence.added",
         "detail": "type=specification-clarification result=success actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:23:43.692970Z",
         "type": "work.transitioned",
         "detail": "from=drafting to=clarified actor=project:specification-agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:28:01.422819Z",
         "type": "tool.prepared",
         "detail": "run=tool-20260817t13281786984081z tool=repository operation=status actor=project:agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:28:01.435408Z",
         "type": "tool.completed",
         "detail": "run=tool-20260817t13281786984081z exit-code=0",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:30:17.618230Z",
         "type": "artifact.added",
         "detail": "kind=implementation-plan uri=repo://docs/plans/lifecycle-spec-evolution-graph.md actor=project:agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       },
       {
         "timestamp": "2026-08-17T13:30:24.533747Z",
         "type": "work.transitioned",
         "detail": "from=clarified to=planned actor=project:agent",
         "scope": "work:studio-lifecycle-graph/lifecycle-spec-evolution-graph",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-lifecycle-graph/work/lifecycle-spec-evolution-graph/events.md"
       }
     ]
     
@@ -6736,7 +6736,7 @@ termination-reason: null
     codex
     Completed the single permitted planning action.
     
-    - Registered [implementation plan](/home/faguero/dev/agora-studio/docs/plans/lifecycle-spec-evolution-graph.md) through Agora.
+    - Registered [implementation plan](/home/faguero/dev-agora/agora-studio/docs/plans/lifecycle-spec-evolution-graph.md) through Agora.
     - Transitioned work from `clarified` to `planned`.
     - `agora validate` passes with no issues.
     - Stopped before the next `planned → implementing` action. No implementation or tests were performed.

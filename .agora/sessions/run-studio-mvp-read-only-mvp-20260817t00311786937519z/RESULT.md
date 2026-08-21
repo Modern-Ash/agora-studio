@@ -11,16 +11,16 @@ termination-reason: null
 
 ## Standard output
 
-    Verification is complete and durably recorded in [evidence.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md).
+    Verification is complete and durably recorded in [evidence.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md).
     
-    The work remains `verifying`. The only developer transition is the failure/rework edge back to `implementing`, which is not warranted. Completion now requires approval from the human `spec-owner` (`project:owner`), recorded in [approvals.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/approvals.md). Stopped at that approval gate without further mutation.
+    The work remains `verifying`. The only developer transition is the failure/rework edge back to `implementing`, which is not warranted. Completion now requires approval from the human `spec-owner` (`project:owner`), recorded in [approvals.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/approvals.md). Stopped at that approval gate without further mutation.
 
 ## Standard error
 
     2026-08-17T00:31:59.188397Z ERROR codex_models_manager::cache: failed to load models cache: missing field `base_instructions` at line 95 column 5
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -34,15 +34,15 @@ termination-reason: null
     codex
     I’m using the Agora execution skill to load the assigned session, validate the current durable state, and perform exactly one role-authorized transition. I’ll stop if the next gate requires human approval or authority this session does not have.
     exec
-    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' \""'$AGORA_CONTEXT"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' \""'$AGORA_CONTEXT"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z/CONTEXT.md
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -100,7 +100,7 @@ termination-reason: null
     
     2026-08-17T00:32:06.766794Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "sed -n '1,260p' /home/faguero/dev/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,260p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     name: "agora-execute"
@@ -144,7 +144,7 @@ termination-reason: null
     
     2026-08-17T00:32:10.059764Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'wc -l .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'wc -l .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
        15 .agora/project.md
        27 .agora/constitution.md
@@ -166,7 +166,7 @@ termination-reason: null
     
     2026-08-17T00:32:17.603474Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "awk 'FNR==1 {printf \"\\n===== %s =====\\n\", FILENAME} {print}' .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "awk 'FNR==1 {printf \"\\n===== %s =====\\n\", FILENAME} {print}' .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     
     ===== .agora/project.md =====
@@ -502,7 +502,7 @@ termination-reason: null
     codex
     The durable work item is already in `verifying`: all criteria, the required spec artifact, and successful developer evidence are present, but Spec Owner approval is absent. I’m now asking Agora for the exact authorized edge rather than inferring the transition from the files.
     exec
-    /usr/bin/zsh -lc 'printenv AGORA_ACTOR AGORA_SESSION && agora usage status --swarm studio-mvp --work read-only-mvp && agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'printenv AGORA_ACTOR AGORA_SESSION && agora usage status --swarm studio-mvp --work read-only-mvp && agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 253ms:
     {
       "swarm_id": "studio-mvp",
@@ -535,7 +535,7 @@ termination-reason: null
     
     2026-08-17T00:32:30.620915Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "sed -n '1,260p' \""'$AGORA_SESSION"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,260p' \""'$AGORA_SESSION"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/session/v1"
@@ -548,7 +548,7 @@ termination-reason: null
     provider: "openai"
     model: "configured-by-codex"
     status: "running"
-    context: "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z/CONTEXT.md"
+    context: "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z/CONTEXT.md"
     launch-command: ["codex","exec","Read the Agora session context from the path in AGORA_CONTEXT. Follow its operational Markdown, perform only the next action permitted for the assigned role, persist artifacts and evidence through Agora, and stop at human approval or unavailable authority."]
     runtime-available: true
     created-at: "2026-08-17T00:31:59.007033Z"
@@ -572,7 +572,7 @@ termination-reason: null
     
     2026-08-17T00:32:38.134513Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "rg --files .agora/swarms/studio-mvp/work/read-only-mvp .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z && sed -n '1,320p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "rg --files .agora/swarms/studio-mvp/work/read-only-mvp .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z && sed -n '1,320p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z/CONTEXT.md
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z/SESSION.md
@@ -906,7 +906,7 @@ termination-reason: null
     
     2026-08-17T00:32:49.453129Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "wc -l .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md && sed -n '321,700p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md && sed -n '1,240p' .agora/swarms/studio-mvp/work/read-only-mvp/events.md && sed -n '1,240p' .agora/swarms/studio-mvp/work/read-only-mvp/interactions.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "wc -l .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md && sed -n '321,700p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md && sed -n '1,240p' .agora/swarms/studio-mvp/work/read-only-mvp/events.md && sed -n '1,240p' .agora/swarms/studio-mvp/work/read-only-mvp/interactions.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     428 .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md
     - **Y** ninguna funcionalidad solicita credenciales ni conexión en línea
@@ -1038,8 +1038,8 @@ termination-reason: null
     
     2026-08-17T00:32:54.403838Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     codex
-    Verification is complete and durably recorded in [evidence.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md).
+    Verification is complete and durably recorded in [evidence.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md).
     
-    The work remains `verifying`. The only developer transition is the failure/rework edge back to `implementing`, which is not warranted. Completion now requires approval from the human `spec-owner` (`project:owner`), recorded in [approvals.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/approvals.md). Stopped at that approval gate without further mutation.
+    The work remains `verifying`. The only developer transition is the failure/rework edge back to `implementing`, which is not warranted. Completion now requires approval from the human `spec-owner` (`project:owner`), recorded in [approvals.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/approvals.md). Stopped at that approval gate without further mutation.
     tokens used
     23.194

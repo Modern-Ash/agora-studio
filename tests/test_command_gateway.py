@@ -64,6 +64,10 @@ def request(authentication=None, precondition_digest=None) -> GateApprovalReques
         transition_target="completed",
         role_id="product-owner",
         evidence_references=("repo://report",),
+        evidence_content_sha256={"repo://report": "c" * 64} if precondition_digest else None,
+        actor_fingerprint=None,
+        prepared_at="2026-08-20T12:00:00Z" if precondition_digest else None,
+        expires_at=None,
         precondition_digest=precondition_digest,
         authentication=authentication,
     )
@@ -71,7 +75,7 @@ def request(authentication=None, precondition_digest=None) -> GateApprovalReques
 
 def valid_projection() -> dict[str, object]:
     return {
-        "schema": "agora/application/gate-decision-projection/v2",
+        "schema": "agora/application/gate-decision-projection/v3",
         "project_identity": "demo",
         "swarm_id": "delivery",
         "work_id": "release",
@@ -81,9 +85,13 @@ def valid_projection() -> dict[str, object]:
         "decision": "approved",
         "reason": "Evidence reviewed",
         "evidence_references": ["repo://report"],
+        "evidence_content_sha256": {"repo://report": "c" * 64},
+        "actor_fingerprint": None,
         "precondition_digest": "b" * 64,
+        "prepared_at": "2026-08-20T12:00:00Z",
+        "expires_at": None,
         "lifecycle": {
-            "schema": "agora/application/lifecycle-projection/v2",
+            "schema": "agora/application/lifecycle-projection/v3",
             "swarm_id": "delivery",
             "work_id": "release",
             "method": "scrum",
@@ -119,8 +127,8 @@ def valid_projection() -> dict[str, object]:
 
 def valid_preparation() -> dict[str, object]:
     canonical = {
-        "schema": "agora/application/approve-gate-command/v3",
-        "authorization_schema": "agora/application/approve-gate-authorization/v3",
+        "schema": "agora/application/approve-gate-command/v4",
+        "authorization_schema": "agora/application/approve-gate-authorization/v4",
         "project_identity": "demo",
         "swarm_id": "delivery",
         "work_id": "release",
@@ -132,15 +140,18 @@ def valid_preparation() -> dict[str, object]:
         "transition_target": "completed",
         "role_id": "product-owner",
         "evidence_references": ["repo://report"],
+        "evidence_content_sha256": {"repo://report": "c" * 64},
         "precondition_digest": "b" * 64,
+        "prepared_at": "2026-08-20T12:00:00Z",
+        "expires_at": None,
     }
     authorization_payload = (
         json.dumps(canonical, ensure_ascii=True, separators=(",", ":"), sort_keys=True) + "\n"
     )
     return {
-        "schema": "agora/application/prepared-gate-decision/v2",
-        "command_schema": "agora/application/approve-gate-command/v3",
-        "authorization_schema": "agora/application/approve-gate-authorization/v3",
+        "schema": "agora/application/prepared-gate-decision/v3",
+        "command_schema": "agora/application/approve-gate-command/v4",
+        "authorization_schema": "agora/application/approve-gate-authorization/v4",
         "authorization_payload": authorization_payload,
         "authorization_digest": hashlib.sha256(authorization_payload.encode("ascii")).hexdigest(),
         "precondition_digest": "b" * 64,
@@ -155,18 +166,21 @@ def valid_preparation() -> dict[str, object]:
         "role_id": "product-owner",
         "reason": "Evidence reviewed",
         "evidence_references": ["repo://report"],
+        "evidence_content_sha256": {"repo://report": "c" * 64},
+        "actor_fingerprint": None,
+        "prepared_at": "2026-08-20T12:00:00Z",
+        "expires_at": None,
         "authentication_required": True,
         "authentication_algorithm": "ed25519",
         "authentication_fingerprint": "a" * 64,
         "authentication_public_key": "public",
-        "freshness": "governed-material/v1",
-        "expires_at": None,
+        "freshness": "governed-material/v2",
     }
 
 
 class CommandGatewayTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.selection = ProjectSelection(Path("/tmp/demo"), "demo", "0.7.0")
+        self.selection = ProjectSelection(Path("/tmp/demo"), "demo", "0.8.0")
         self.gateway = CoreCommandGateway()
         self.bindings = patch.object(
             CoreCommandGateway,
@@ -242,10 +256,12 @@ class CommandGatewayTests(unittest.TestCase):
 
     def test_rejects_missing_future_and_malformed_projection_fields(self) -> None:
         cases = []
-        for schema in (None, "agora/application/gate-decision-projection/v3"):
-            payload = valid_projection()
-            payload["schema"] = schema
-            cases.append((payload, "command.version-incompatible"))
+        payload = valid_projection()
+        payload["schema"] = None
+        cases.append((payload, "command.version-incompatible"))
+        payload = valid_projection()
+        payload["schema"] = "agora/application/gate-decision-projection/v99"
+        cases.append((payload, "command.version-incompatible"))
         lifecycle = valid_projection()
         lifecycle["lifecycle"] = {"schema": "agora/application/lifecycle-projection/v99"}
         cases.append((lifecycle, "core.schema-incompatible"))
@@ -292,7 +308,7 @@ class CommandGatewayTests(unittest.TestCase):
 
     def test_http_shape_validation_rejects_missing_or_invalid_signatures(self) -> None:
         base = {
-            "schema": "agora/application/approve-gate-command/v3",
+            "schema": "agora/application/approve-gate-command/v4",
             "gate_id": "completion",
             "actor_id": "project:owner",
             "decision": "approved",

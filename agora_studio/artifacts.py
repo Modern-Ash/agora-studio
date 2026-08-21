@@ -57,19 +57,25 @@ def build_artifacts(store: ProjectStore, query: Mapping[str, object] | None) -> 
             "project_required", "Select a local Agora project before loading artifacts data."
         )
     swarm, work_id = normalized["swarm"], normalized["work"]
+    project = selection.path
     try:
-        control = store.gateway.work_control(selection.path, swarm, work_id)
-        work = control["work"]
-        artifacts = control["artifacts"]
-        evidence = control["evidence"]
-        approvals = control["approvals"]
-        traceability = control["traceability"]
+        work = store.gateway.get_work_item(project, swarm, work_id)
+        artifacts = store.gateway.artifacts(project, swarm, work_id)
+        evidence = store.gateway.evidence(project, swarm, work_id)
+        approval_records_raw = store.gateway.approvals(project, swarm, work_id)
     except CoreGatewayError as error:
         if error.code == "read.resource-not-found":
             raise ArtifactsError("not_found", error.reason) from error
-        raise
+        raise ArtifactsError("core_read_failed", error.reason) from error
 
-    approval_records = [{**item, "approved_by": item.get("actor")} for item in approvals]
+    approval_records = [{**item, "approved_by": item.get("actor")} for item in approval_records_raw]
+    roles_seen: set[str] = set()
+    satisfaction: list[dict[str, object]] = []
+    for record in approval_records:
+        role = record.get("role")
+        if role and role not in roles_seen:
+            roles_seen.add(role)
+            satisfaction.append({"role": role, "satisfied": True})
     return {
         "schema": "agora-studio/api/work-materials/v1",
         "selection": selection.as_dict(),
@@ -79,14 +85,18 @@ def build_artifacts(store: ProjectStore, query: Mapping[str, object] | None) -> 
         "approvals": {
             "schema": "agora-studio/api/approval-status/v2",
             "records": approval_records,
-            "gate_decision_options": control["gate_decision_options"],
+            "satisfaction": satisfaction,
+            "gate_decision_options": {
+                "schema": "agora/application/gate-decision-options-projection/v3",
+                "options": [],
+            },
         },
-        "traceability": traceability,
+        "traceability": {},
         "availability": {
             "artifacts": True,
             "evidence": True,
             "approvals": True,
-            "traceability": True,
+            "traceability": False,
             "partial": False,
         },
         "diagnostics": [],

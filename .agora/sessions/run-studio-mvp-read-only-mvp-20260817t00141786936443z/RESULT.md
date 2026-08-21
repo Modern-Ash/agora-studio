@@ -11,7 +11,7 @@ termination-reason: null
 
 ## Standard output
 
-    Recorded successful `completion-readiness` evidence in [evidence.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md:11). Agora validation passes with no issues.
+    Recorded successful `completion-readiness` evidence in [evidence.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md:11). Agora validation passes with no issues.
     
     Work remains in `verifying`. Completion is now paused for human `project:owner` approval in the `spec-owner` role. No unauthorized transition or rework was performed.
 
@@ -20,7 +20,7 @@ termination-reason: null
     2026-08-17T00:14:03.906088Z ERROR codex_models_manager::cache: failed to load models cache: missing field `base_instructions` at line 95 column 5
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -36,10 +36,10 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc "printenv AGORA_CONTEXT
     pwd
-    rg --files -g 'AGENTS.md' -g '"'!node_modules'"' . .." in /home/faguero/dev/agora-studio
+    rg --files -g 'AGENTS.md' -g '"'!node_modules'"' . .." in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/CONTEXT.md
-    /home/faguero/dev/agora-studio
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio
     ../AGENTS.md
     ../openspec/AGENTS.md
     ../trivor/trivor-backend/AGENTS.md
@@ -62,8 +62,8 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc "sed -n '1,240p' /home/faguero/dev/AGENTS.md
     sed -n '1,260p' /home/faguero/.codex/skills/.system/../nonexistent 2>/dev/null || true
-    sed -n '1,300p' /home/faguero/dev/agora-studio/.agents/skills/agora-execute/SKILL.md
-    sed -n '1,320p' /home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/CONTEXT.md" in /home/faguero/dev/agora-studio
+    sed -n '1,300p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-execute/SKILL.md
+    sed -n '1,320p' /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/CONTEXT.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     <!-- OPENSPEC:START -->
     # OpenSpec Instructions
@@ -126,7 +126,7 @@ termination-reason: null
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -205,7 +205,7 @@ termination-reason: null
     .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md; do
       echo \"===== "'$f ====="
       cat "$f"
-    done' in /home/faguero/dev/agora-studio
+    done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ===== .agora/project.md =====
     ---
@@ -523,7 +523,7 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc 'printenv AGORA_ACTOR
     printenv AGORA_SESSION
-    agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 88ms:
     [
       {
@@ -555,7 +555,7 @@ termination-reason: null
     agora handoff --help 2>&1 || true
     agora approval --help 2>&1 || true
     agora work --help 2>&1 || true
-    agora usage status --swarm studio-mvp --work read-only-mvp' in /home/faguero/dev/agora-studio
+    agora usage status --swarm studio-mvp --work read-only-mvp' in /home/faguero/dev-agora/agora-studio
      succeeded in 693ms:
     usage: agora [-h]
                  {configure,init,quickstart,doctor,self-test,status,validate,next,inbox,run,resume,environment,lock,coordination,upgrade,registry,trust,pack,start,method,tool,delegation,actor,swarm,work,gate,session,action,event,artifact,evidence,usage,approval} ...
@@ -666,7 +666,7 @@ termination-reason: null
     agora inbox --actor project:owner
     agora approval add --help
     agora work transition --help
-    rg -n \"verifying|completed|approval|handoff\" .agora/methods/spec-driven .agora/swarms/studio-mvp -g '*.md' -g '*.yaml' -g '*.json'" in /home/faguero/dev/agora-studio
+    rg -n \"verifying|completed|approval|handoff\" .agora/methods/spec-driven .agora/swarms/studio-mvp -g '*.md' -g '*.yaml' -g '*.json'" in /home/faguero/dev-agora/agora-studio
      succeeded in 681ms:
     {
       "id": "read-only-mvp",
@@ -698,7 +698,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -789,7 +789,7 @@ termination-reason: null
     /usr/bin/zsh -lc "agora event --help
     agora event append --help 2>&1 || true
     agora action --help
-    rg -n \"handoff.create|handoff|Handoff\" . --glob '"'!node_modules'"' --glob '"'!dist'"' --glob '"'!build'"' --glob '"'!*lock*'"' | head -200" in /home/faguero/dev/agora-studio
+    rg -n \"handoff.create|handoff|Handoff\" . --glob '"'!node_modules'"' --glob '"'!dist'"' --glob '"'!build'"' --glob '"'!*lock*'"' | head -200" in /home/faguero/dev-agora/agora-studio
      succeeded in 371ms:
     usage: agora event [-h] {list} ...
     
@@ -815,7 +815,7 @@ termination-reason: null
     2026-08-17T00:15:06.726972Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
     /usr/bin/zsh -lc "rg --hidden -n \"handoff.create|handoff|Handoff\" . --glob '"'!node_modules'"' --glob '"'!.git'"' --glob '"'!dist'"' --glob '"'!build'"' | head -240
-    rg --hidden -n \"class.*Handoff|handoff\" /home/faguero/dev/agora 2>/dev/null | head -240" in /home/faguero/dev/agora-studio
+    rg --hidden -n \"class.*Handoff|handoff\" /home/faguero/dev/agora 2>/dev/null | head -240" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ./.agora/commands/handoff.md:2:name: "agora-handoff"
     ./.agora/commands/handoff.md:6:# Create a governed handoff
@@ -1098,7 +1098,7 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc 'cat .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md
     agora evidence add --help
-    agora validate' in /home/faguero/dev/agora-studio
+    agora validate' in /home/faguero/dev-agora/agora-studio
      succeeded in 292ms:
     usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
                               --result {success,failure} --by BY
@@ -1165,7 +1165,7 @@ termination-reason: null
     /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type completion-readiness --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md
     agora validate
     agora next --actor project:owner
-    agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 611ms:
     {
       "id": "read-only-mvp",
@@ -1198,7 +1198,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1298,7 +1298,7 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc 'nl -ba .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md
     nl -ba .agora/swarms/studio-mvp/work/read-only-mvp/events.md | tail -12
-    nl -ba .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md' in /home/faguero/dev/agora-studio
+    nl -ba .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
          1	---
          2	schema: "agora/evidence/v1"
@@ -1335,7 +1335,7 @@ termination-reason: null
     
     2026-08-17T00:15:45.063657Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     codex
-    Recorded successful `completion-readiness` evidence in [evidence.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md:11). Agora validation passes with no issues.
+    Recorded successful `completion-readiness` evidence in [evidence.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md:11). Agora validation passes with no issues.
     
     Work remains in `verifying`. Completion is now paused for human `project:owner` approval in the `spec-owner` role. No unauthorized transition or rework was performed.
     tokens used

@@ -55,7 +55,8 @@ _ASSETS = {
     "dashboard-model.js": (_STATIC_ROOT / "dashboard-model.js", "text/javascript; charset=utf-8"),
     "control-model.js": (_STATIC_ROOT / "control-model.js", "text/javascript; charset=utf-8"),
     "app.js": (_STATIC_ROOT / "app.js", "text/javascript; charset=utf-8"),
-    "agora-logo.png": (_STATIC_ROOT / "agora-mark.png", "image/png"),
+    "agora-mark.png": (_STATIC_ROOT / "agora-mark.png", "image/png"),
+    "agora-logo.png": (_STATIC_ROOT / "agora-logo.png", "image/png"),
 }
 _WORK_ROUTE = re.compile(
     r"/api/v1/work-items/(?P<swarm>[a-z0-9][a-z0-9._-]{0,127})/"
@@ -77,9 +78,17 @@ _COMMAND_STATUS = {
     "command.actor-unauthorized": 403,
     "command.gate-already-resolved": 409,
     "command.stale-precondition": 409,
+    "command.governed-material-stale": 409,
+    "command.preparation-expired": 410,
     "command.evidence-missing": 422,
+    "gate.evidence-missing": 422,
+    "command.signature-invalid": 422,
     "command.signature-required": 428,
     "command.persistence-failed": 503,
+    "transaction.commit-failed": 503,
+    "transaction.rollback-failed": 503,
+    "transaction.indeterminate": 503,
+    "durable-state.concurrent-edit": 409,
     "command.version-incompatible": 426,
     "core.schema-incompatible": 426,
     "command.project-identity-mismatch": 409,
@@ -160,7 +169,7 @@ def handle_api(
         except CommandAdapterError as error:
             return _COMMAND_STATUS.get(error.code, 500), _error(error.code, error.reason)
         return 200, {
-            "schema": "agora-studio/api/prepared-gate-decision/v2",
+            "schema": "agora-studio/api/prepared-gate-decision/v3",
             "preparation": prepared,
         }
 
@@ -184,7 +193,7 @@ def handle_api(
         except CommandAdapterError as error:
             return _COMMAND_STATUS.get(error.code, 500), _error(error.code, error.reason)
         return 200, {
-            "schema": "agora-studio/api/gate-decision/v2",
+            "schema": "agora-studio/api/gate-decision/v3",
             "status": "persisted",
             "projection": projection,
         }

@@ -25,7 +25,7 @@ termination-reason: null
 
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -39,7 +39,7 @@ termination-reason: null
     codex
     I’m using the `agora-execute` skill because this request is to advance exactly one role-authorized Agora transition. I’ll read its full instructions and the session context, then stop at any approval or authority boundary.
     exec
-    /usr/bin/zsh -lc "sed -n '1,240p' /home/faguero/dev/agora-studio/.agents/skills/agora-execute/SKILL.md && env | rg '"'^AGORA_CONTEXT='"'" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,240p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-execute/SKILL.md && env | rg '"'^AGORA_CONTEXT='"'" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     name: "agora-execute"
@@ -80,17 +80,17 @@ termination-reason: null
     authority; neither operation permits silently rewriting independently owned child work.
     
     Execution request: `$ARGUMENTS`
-    AGORA_CONTEXT=/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01241786940679z/CONTEXT.md
+    AGORA_CONTEXT=/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01241786940679z/CONTEXT.md
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -149,7 +149,7 @@ termination-reason: null
     codex
     The session assigns the `developer` role to work item `foundation`, currently `planned`. I’m now reading every required protocol, role, environment, work, and ledger file before deriving the authorized transition.
     exec
-    /usr/bin/zsh -lc 'wc -l .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-foundation/SWARM.md .agora/swarms/studio-foundation/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-foundation/work/foundation/WORK.md .agora/swarms/studio-foundation/work/foundation/artifacts.md .agora/swarms/studio-foundation/work/foundation/evidence.md .agora/swarms/studio-foundation/work/foundation/approvals.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'wc -l .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-foundation/SWARM.md .agora/swarms/studio-foundation/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-foundation/work/foundation/WORK.md .agora/swarms/studio-foundation/work/foundation/artifacts.md .agora/swarms/studio-foundation/work/foundation/evidence.md .agora/swarms/studio-foundation/work/foundation/approvals.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
        15 .agora/project.md
        27 .agora/constitution.md
@@ -170,7 +170,7 @@ termination-reason: null
       294 total
     
     exec
-    /usr/bin/zsh -lc "for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-foundation/SWARM.md .agora/swarms/studio-foundation/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-foundation/work/foundation/WORK.md .agora/swarms/studio-foundation/work/foundation/artifacts.md .agora/swarms/studio-foundation/work/foundation/evidence.md .agora/swarms/studio-foundation/work/foundation/approvals.md; do printf '\\n===== %s =====\\n' \""'$f"; sed -n '"'1,999p' \""'$f"; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-foundation/SWARM.md .agora/swarms/studio-foundation/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-foundation/work/foundation/WORK.md .agora/swarms/studio-foundation/work/foundation/artifacts.md .agora/swarms/studio-foundation/work/foundation/evidence.md .agora/swarms/studio-foundation/work/foundation/approvals.md; do printf '\\n===== %s =====\\n' \""'$f"; sed -n '"'1,999p' \""'$f"; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     
     ===== .agora/project.md =====
@@ -500,7 +500,7 @@ termination-reason: null
     | --- | --- | --- | --- |
     
     exec
-    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 81ms:
     [
       {
@@ -526,7 +526,7 @@ termination-reason: null
     codex
     Agora derived the single allowed edge: `planned → implementing` for `project:agent` as `developer`. Before mutating durable state, I’m checking the session’s immutable limits and the exact governed transition command.
     exec
-    /usr/bin/zsh -lc "env | rg '"'^AGORA_(ACTOR|SESSION|CONTEXT)='"'; agora work --help; agora work transition --help" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "env | rg '"'^AGORA_(ACTOR|SESSION|CONTEXT)='"'; agora work --help; agora work transition --help" in /home/faguero/dev-agora/agora-studio
      succeeded in 233ms:
     usage: agora work [-h]
                       {create,create-prepare,decompose,decompose-prepare,criterion-satisfy,criterion-satisfy-prepare,transition,transition-prepare,show,list,block,block-prepare,resume,resume-prepare,cancel,cancel-prepare,status-changes} ...
@@ -564,7 +564,7 @@ termination-reason: null
       --by BY
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,240p' \""'$AGORA_SESSION"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,240p' \""'$AGORA_SESSION"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/session/v1"
@@ -577,7 +577,7 @@ termination-reason: null
     provider: "openai"
     model: "configured-by-codex"
     status: "running"
-    context: "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01241786940679z/CONTEXT.md"
+    context: "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01241786940679z/CONTEXT.md"
     launch-command: ["codex","exec","Read the Agora session context from the path in AGORA_CONTEXT. Follow its operational Markdown, perform only the next action permitted for the assigned role, persist artifacts and evidence through Agora, and stop at human approval or unavailable authority."]
     runtime-available: true
     created-at: "2026-08-17T01:24:39.607419Z"
@@ -600,7 +600,7 @@ termination-reason: null
     The session context and runtime selection are durable. Model conversation history is not project state unless its outcome is recorded in Agora files.
     
     exec
-    /usr/bin/zsh -lc 'agora work transition --swarm studio-foundation --work foundation --to implementing --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work transition --swarm studio-foundation --work foundation --to implementing --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 66ms:
     {
       "id": "foundation",
@@ -630,7 +630,7 @@ termination-reason: null
       ],
       "evidence_results": [],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -643,7 +643,7 @@ termination-reason: null
     
     2026-08-17T01:25:30.653854Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora work show --swarm studio-foundation --work foundation' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work show --swarm studio-foundation --work foundation' in /home/faguero/dev-agora/agora-studio
      succeeded in 72ms:
     {
       "id": "foundation",
@@ -673,7 +673,7 @@ termination-reason: null
       ],
       "evidence_results": [],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",

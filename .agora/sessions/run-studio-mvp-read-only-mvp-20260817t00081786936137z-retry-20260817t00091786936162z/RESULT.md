@@ -14,7 +14,7 @@ termination-reason: null
     Completed the single permitted action:
     
     - Transitioned `read-only-mvp` from `clarified` to `planned` as `project:agent`.
-    - Persisted the attributed event in [events.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md).
+    - Persisted the attributed event in [events.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md).
     - `agora validate` passes with no issues.
     - Did not proceed to implementation or create unrequested artifacts/evidence.
 
@@ -22,7 +22,7 @@ termination-reason: null
 
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -36,7 +36,7 @@ termination-reason: null
     codex
     I’m using the `agora-execute` skill because this request is specifically to perform the single transition permitted to the assigned Agora role. I’ll read its operating instructions and the session context, then stop if the next gate requires human approval or authority I don’t have.
     exec
-    /usr/bin/zsh -lc "sed -n '1,240p' .agents/skills/agora-execute/SKILL.md && printenv AGORA_CONTEXT" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,240p' .agents/skills/agora-execute/SKILL.md && printenv AGORA_CONTEXT" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     name: "agora-execute"
@@ -77,19 +77,19 @@ termination-reason: null
     authority; neither operation permits silently rewriting independently owned child work.
     
     Execution request: `$ARGUMENTS`
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z/CONTEXT.md
     
     codex
     The execution policy requires a durable Agora outcome before a successful exit and makes the session limits immutable. I’m now resolving the actor, work item, current state, and allowed transition from the supplied context.
     exec
-    /usr/bin/zsh -lc 'context_path="$AGORA_CONTEXT"; sed -n '"'1,260p' \""'$context_path"; printenv AGORA_ACTOR; printenv AGORA_SESSION' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'context_path="$AGORA_CONTEXT"; sed -n '"'1,260p' \""'$context_path"; printenv AGORA_ACTOR; printenv AGORA_SESSION' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -145,10 +145,10 @@ termination-reason: null
     4. Do not treat unrecorded conversation history as durable project state.
     5. Stop when policy, permissions, or a gate cannot be satisfied.
     project:agent
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z/SESSION.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z/SESSION.md
     
     exec
-    /usr/bin/zsh -lc 'for file in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md; do wc -l "$file"; sed -n '"'1,10000p' \""'$file"; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'for file in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md; do wc -l "$file"; sed -n '"'1,10000p' \""'$file"; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     15 .agora/project.md
     ---
@@ -462,7 +462,7 @@ termination-reason: null
     | --- | --- | --- | --- |
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,10000p' \""'$AGORA_SESSION"; agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,10000p' \""'$AGORA_SESSION"; agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 85ms:
     [
       {
@@ -488,7 +488,7 @@ termination-reason: null
     codex
     Agora identifies exactly one developer edge: `clarified → planned`. The reported “session already running” blocker refers to this current controller session, so I’m inspecting the edge’s gate and CLI contract before recording anything.
     exec
-    /usr/bin/zsh -lc 'rg --files .agora/methods/spec-driven .agora/swarms/studio-mvp/work/read-only-mvp | sort; agora --help; agora work --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'rg --files .agora/methods/spec-driven .agora/swarms/studio-mvp/work/read-only-mvp | sort; agora --help; agora work --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 226ms:
     usage: agora [-h]
                  {configure,init,quickstart,doctor,self-test,status,validate,next,inbox,run,resume,environment,lock,coordination,upgrade,registry,trust,pack,start,method,tool,delegation,actor,swarm,work,gate,session,action,event,artifact,evidence,usage,approval} ...
@@ -566,7 +566,7 @@ termination-reason: null
       -h, --help            show this help message and exit
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,10000p' .agora/methods/spec-driven/transitions/02-clarified-planned.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/events.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/interactions.md; agora work transition --help; agora artifact add --help; agora usage status --help" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,10000p' .agora/methods/spec-driven/transitions/02-clarified-planned.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/events.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/interactions.md; agora work transition --help; agora artifact add --help; agora usage status --help" in /home/faguero/dev-agora/agora-studio
      succeeded in 357ms:
     usage: agora work transition [-h] --swarm SWARM --work WORK --to TO --by BY
     
@@ -597,7 +597,7 @@ termination-reason: null
     codex
     The edge has no additional gate, and the developer role is authorized to record it. Because the durable work description excludes implementation from this item, I will make only the state transition to `planned`; I will not create implementation files, launch tools, or infer a broader delivery plan.
     exec
-    /usr/bin/zsh -lc 'agora usage status --swarm studio-mvp --work read-only-mvp; agora work transition --swarm studio-mvp --work read-only-mvp --to planned --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora usage status --swarm studio-mvp --work read-only-mvp; agora work transition --swarm studio-mvp --work read-only-mvp --to planned --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 220ms:
     {
       "swarm_id": "studio-mvp",
@@ -635,7 +635,7 @@ termination-reason: null
       ],
       "evidence_results": [],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -650,7 +650,7 @@ termination-reason: null
     codex
     The permitted transition is now durable: `read-only-mvp` is in `planned`, attributed to `project:agent`. I’m doing a final read-only validation of the record and will stop without taking the newly exposed implementation edge.
     exec
-    /usr/bin/zsh -lc 'agora validate; agora work show --swarm studio-mvp --work read-only-mvp; tail -n 5 .agora/swarms/studio-mvp/work/read-only-mvp/events.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora validate; agora work show --swarm studio-mvp --work read-only-mvp; tail -n 5 .agora/swarms/studio-mvp/work/read-only-mvp/events.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 244ms:
     {
       "ok": true,
@@ -725,7 +725,7 @@ termination-reason: null
       ],
       "evidence_results": [],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -746,7 +746,7 @@ termination-reason: null
     Completed the single permitted action:
     
     - Transitioned `read-only-mvp` from `clarified` to `planned` as `project:agent`.
-    - Persisted the attributed event in [events.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md).
+    - Persisted the attributed event in [events.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md).
     - `agora validate` passes with no issues.
     - Did not proceed to implementation or create unrequested artifacts/evidence.
     tokens used

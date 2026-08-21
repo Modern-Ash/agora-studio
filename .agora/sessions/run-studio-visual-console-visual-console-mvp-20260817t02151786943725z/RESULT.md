@@ -16,10 +16,10 @@ termination-reason: null
     - Added the read-only overview API and exact CLI allowlist.
     - Added the responsive, accessible HTML/CSS/JS console and generated local bitmap mark.
     - All 20 automated tests pass; JavaScript syntax and Git whitespace checks pass.
-    - Registered the [verification report](/home/faguero/dev/agora-studio/docs/evidence/visual-console-mvp-verification.md) as successful Agora evidence.
-    - Generated [agora-mark.png](/home/faguero/dev/agora-studio/agora_studio/static/agora-mark.png) using built-in ImageGen with an original geometric Agora/civic-circle prompt.
+    - Registered the [verification report](/home/faguero/dev-agora/agora-studio/docs/evidence/visual-console-mvp-verification.md) as successful Agora evidence.
+    - Generated [agora-mark.png](/home/faguero/dev-agora/agora-studio/agora_studio/static/agora-mark.png) using built-in ImageGen with an original geometric Agora/civic-circle prompt.
     
-    Agora remains in `implementing`, operationally `blocked`, because `.git` is read-only and Git cannot create `index.lock`. The blocker is recorded in [STATUS.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/change-20260817t022649018214z/STATUS.md).
+    Agora remains in `implementing`, operationally `blocked`, because `.git` is read-only and Git cannot create `index.lock`. The blocker is recorded in [STATUS.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/change-20260817t022649018214z/STATUS.md).
     
     A writer with Git metadata access must stage the implementation and invoke governed `repository/commit`; work can then resume toward `verifying`.
 
@@ -30,7 +30,7 @@ termination-reason: null
     2026-08-17T02:15:25.994093Z  WARN codex_core_skills::loader: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -46,9 +46,9 @@ termination-reason: null
     codex
     I’m using the Agora execution and status skills because this request is a governed, role-bound transition. I’ll load the session context, validate durable state, perform only the explicitly permitted next action, persist its evidence, and stop at any approval or authority boundary.
     exec
-    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' .agents/skills/agora-execute/SKILL.md && sed -n '1,240p' .agents/skills/agora-status/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' .agents/skills/agora-execute/SKILL.md && sed -n '1,240p' .agents/skills/agora-status/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md
     ---
     name: "agora-execute"
     description: "Execute a permitted transition step for an assigned Agora role"
@@ -106,14 +106,14 @@ termination-reason: null
     Query target: `$ARGUMENTS`
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT" && printenv AGORA_ACTOR && printenv AGORA_SESSION' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT" && printenv AGORA_ACTOR && printenv AGORA_SESSION' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -169,12 +169,12 @@ termination-reason: null
     4. Do not treat unrecorded conversation history as durable project state.
     5. Stop when policy, permissions, or a gate cannot be satisfied.
     project:agent
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/SESSION.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/SESSION.md
     
     codex
     The session assigns me the `developer` role on `visual-console-mvp`, currently in `implementing`. I’m now reading the full required protocol, work contract, and session limits before deriving the one permitted transition.
     exec
-    /usr/bin/zsh -lc 'tail -n +1 .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md "$AGORA_SESSION"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'tail -n +1 .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md "$AGORA_SESSION"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ==> .agora/project.md <==
     ---
@@ -504,7 +504,7 @@ termination-reason: null
     | Role | Approved by | Note | Timestamp |
     | --- | --- | --- | --- |
     
-    ==> /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/SESSION.md <==
+    ==> /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/SESSION.md <==
     ---
     schema: "agora/session/v1"
     id: "run-studio-visual-console-visual-console-mvp-20260817t02151786943725z"
@@ -516,7 +516,7 @@ termination-reason: null
     provider: "openai"
     model: "configured-by-codex"
     status: "running"
-    context: "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md"
+    context: "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md"
     launch-command: ["codex","exec","Read the Agora session context from the path in AGORA_CONTEXT. Follow its operational Markdown, perform only the next action permitted for the assigned role, persist artifacts and evidence through Agora, and stop at human approval or unavailable authority."]
     runtime-available: true
     created-at: "2026-08-17T02:15:25.778523Z"
@@ -539,23 +539,23 @@ termination-reason: null
     The session context and runtime selection are durable. Model conversation history is not project state unless its outcome is recorded in Agora files.
     
     exec
-    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora inbox --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora inbox --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora validate' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora validate' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora swarm list' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora swarm list' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora actor list' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora actor list' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora event list --swarm studio-visual-console --work visual-console-mvp' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora event list --swarm studio-visual-console --work visual-console-mvp' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora session list' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora session list' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora status' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora status' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora work list --swarm studio-visual-console' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work list --swarm studio-visual-console' in /home/faguero/dev-agora/agora-studio
      succeeded in 133ms:
     [
       {
@@ -597,7 +597,7 @@ termination-reason: null
           "developer": "project:agent"
         },
         "objective": "Build the local read-only foundation of Agora Studio",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation"
       },
       {
         "id": "studio-mvp",
@@ -613,7 +613,7 @@ termination-reason: null
           "developer": "project:agent"
         },
         "objective": "Build a local-first GUI for visualizing and operating Agora projects while keeping Markdown and Git as the source of truth",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp"
       },
       {
         "id": "studio-visual-console",
@@ -629,7 +629,7 @@ termination-reason: null
           "developer": "project:agent"
         },
         "objective": "Build the first operational visual console for Agora Studio, allowing developers to select a local Agora project and inspect its governed delivery state without mutating it.",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console"
       }
     ]
     
@@ -714,7 +714,7 @@ termination-reason: null
         ],
         "evidence_results": [],
         "approval_roles": [],
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
         "child_work_refs": [],
         "budget_limits": null,
         "operational_status": "active",
@@ -735,7 +735,7 @@ termination-reason: null
         "capabilities": [
           "implementation"
         ],
-        "path": "/home/faguero/dev/agora-studio/.agora/actors/agent.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/actors/agent.md",
         "reference": "project:agent",
         "integration": null,
         "provider": null,
@@ -756,7 +756,7 @@ termination-reason: null
           "acceptance",
           "specification"
         ],
-        "path": "/home/faguero/dev/agora-studio/.agora/actors/owner.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/actors/owner.md",
         "reference": "project:owner",
         "integration": null,
         "provider": null,
@@ -820,84 +820,84 @@ termination-reason: null
         "type": "work.created",
         "detail": "state=drafting actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:01.446533Z",
         "type": "artifact.added",
         "detail": "kind=spec uri=docs/specs/visual-console-mvp.md actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:03.862001Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=visual-shell actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:07.370265Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=project-selection actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:09.548435Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=project-overview actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:11.703629Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=delivery-browser actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:14.063100Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=responsive-accessible actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:16.596682Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=read-only-safety actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:20.602163Z",
         "type": "work.criterion-satisfied",
         "detail": "criterion=verification actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:13:23.120307Z",
         "type": "work.transitioned",
         "detail": "from=drafting to=clarified actor=project:owner",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:14:24.856508Z",
         "type": "work.transitioned",
         "detail": "from=clarified to=planned actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       },
       {
         "timestamp": "2026-08-17T02:15:13.547263Z",
         "type": "work.transitioned",
         "detail": "from=planned to=implementing actor=project:agent",
         "scope": "work:studio-visual-console/visual-console-mvp",
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/events.md"
       }
     ]
     
@@ -915,8 +915,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01211786940497z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -949,8 +949,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01241786940679z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01241786940679z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01241786940679z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01241786940679z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -983,8 +983,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "failed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1017,8 +1017,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1051,8 +1051,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "failed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1085,8 +1085,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1119,8 +1119,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00101786936228z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00101786936228z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00101786936228z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00101786936228z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1153,8 +1153,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00111786936286z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00111786936286z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00111786936286z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00111786936286z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1187,8 +1187,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00121786936351z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00121786936351z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00121786936351z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00121786936351z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1221,8 +1221,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1255,8 +1255,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1289,8 +1289,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00171786936661z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00171786936661z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00171786936661z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00171786936661z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1323,8 +1323,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00191786936761z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00191786936761z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00191786936761z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00191786936761z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1357,8 +1357,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00301786937413z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00301786937413z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00301786937413z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00301786937413z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1391,8 +1391,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00311786937519z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1425,8 +1425,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00331786937632z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00331786937632z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00331786937632z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00331786937632z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1459,8 +1459,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1493,8 +1493,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00371786937827z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00371786937827z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00371786937827z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00371786937827z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1527,8 +1527,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00381786937911z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00381786937911z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00381786937911z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00381786937911z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1561,8 +1561,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00391786937978z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00391786937978z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00391786937978z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00391786937978z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1595,8 +1595,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00411786938068z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00411786938068z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00411786938068z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00411786938068z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1629,8 +1629,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1663,8 +1663,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "completed",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1697,8 +1697,8 @@ termination-reason: null
         "provider": "openai",
         "model": "configured-by-codex",
         "status": "running",
-        "path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z",
-        "context_path": "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z",
+        "context_path": "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02151786943725z/CONTEXT.md",
         "launch_command": [
           "codex",
           "exec",
@@ -1780,7 +1780,7 @@ termination-reason: null
     codex
     Durable state validates cleanly. The active edge is `implementing → verifying`; the repository must first be checked against the accepted spec, and the developer role cannot skip directly to approval. I’m inspecting the implementation and remaining budget before deciding whether this turn may transition or must record a block.
     exec
-    /usr/bin/zsh -lc "git status --short && rg --files -g '"'!**/.git/**'"' | sed -n '1,240p'" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "git status --short && rg --files -g '"'!**/.git/**'"' | sed -n '1,240p'" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
      M .agora/events.md
      M q
@@ -1812,7 +1812,7 @@ termination-reason: null
     tests/__pycache__/__init__.cpython-314.pyc
     
     exec
-    /usr/bin/zsh -lc 'tail -n +1 .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'tail -n +1 .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/RESULT.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ==> .agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/RESULT.md <==
     ---
@@ -1848,7 +1848,7 @@ termination-reason: null
         2026-08-17T02:13:38.747398Z  WARN codex_core_skills::loader: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
         OpenAI Codex v0.146.0
         --------
-        workdir: /home/faguero/dev/agora-studio
+        workdir: /home/faguero/dev-agora/agora-studio
         model: gpt-5.6-sol
         provider: openai
         approval: never
@@ -1862,9 +1862,9 @@ termination-reason: null
         codex
         I’m using the Agora execution skill because this request is a governed, role-scoped transition. I’ll load the session context and skill instructions, then perform exactly one permitted action and stop at any approval or authority boundary.
         exec
-        /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' /home/faguero/dev/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev/agora-studio
+        /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev-agora/agora-studio
          succeeded in 0ms:
-        /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md
+        /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02131786943618z/CONTEXT.md
         ---
         name: "agora-execute"
         description: "Execute a permitted transition step for an assigned Agora role"
@@ -1906,14 +1906,14 @@ termination-reason: null
         Execution request: `$ARGUMENTS`
         
         exec
-        /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev/agora-studio
+        /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev-agora/agora-studio
          succeeded in 0ms:
         # Agora session context
         
         ## Project
         
         - Name: agora-studio
-        - Root: `/home/faguero/dev/agora-studio`
+        - Root: `/home/faguero/dev-agora/agora-studio`
         
         ## Runtime
         
@@ -1972,7 +1972,7 @@ termination-reason: null
         codex
         The session assigns me as the developer on `visual-console-mvp`, currently in `clarified`. I’m reading every required governance and work-state file before deriving the allowed transition; no project changes have been made yet.
         exec
-        /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do echo "===== $f ====="; sed -n '"'1,320p' \""'$f"; done' in /home/faguero/dev/agora-studio
+        /usr/bin/zsh -lc 'for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md; do echo "===== $f ====="; sed -n '"'1,320p' \""'$f"; done' in /home/faguero/dev-agora/agora-studio
          succeeded in 0ms:
         ===== .agora/project.md =====
         ---
@@ -2288,7 +2288,7 @@ termination-reason: null
         | --- | --- | --- | --- |
         
         exec
-        /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+        /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
          succeeded in 72ms:
         [
           {
@@ -2316,7 +2316,7 @@ termination-reason: null
         exec
         /usr/bin/zsh -lc "sed -n '1,320p' docs/specs/visual-console-mvp.md
         agora work transition --help
-        agora usage status --swarm studio-visual-console --work visual-console-mvp" in /home/faguero/dev/agora-studio
+        agora usage status --swarm studio-visual-console --work visual-console-mvp" in /home/faguero/dev-agora/agora-studio
          succeeded in 218ms:
         usage: agora work transition [-h] --swarm SWARM --work WORK --to TO --by BY
         
@@ -2337,7 +2337,7 @@ termination-reason: null
         
         exec
         /usr/bin/zsh -lc "rg -n 'clarified|planned' .agora/methods/spec-driven .agora/swarms/studio-visual-console/work/visual-console-mvp -g '*.md' -g '*.json' -g '*.yaml' -g '*.yml'
-        agora work show --swarm studio-visual-console --work visual-console-mvp 2>&1 || true" in /home/faguero/dev/agora-studio
+        agora work show --swarm studio-visual-console --work visual-console-mvp 2>&1 || true" in /home/faguero/dev-agora/agora-studio
          succeeded in 62ms:
         {
           "id": "visual-console-mvp",
@@ -2371,7 +2371,7 @@ termination-reason: null
           ],
           "evidence_results": [],
           "approval_roles": [],
-          "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+          "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
           "child_work_refs": [],
           "budget_limits": null,
           "operational_status": "active",
@@ -2385,7 +2385,7 @@ termination-reason: null
         exec
         /usr/bin/zsh -lc "sed -n '1,200p' .agora/methods/spec-driven/transitions/02-clarified-planned.md
         sed -n '1,200p' .agora/methods/spec-driven/transitions/03-planned-implementing.md
-        sed -n '1,240p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md" in /home/faguero/dev/agora-studio
+        sed -n '1,240p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md" in /home/faguero/dev-agora/agora-studio
          succeeded in 0ms:
         ---
         schema: "agora/transition/v1"
@@ -2417,7 +2417,7 @@ termination-reason: null
         - 2026-08-17T02:13:23.120307Z | work.transitioned | from=drafting to=clarified actor=project:owner
         
         exec
-        /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to planned --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+        /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to planned --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
          succeeded in 66ms:
         {
           "id": "visual-console-mvp",
@@ -2451,7 +2451,7 @@ termination-reason: null
           ],
           "evidence_results": [],
           "approval_roles": [],
-          "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+          "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
           "child_work_refs": [],
           "budget_limits": null,
           "operational_status": "active",
@@ -2466,7 +2466,7 @@ termination-reason: null
         The governed transition succeeded: `visual-console-mvp` is now `planned`. I’m doing a read-only durability check of the work record and event log, then I’ll stop without beginning implementation.
         exec
         /usr/bin/zsh -lc "agora work show --swarm studio-visual-console --work visual-console-mvp
-        sed -n '1,220p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md" in /home/faguero/dev/agora-studio
+        sed -n '1,220p' .agora/swarms/studio-visual-console/work/visual-console-mvp/events.md" in /home/faguero/dev-agora/agora-studio
          succeeded in 103ms:
         {
           "id": "visual-console-mvp",
@@ -2500,7 +2500,7 @@ termination-reason: null
           ],
           "evidence_results": [],
           "approval_roles": [],
-          "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+          "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
           "child_work_refs": [],
           "budget_limits": null,
           "operational_status": "active",
@@ -2551,7 +2551,7 @@ termination-reason: null
     
     ## Standard output
     
-        Transitioned `visual-console-mvp` from `planned` to `implementing` as `project:agent` using Agora. The durable state is recorded in [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6).
+        Transitioned `visual-console-mvp` from `planned` to `implementing` as `project:agent` using Agora. The durable state is recorded in [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6).
         
         Stopped after this single permitted action; no implementation or additional evidence was produced.
     
@@ -2562,7 +2562,7 @@ termination-reason: null
         2026-08-17T02:14:35.894134Z  WARN codex_core_skills::loader: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
         OpenAI Codex v0.146.0
         --------
-        workdir: /home/faguero/dev/agora-studio
+        workdir: /home/faguero/dev-agora/agora-studio
         model: gpt-5.6-sol
         provider: openai
         approval: never
@@ -2578,9 +2578,9 @@ termination-reason: null
         codex
         I’m using the `agora-execute` skill because this request is to perform exactly one role-permitted Agora transition. I’ll load the assigned session context and protocol, persist the required artifact/evidence through Agora, and stop at any approval or authority boundary.
         exec
-        /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' .agents/skills/agora-execute/SKILL.md" in /home/faguero/dev/agora-studio
+        /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' .agents/skills/agora-execute/SKILL.md" in /home/faguero/dev-agora/agora-studio
          succeeded in 0ms:
-        /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md
+        /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md
         ---
         name: "agora-execute"
         description: "Execute a permitted transition step for an assigned Agora role"
@@ -2622,15 +2622,15 @@ termination-reason: null
         Execution request: `$ARGUMENTS`
         
         exec
-        /usr/bin/zsh -lc 'wc -l "$AGORA_CONTEXT" && sed -n '"'1,260p' \""'$AGORA_CONTEXT" && printenv AGORA_ACTOR && printenv AGORA_SESSION' in /home/faguero/dev/agora-studio
+        /usr/bin/zsh -lc 'wc -l "$AGORA_CONTEXT" && sed -n '"'1,260p' \""'$AGORA_CONTEXT" && printenv AGORA_ACTOR && printenv AGORA_SESSION' in /home/faguero/dev-agora/agora-studio
          succeeded in 0ms:
-        60 /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md
+        60 /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md
         # Agora session context
         
         ## Project
         
         - Name: agora-studio
-        - Root: `/home/faguero/dev/agora-studio`
+        - Root: `/home/faguero/dev-agora/agora-studio`
         
         ## Runtime
         
@@ -2686,7 +2686,7 @@ termination-reason: null
         4. Do not treat unrecorded conversation history as durable project state.
         5. Stop when policy, permissions, or a gate cannot be satisfied.
         project:agent
-        /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/SESSION.md
+        /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/SESSION.md
         
         codex
         The session assigns `project:agent` the `developer` role on `visual-console-mvp`, currently `planned`. I’m now reading every protocol, role, tool, work, and evidence file required by the session before deriving the single allowed transition.
@@ -2694,7 +2694,7 @@ termination-reason: null
         /usr/bin/zsh -lc "for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md
         do
           sed -n '1,400p' \""'$f"
-        done' in /home/faguero/dev/agora-studio
+        done' in /home/faguero/dev-agora/agora-studio
          succeeded in 0ms:
         ---
         schema: "agora/project/v1"
@@ -2994,7 +2994,7 @@ termination-reason: null
         | --- | --- | --- | --- |
         
         exec
-        /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+        /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
          succeeded in 87ms:
         [
           {
@@ -3020,7 +3020,7 @@ termination-reason: null
         codex
         Agora’s durable controller selects one edge only: `planned → implementing` for the developer. The reported running-session blocker is this active session itself, so I’m checking its immutable limits and the transition command, then I’ll record that edge—without starting implementation work.
         exec
-        /usr/bin/zsh -lc "sed -n '1,240p' \""'$AGORA_SESSION"; agora work transition --help' in /home/faguero/dev/agora-studio
+        /usr/bin/zsh -lc "sed -n '1,240p' \""'$AGORA_SESSION"; agora work transition --help' in /home/faguero/dev-agora/agora-studio
          succeeded in 67ms:
         usage: agora work transition [-h] --swarm SWARM --work WORK --to TO --by BY
         
@@ -3032,7 +3032,7 @@ termination-reason: null
           --by BY
         
         exec
-        /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to implementing --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+        /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to implementing --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
          succeeded in 59ms:
         {
           "id": "visual-console-mvp",
@@ -3066,7 +3066,7 @@ termination-reason: null
           ],
           "evidence_results": [],
           "approval_roles": [],
-          "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+          "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
           "child_work_refs": [],
           "budget_limits": null,
           "operational_status": "active",
@@ -3078,19 +3078,19 @@ termination-reason: null
         }
         
         exec
-        /usr/bin/zsh -lc "rg -n '"'^state:|work.transitioned|planned|implementing'"' .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/events.md" in /home/faguero/dev/agora-studio
+        /usr/bin/zsh -lc "rg -n '"'^state:|work.transitioned|planned|implementing'"' .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/events.md" in /home/faguero/dev-agora/agora-studio
          succeeded in 0ms:
         .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6:state: "implementing"
         
         codex
-        Transitioned `visual-console-mvp` from `planned` to `implementing` as `project:agent` using Agora. The durable state is recorded in [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6).
+        Transitioned `visual-console-mvp` from `planned` to `implementing` as `project:agent` using Agora. The durable state is recorded in [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6).
         
         Stopped after this single permitted action; no implementation or additional evidence was produced.
         tokens used
         29,959
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,320p' docs/specs/visual-console-mvp.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,320p' docs/specs/visual-console-mvp.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     # Agora Studio Visual Console MVP
     
@@ -3238,7 +3238,7 @@ termination-reason: null
     - A frontend framework, package manager, or asset build pipeline.
     
     exec
-    /usr/bin/zsh -lc 'agora usage status --swarm studio-visual-console --work visual-console-mvp' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora usage status --swarm studio-visual-console --work visual-console-mvp' in /home/faguero/dev-agora/agora-studio
      succeeded in 70ms:
     {
       "swarm_id": "studio-visual-console",
@@ -3253,7 +3253,7 @@ termination-reason: null
     codex
     The accepted spec calls for a production-quality web interface, so the `frontend-design` skill now applies. It will guide the shell, responsive behavior, and accessibility work; I’ll keep the implementation within the existing standard-library Python architecture and the spec’s read-only boundary.
     exec
-    /usr/bin/zsh -lc "sed -n '1,320p' /home/faguero/.agents/skills/frontend-design/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,320p' /home/faguero/.agents/skills/frontend-design/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     name: frontend-design
@@ -3307,7 +3307,7 @@ termination-reason: null
     
     2026-08-17T02:16:14.476122Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'tail -n +1 /home/faguero/.agents/skills/frontend-design/references/aesthetic-playbook.md /home/faguero/.agents/skills/frontend-design/references/implementation-patterns.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'tail -n +1 /home/faguero/.agents/skills/frontend-design/references/aesthetic-playbook.md /home/faguero/.agents/skills/frontend-design/references/implementation-patterns.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ==> /home/faguero/.agents/skills/frontend-design/references/aesthetic-playbook.md <==
     # Aesthetic Playbook
@@ -3408,7 +3408,7 @@ termination-reason: null
     
     2026-08-17T02:16:18.305460Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'tail -n +1 pyproject.toml README.md agora_studio/__init__.py agora_studio/__main__.py agora_studio/core.py agora_studio/server.py tests/test_foundation.py' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'tail -n +1 pyproject.toml README.md agora_studio/__init__.py agora_studio/__main__.py agora_studio/core.py agora_studio/server.py tests/test_foundation.py' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ==> pyproject.toml <==
     [build-system]
@@ -3979,7 +3979,7 @@ termination-reason: null
         unittest.main()
     
     exec
-    /usr/bin/zsh -lc "file q q:q && git diff --stat && git diff -- q .agora/events.md | sed -n '1,300p'" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "file q q:q && git diff --stat && git diff -- q .agora/events.md | sed -n '1,300p'" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     q:   empty
     q:q: ASCII text
@@ -4007,14 +4007,14 @@ termination-reason: null
     -
     
     exec
-    /usr/bin/zsh -lc "find . -maxdepth 4 -type f \\( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.svg' \\) -print" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "find . -maxdepth 4 -type f \\( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' -o -iname '*.svg' \\) -print" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     2026-08-17T02:16:26.881560Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "git log --all --name-only --pretty=format: -- '*.png' '*.webp' '*.jpg' '*.jpeg' '*.svg' | sed '/"'^$/d'"' | sort -u" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "git log --all --name-only --pretty=format: -- '*.png' '*.webp' '*.jpg' '*.jpeg' '*.svg' | sed '/"'^$/d'"' | sort -u" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     exec
-    /usr/bin/zsh -lc 'git log --oneline --decorate -12 && git branch --show-current && git ls-files' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'git log --oneline --decorate -12 && git branch --show-current && git ls-files' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     9fa09fd (HEAD -> agora/studio-mvp) feat(studio): add local read-only foundation
     4fe76bb docs(spec): complete read-only studio MVP specification
@@ -4268,7 +4268,7 @@ termination-reason: null
     tests/test_foundation.py
     
     exec
-    /usr/bin/zsh -lc 'agora evidence add --help && agora work transition --help && agora artifact add --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora evidence add --help && agora work transition --help && agora artifact add --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 402ms:
     usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
                               --result {success,failure} --by BY
@@ -4305,7 +4305,7 @@ termination-reason: null
     codex
     No prior bitmap or vector logo exists in the repository or its history. To satisfy the accepted local-bitmap asset contract, I’m using the `imagegen` skill for a small original Agora mark, then I’ll place it under the allowlisted static assets. This is limited to the missing visual asset; the interface itself remains authored HTML/CSS/JS.
     exec
-    /usr/bin/zsh -lc "sed -n '1,320p' /home/faguero/.codex/skills/.system/imagegen/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,320p' /home/faguero/.codex/skills/.system/imagegen/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     name: "imagegen"
@@ -4630,7 +4630,7 @@ termination-reason: null
     
     2026-08-17T02:16:48.217947Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'tail -n +1 /home/faguero/.codex/skills/.system/imagegen/references/prompting.md /home/faguero/.codex/skills/.system/imagegen/references/sample-prompts.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'tail -n +1 /home/faguero/.codex/skills/.system/imagegen/references/prompting.md /home/faguero/.codex/skills/.system/imagegen/references/sample-prompts.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ==> /home/faguero/.codex/skills/.system/imagegen/references/prompting.md <==
     # Prompting best practices
@@ -5190,13 +5190,13 @@ termination-reason: null
     2026-08-17T02:16:53.828614Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     2026-08-17T02:17:40.738920Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "find /home/faguero/.codex/generated_images -type f -mmin -10 -printf '%T@ %p\\n' 2>/dev/null | sort -nr | sed -n '1,20p'" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "find /home/faguero/.codex/generated_images -type f -mmin -10 -printf '%T@ %p\\n' 2>/dev/null | sort -nr | sed -n '1,20p'" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     1786933060.6861511230 /home/faguero/.codex/generated_images/01a00d80-9604-7661-871e-61f312bd0ca7/exec-91c5d03b-909d-4bee-818f-53c76154ed29.png
     
     2026-08-17T02:17:45.183541Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "mkdir -p agora_studio/static tmp/imagegen && cp /home/faguero/.codex/generated_images/01a00d80-9604-7661-871e-61f312bd0ca7/exec-91c5d03b-909d-4bee-818f-53c76154ed29.png tmp/imagegen/agora-mark-source.png && python /home/faguero/.codex/skills/.system/imagegen/scripts/remove_chroma_key.py --input tmp/imagegen/agora-mark-source.png --out agora_studio/static/agora-mark.png --auto-key border --soft-matte --transparent-threshold 12 --opaque-threshold 220 --despill && file agora_studio/static/agora-mark.png && identify -verbose agora_studio/static/agora-mark.png | sed -n '1,45p'" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "mkdir -p agora_studio/static tmp/imagegen && cp /home/faguero/.codex/generated_images/01a00d80-9604-7661-871e-61f312bd0ca7/exec-91c5d03b-909d-4bee-818f-53c76154ed29.png tmp/imagegen/agora-mark-source.png && python /home/faguero/.codex/skills/.system/imagegen/scripts/remove_chroma_key.py --input tmp/imagegen/agora-mark-source.png --out agora_studio/static/agora-mark.png --auto-key border --soft-matte --transparent-threshold 12 --opaque-threshold 220 --despill && file agora_studio/static/agora-mark.png && identify -verbose agora_studio/static/agora-mark.png | sed -n '1,45p'" in /home/faguero/dev-agora/agora-studio
      succeeded in 1109ms:
     Wrote agora_studio/static/agora-mark.png
     Key color: #000000
@@ -5208,7 +5208,7 @@ termination-reason: null
     2026-08-17T02:17:56.190505Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     2026-08-17T02:17:59.932976Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "python -c 'from PIL import Image; p=\"agora_studio/static/agora-mark.png\"; im=Image.open(p).convert(\"RGBA\"); im.thumbnail((192,192), Image.Resampling.LANCZOS); im.save(p, optimize=True)' && python -c 'from PIL import Image; p=\"agora_studio/static/agora-mark.png\"; im=Image.open(p); a=im.getchannel(\"A\"); print({\"size\": im.size, \"mode\": im.mode, \"bytes\": __import__(\"os\").path.getsize(p), \"corner_alpha\": [a.getpixel(x) for x in ((0,0),(191,0),(0,191),(191,191))], \"alpha_extrema\": a.getextrema()})'" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "python -c 'from PIL import Image; p=\"agora_studio/static/agora-mark.png\"; im=Image.open(p).convert(\"RGBA\"); im.thumbnail((192,192), Image.Resampling.LANCZOS); im.save(p, optimize=True)' && python -c 'from PIL import Image; p=\"agora_studio/static/agora-mark.png\"; im=Image.open(p); a=im.getchannel(\"A\"); print({\"size\": im.size, \"mode\": im.mode, \"bytes\": __import__(\"os\").path.getsize(p), \"corner_alpha\": [a.getpixel(x) for x in ((0,0),(191,0),(0,191),(191,191))], \"alpha_extrema\": a.getextrema()})'" in /home/faguero/dev-agora/agora-studio
      succeeded in 88ms:
     {'size': (192, 192), 'mode': 'RGBA', 'bytes': 23218, 'corner_alpha': [0, 0, 0, 0], 'alpha_extrema': (0, 255)}
     
@@ -5217,13 +5217,13 @@ termination-reason: null
     The UI direction is now fixed: quiet industrial/utilitarian, with a restrained coral status rail, neutral paper-like surfaces, compact geometry, and teal reserved for healthy/read-only signals. I’m implementing the accepted API and frontend contracts together so the browser cannot outgrow the read-only CLI allowlist.
     apply patch
     patch: completed
-    /home/faguero/dev/agora-studio/README.md
-    /home/faguero/dev/agora-studio/agora_studio/core.py
-    /home/faguero/dev/agora-studio/agora_studio/server.py
-    /home/faguero/dev/agora-studio/agora_studio/static/app.js
-    /home/faguero/dev/agora-studio/agora_studio/static/index.html
-    /home/faguero/dev/agora-studio/agora_studio/static/styles.css
-    /home/faguero/dev/agora-studio/pyproject.toml
+    /home/faguero/dev-agora/agora-studio/README.md
+    /home/faguero/dev-agora/agora-studio/agora_studio/core.py
+    /home/faguero/dev-agora/agora-studio/agora_studio/server.py
+    /home/faguero/dev-agora/agora-studio/agora_studio/static/app.js
+    /home/faguero/dev-agora/agora-studio/agora_studio/static/index.html
+    /home/faguero/dev-agora/agora-studio/agora_studio/static/styles.css
+    /home/faguero/dev-agora/agora-studio/pyproject.toml
     diff --git a/README.md b/README.md
     index 9d1aef57fed5626de9fc005fd8b63e2b8f47c528..092aacc6c72ceb3e17a133fb0854614e4a5c1ae2
     --- a/README.md
@@ -7288,7 +7288,7 @@ termination-reason: null
     
     2026-08-17T02:22:31.464319Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'git diff --stat && rg -n "api/overview|_OPERATIONS|package-data" agora_studio pyproject.toml && ls -l agora_studio/static' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'git diff --stat && rg -n "api/overview|_OPERATIONS|package-data" agora_studio pyproject.toml && ls -l agora_studio/static' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
      .agora/events.md       |  5 ++++
      README.md              | 15 ++++++-----
@@ -8342,7 +8342,7 @@ termination-reason: null
     
     2026-08-17T02:22:36.075033Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'python3 -m unittest discover -s tests -v' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'python3 -m unittest discover -s tests -v' in /home/faguero/dev-agora/agora-studio
      succeeded in 3ms:
     diff --git a/README.md b/README.md
     index 9d1aef57fed5626de9fc005fd8b63e2b8f47c528..092aacc6c72ceb3e17a133fb0854614e4a5c1ae2
@@ -9378,7 +9378,7 @@ termination-reason: null
     2026-08-17T02:22:39.426365Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     apply patch
     patch: completed
-    /home/faguero/dev/agora-studio/tests/test_visual_console.py
+    /home/faguero/dev-agora/agora-studio/tests/test_visual_console.py
     diff --git a/README.md b/README.md
     index 9d1aef57fed5626de9fc005fd8b63e2b8f47c528..092aacc6c72ceb3e17a133fb0854614e4a5c1ae2
     --- a/README.md
@@ -11833,7 +11833,7 @@ termination-reason: null
     
     2026-08-17T02:23:33.011264Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'python3 -m unittest discover -s tests -v' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'python3 -m unittest discover -s tests -v' in /home/faguero/dev-agora/agora-studio
      exited 1 in 34ms:
     ok
     test_end_to_end_selection_and_reads_do_not_mutate_project_or_git (test_foundation.ServerTests.test_end_to_end_selection_and_reads_do_not_mutate_project_or_git) ... ok
@@ -11853,9 +11853,9 @@ termination-reason: null
     ERROR: test_asset_traversal_and_unknown_files_are_rejected (test_visual_console.AssetAndUiContractTests.test_asset_traversal_and_unknown_files_are_rejected)
     ----------------------------------------------------------------------
     Traceback (most recent call last):
-      File "/home/faguero/dev/agora-studio/agora_studio/server.py", line 152, in create_server
+      File "/home/faguero/dev-agora/agora-studio/agora_studio/server.py", line 152, in create_server
         return StudioServer(("127.0.0.1", port), _handler(), store or ProjectStore())
-      File "/home/faguero/dev/agora-studio/agora_studio/server.py", line 22, in __init__
+      File "/home/faguero/dev-agora/agora-studio/agora_studio/server.py", line 22, in __init__
         super().__init__(server_address, handler)
         ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
       File "/usr/lib/python3.14/socketserver.py", line 453, in __init__
@@ -11871,10 +11871,10 @@ termination-reason: null
     The above exception was the direct cause of the following exception:
     
     Traceback (most recent call last):
-      File "/home/faguero/dev/agora-studio/tests/test_visual_console.py", line 123, in setUp
+      File "/home/faguero/dev-agora/agora-studio/tests/test_visual_console.py", line 123, in setUp
         self.server = create_server(0, ProjectStore(AgoraCliBoundary(runner=OverviewRunner())))
                       ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      File "/home/faguero/dev/agora-studio/agora_studio/server.py", line 154, in create_server
+      File "/home/faguero/dev-agora/agora-studio/agora_studio/server.py", line 154, in create_server
         raise StartupError(f"could not bind the local server on 127.0.0.1:{port}: {error}") from error
     agora_studio.server.StartupError: could not bind the local server on 127.0.0.1:0: [Errno 1] Operation not permitted
     
@@ -11882,9 +11882,9 @@ termination-reason: null
     ERROR: test_logo_is_a_small_rgba_png_with_transparent_corners (test_visual_console.AssetAndUiContractTests.test_logo_is_a_small_rgba_png_with_transparent_corners)
     ----------------------------------------------------------------------
     Traceback (most recent call last):
-      File "/home/faguero/dev/agora-studio/agora_studio/server.py", line 152, in create_server
+      File "/home/faguero/dev-agora/agora-studio/agora_studio/server.py", line 152, in create_server
         return StudioServer(("127.0.0.1", port), _handler(), store or ProjectStore())
-      File "/home/faguero/dev/agora-studio/agora_studio/server.py", line 22, in __init__
+      File "/home/faguero/dev-agora/agora-studio/agora_studio/server.py", line 22, in __init__
         super().__init__(server_address, handler)
         ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
       File "/usr/lib/python3.14/socketserver.py", line 453, in __init__
@@ -11900,10 +11900,10 @@ termination-reason: null
     The above exception was the direct cause of the following exception:
     
     Traceback (most recent call last):
-      File "/home/faguero/dev/agora-studio/tests/test_visual_console.py", line 123, in setUp
+      File "/home/faguero/dev-agora/agora-studio/tests/test_visual_console.py", line 123, in setUp
         self.server = create_server(0, ProjectStore(AgoraCliBoundary(runner=OverviewRunner())))
                       ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      File "/home/faguero/dev/agora-studio/agora_studio/server.py", line 154, in create_server
+      File "/home/faguero/dev-agora/agora-studio/agora_studio/server.py", line 154, in create_server
         raise StartupError(f"could not bind the local server on 127.0.0.1:{port}: {error}") from error
     agora_studio.server.StartupError: could not bind the local server on 127.0.0.1:0: [Errno 1] Operation not permitted
     
@@ -11911,9 +11911,9 @@ termination-reason: null
     ERROR: test_root_and_allowlisted_assets_have_expected_content_types (test_visual_console.AssetAndUiContractTests.test_root_and_allowlisted_assets_have_expected_content_types)
     ----------------------------------------------------------------------
     Traceback (most recent call last):
-      File "/home/faguero/dev/agora-studio/agora_studio/server.py", line 152, in create_server
+      File "/home/faguero/dev-agora/agora-studio/agora_studio/server.py", line 152, in create_server
         return StudioServer(("127.0.0.1", port), _handler(), store or ProjectStore())
-      File "/home/faguero/dev/agora-studio/agora_studio/server.py", line 22, in __init__
+      File "/home/faguero/dev-agora/agora-studio/agora_studio/server.py", line 22, in __init__
         super().__init__(server_address, handler)
         ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
       File "/usr/lib/python3.14/socketserver.py", line 453, in __init__
@@ -11929,10 +11929,10 @@ termination-reason: null
     The above exception was the direct cause of the following exception:
     
     Traceback (most recent call last):
-      File "/home/faguero/dev/agora-studio/tests/test_visual_console.py", line 123, in setUp
+      File "/home/faguero/dev-agora/agora-studio/tests/test_visual_console.py", line 123, in setUp
         self.server = create_server(0, ProjectStore(AgoraCliBoundary(runner=OverviewRunner())))
                       ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      File "/home/faguero/dev/agora-studio/agora_studio/server.py", line 154, in create_server
+      File "/home/faguero/dev-agora/agora-studio/agora_studio/server.py", line 154, in create_server
         raise StartupError(f"could not bind the local server on 127.0.0.1:{port}: {error}") from error
     agora_studio.server.StartupError: could not bind the local server on 127.0.0.1:0: [Errno 1] Operation not permitted
     
@@ -11940,9 +11940,9 @@ termination-reason: null
     ERROR: test_semantic_accessible_and_responsive_contracts_are_present (test_visual_console.AssetAndUiContractTests.test_semantic_accessible_and_responsive_contracts_are_present)
     ----------------------------------------------------------------------
     Traceback (most recent call last):
-      File "/home/faguero/dev/agora-studio/agora_studio/server.py", line 152, in create_server
+      File "/home/faguero/dev-agora/agora-studio/agora_studio/server.py", line 152, in create_server
         return StudioServer(("127.0.0.1", port), _handler(), store or ProjectStore())
-      File "/home/faguero/dev/agora-studio/agora_studio/server.py", line 22, in __init__
+      File "/home/faguero/dev-agora/agora-studio/agora_studio/server.py", line 22, in __init__
         super().__init__(server_address, handler)
         ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
       File "/usr/lib/python3.14/socketserver.py", line 453, in __init__
@@ -11958,10 +11958,10 @@ termination-reason: null
     The above exception was the direct cause of the following exception:
     
     Traceback (most recent call last):
-      File "/home/faguero/dev/agora-studio/tests/test_visual_console.py", line 123, in setUp
+      File "/home/faguero/dev-agora/agora-studio/tests/test_visual_console.py", line 123, in setUp
         self.server = create_server(0, ProjectStore(AgoraCliBoundary(runner=OverviewRunner())))
                       ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      File "/home/faguero/dev/agora-studio/agora_studio/server.py", line 154, in create_server
+      File "/home/faguero/dev-agora/agora-studio/agora_studio/server.py", line 154, in create_server
         raise StartupError(f"could not bind the local server on 127.0.0.1:{port}: {error}") from error
     agora_studio.server.StartupError: could not bind the local server on 127.0.0.1:0: [Errno 1] Operation not permitted
     
@@ -13201,8 +13201,8 @@ termination-reason: null
     The first test pass exposed a sandbox constraint rather than an application defect: loopback socket creation is denied here. I’m converting the asset checks to exercise the same route resolver directly, which keeps the suite fully offline and still verifies content types and traversal rejection.
     apply patch
     patch: completed
-    /home/faguero/dev/agora-studio/agora_studio/server.py
-    /home/faguero/dev/agora-studio/tests/test_visual_console.py
+    /home/faguero/dev-agora/agora-studio/agora_studio/server.py
+    /home/faguero/dev-agora/agora-studio/tests/test_visual_console.py
     diff --git a/README.md b/README.md
     index 9d1aef57fed5626de9fc005fd8b63e2b8f47c528..092aacc6c72ceb3e17a133fb0854614e4a5c1ae2
     --- a/README.md
@@ -15629,7 +15629,7 @@ termination-reason: null
     
     2026-08-17T02:24:09.590738Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'python3 -m unittest discover -s tests -v' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'python3 -m unittest discover -s tests -v' in /home/faguero/dev-agora/agora-studio
      succeeded in 34ms:
     ok
     test_root_and_allowlisted_assets_have_expected_content_types (test_visual_console.AssetAndUiContractTests.test_root_and_allowlisted_assets_have_expected_content_types) ... ok
@@ -16861,7 +16861,7 @@ termination-reason: null
     codex
     The offline suite now passes all 20 tests, including exact CLI argv boundaries, API success/failure behavior, traversal protection, responsive contracts, and the generated bitmap’s alpha/size constraints. I’m doing the final runtime and visual QA next; the browser-control skill applies here because this is a local web-interface verification step.
     exec
-    /usr/bin/zsh -lc "sed -n '1,360p' /home/faguero/.codex/plugins/cache/openai-bundled/browser/26.810.52044/skills/control-in-app-browser/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,360p' /home/faguero/.codex/plugins/cache/openai-bundled/browser/26.810.52044/skills/control-in-app-browser/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     name: control-in-app-browser
@@ -23098,7 +23098,7 @@ termination-reason: null
     codex
     No in-app or external browser is connected, so visual screenshot QA is unavailable in this session. That is not an authority blocker for the implementation edge: I’m completing the permitted automated/runtime verification, recording the browser limitation in the evidence artifact, and will transition only if all executable checks remain successful.
     exec
-    /usr/bin/zsh -lc 'git diff --check && git status --short' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'git diff --check && git status --short' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
      M .agora/events.md
      M README.md
@@ -23118,7 +23118,7 @@ termination-reason: null
     ?? tmp/
     
     exec
-    /usr/bin/zsh -lc 'tail -n +1 docs/evidence/studio-foundation-verification.md .agora/swarms/studio-foundation/work/foundation/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'tail -n +1 docs/evidence/studio-foundation-verification.md .agora/swarms/studio-foundation/work/foundation/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ==> docs/evidence/studio-foundation-verification.md <==
     # Agora Studio foundation verification
@@ -23183,7 +23183,7 @@ termination-reason: null
     | session-project-validation | success | .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md | project:agent | 2026-08-17T00:42:09.926958Z |
     
     exec
-    /usr/bin/zsh -lc "node --check agora_studio/static/app.js && PYTHONDONTWRITEBYTECODE=1 python3 -c 'from agora_studio.core import AgoraCliBoundary, ProjectStore; from pathlib import Path; store=ProjectStore(AgoraCliBoundary()); selected=store.select(str(Path.cwd())); data=store.overview(); assert selected.project == data[\"status\"][\"project\"]; assert set(data) == {\"selection\",\"status\",\"actors\",\"swarms\",\"work\",\"sessions\"}; print({\"project\": selected.project, \"actors\": len(data[\"actors\"]), \"swarms\": len(data[\"swarms\"]), \"work\": len(data[\"work\"]), \"sessions\": len(data[\"sessions\"])})'" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "node --check agora_studio/static/app.js && PYTHONDONTWRITEBYTECODE=1 python3 -c 'from agora_studio.core import AgoraCliBoundary, ProjectStore; from pathlib import Path; store=ProjectStore(AgoraCliBoundary()); selected=store.select(str(Path.cwd())); data=store.overview(); assert selected.project == data[\"status\"][\"project\"]; assert set(data) == {\"selection\",\"status\",\"actors\",\"swarms\",\"work\",\"sessions\"}; print({\"project\": selected.project, \"actors\": len(data[\"actors\"]), \"swarms\": len(data[\"swarms\"]), \"work\": len(data[\"work\"]), \"sessions\": len(data[\"sessions\"])})'" in /home/faguero/dev-agora/agora-studio
      succeeded in 933ms:
     {'project': 'agora-studio', 'actors': 4, 'swarms': 3, 'work': 3, 'sessions': 24}
     
@@ -24401,7 +24401,7 @@ termination-reason: null
     
     2026-08-17T02:25:15.130137Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'tail -n +1 .agora/tools/repository/TOOL.md .agora/tools/repository/operations/commit.md .agora/tool-runs/tool-20260817t01261786940810z/RUN.md .agora/tool-runs/tool-20260817t01261786940810z/RESULT.md && agora tool invoke --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'tail -n +1 .agora/tools/repository/TOOL.md .agora/tools/repository/operations/commit.md .agora/tool-runs/tool-20260817t01261786940810z/RUN.md .agora/tool-runs/tool-20260817t01261786940810z/RESULT.md && agora tool invoke --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 71ms:
     usage: agora tool invoke [-h] [--id ID] --tool TOOL --operation OPERATION
                              --actor ACTOR --swarm SWARM [--work WORK]
@@ -25636,7 +25636,7 @@ termination-reason: null
     2026-08-17T02:25:30.996691Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     apply patch
     patch: completed
-    /home/faguero/dev/agora-studio/docs/evidence/visual-console-mvp-verification.md
+    /home/faguero/dev-agora/agora-studio/docs/evidence/visual-console-mvp-verification.md
     diff --git a/README.md b/README.md
     index 9d1aef57fed5626de9fc005fd8b63e2b8f47c528..092aacc6c72ceb3e17a133fb0854614e4a5c1ae2
     --- a/README.md
@@ -28167,7 +28167,7 @@ termination-reason: null
     
     2026-08-17T02:26:00.108753Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type automated-verification --result success --artifact repo://docs/evidence/visual-console-mvp-verification.md --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type automated-verification --result success --artifact repo://docs/evidence/visual-console-mvp-verification.md --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      exited 1 in 63ms:
     Evidence references unregistered work artifacts: repo://docs/evidence/visual-console-mvp-verification.md
     
@@ -29439,7 +29439,7 @@ termination-reason: null
     codex
     Agora rejected the evidence reference because the verification report was not yet a registered work artifact. The protocol requires registration first, so I’m recording that report through Agora and then attaching the successful evidence to its durable URI.
     exec
-    /usr/bin/zsh -lc 'agora artifact add --swarm studio-visual-console --work visual-console-mvp --kind verification-report --uri repo://docs/evidence/visual-console-mvp-verification.md --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora artifact add --swarm studio-visual-console --work visual-console-mvp --kind verification-report --uri repo://docs/evidence/visual-console-mvp-verification.md --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 58ms:
     {
       "id": "visual-console-mvp",
@@ -29474,7 +29474,7 @@ termination-reason: null
       ],
       "evidence_results": [],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -30751,7 +30751,7 @@ termination-reason: null
     
     2026-08-17T02:26:11.830783Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type automated-verification --result success --artifact repo://docs/evidence/visual-console-mvp-verification.md --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora evidence add --swarm studio-visual-console --work visual-console-mvp --type automated-verification --result success --artifact repo://docs/evidence/visual-console-mvp-verification.md --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 71ms:
     {
       "id": "visual-console-mvp",
@@ -30788,7 +30788,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -33332,7 +33332,7 @@ termination-reason: null
     codex
     Implementation and evidence are complete, but the repository history gate cannot be satisfied: the workspace permits source edits while `.git/index.lock` is on a read-only filesystem, so the governed commit cannot even be staged. Per Agora’s execution rule, I will not transition to `verifying` with uncommitted implementation; I’m recording this exact authority blocker and stopping.
     exec
-    /usr/bin/zsh -lc 'agora work block --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work block --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 64ms:
     usage: agora work block [-h] --swarm SWARM --work WORK --by BY --reason REASON
                             [--id ID]
@@ -34611,7 +34611,7 @@ termination-reason: null
     
     2026-08-17T02:26:42.864623Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'agora work block --swarm studio-visual-console --work visual-console-mvp --by "$AGORA_ACTOR" --reason "Implementation and automated verification are complete, but repository persistence is unavailable: .git is mounted read-only and Git cannot create index.lock to stage the governed commit. A writer with Git metadata access must stage and invoke repository/commit before verification."' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work block --swarm studio-visual-console --work visual-console-mvp --by "$AGORA_ACTOR" --reason "Implementation and automated verification are complete, but repository persistence is unavailable: .git is mounted read-only and Git cannot create index.lock to stage the governed commit. A writer with Git metadata access must stage and invoke repository/commit before verification."' in /home/faguero/dev-agora/agora-studio
      succeeded in 68ms:
     {
       "id": "change-20260817t022649018214z",
@@ -34624,7 +34624,7 @@ termination-reason: null
       "reason": "Implementation and automated verification are complete, but repository persistence is unavailable: .git is mounted read-only and Git cannot create index.lock to stage the governed commit. A writer with Git metadata access must stage and invoke repository/commit before verification.",
       "sequence": 1,
       "created_at": "2026-08-17T02:26:49.018301Z",
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/change-20260817t022649018214z/STATUS.md"
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/change-20260817t022649018214z/STATUS.md"
     }
     
     diff --git a/README.md b/README.md
@@ -35893,7 +35893,7 @@ termination-reason: null
     
     2026-08-17T02:26:49.105668Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'tail -n +1 .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/change-20260817t022649018214z/STATUS.md && git status --short' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'tail -n +1 .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/change-20260817t022649018214z/STATUS.md && git status --short' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ==> .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md <==
     ---
@@ -35957,9 +35957,9 @@ termination-reason: null
     ?? tests/test_visual_console.py
     
     exec
-    /usr/bin/zsh -lc 'agora work list --swarm studio-visual-console && agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work list --swarm studio-visual-console && agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora validate' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora validate' in /home/faguero/dev-agora/agora-studio
      succeeded in 106ms:
     {
       "ok": true,
@@ -36044,7 +36044,7 @@ termination-reason: null
           "success"
         ],
         "approval_roles": [],
-        "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
         "child_work_refs": [],
         "budget_limits": null,
         "operational_status": "blocked",
@@ -37345,10 +37345,10 @@ termination-reason: null
     - Added the read-only overview API and exact CLI allowlist.
     - Added the responsive, accessible HTML/CSS/JS console and generated local bitmap mark.
     - All 20 automated tests pass; JavaScript syntax and Git whitespace checks pass.
-    - Registered the [verification report](/home/faguero/dev/agora-studio/docs/evidence/visual-console-mvp-verification.md) as successful Agora evidence.
-    - Generated [agora-mark.png](/home/faguero/dev/agora-studio/agora_studio/static/agora-mark.png) using built-in ImageGen with an original geometric Agora/civic-circle prompt.
+    - Registered the [verification report](/home/faguero/dev-agora/agora-studio/docs/evidence/visual-console-mvp-verification.md) as successful Agora evidence.
+    - Generated [agora-mark.png](/home/faguero/dev-agora/agora-studio/agora_studio/static/agora-mark.png) using built-in ImageGen with an original geometric Agora/civic-circle prompt.
     
-    Agora remains in `implementing`, operationally `blocked`, because `.git` is read-only and Git cannot create `index.lock`. The blocker is recorded in [STATUS.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/change-20260817t022649018214z/STATUS.md).
+    Agora remains in `implementing`, operationally `blocked`, because `.git` is read-only and Git cannot create `index.lock`. The blocker is recorded in [STATUS.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/status-changes/change-20260817t022649018214z/STATUS.md).
     
     A writer with Git metadata access must stage the implementation and invoke governed `repository/commit`; work can then resume toward `verifying`.
     diff --git a/README.md b/README.md

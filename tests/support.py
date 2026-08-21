@@ -6,7 +6,7 @@ from agora_studio.core import ActivityQuery, CoreGatewayError
 
 
 class FakeGateway:
-    core_version = "0.7.0"
+    core_version = "0.8.0"
 
     def __init__(self) -> None:
         self.calls: list[tuple[object, ...]] = []
@@ -20,7 +20,7 @@ class FakeGateway:
     def project_overview(self, project: Path) -> dict[str, object]:
         self._record("project_overview", project)
         return {
-            "schema": "agora/application/project-overview/v1",
+            "schema": "agora/application/project-overview/v2",
             "project": project.name,
             "version": "0.3.0",
             "integration": "generic",
@@ -29,6 +29,7 @@ class FakeGateway:
             "default_method": "scrum",
             "max_delegation_depth": 3,
             "created_at": "2026-08-20T12:00:00Z",
+            "gate_decision_ttl_seconds": 3600,
             "branch": "main",
             "counts": {"actors": 1, "swarms": 1, "work": 1, "sessions": 1},
             "swarm_statuses": {"active": 1},
@@ -122,7 +123,7 @@ class FakeGateway:
             raise CoreGatewayError("read.resource-not-found", "work item not found")
         return {
             **self.list_work_items(project)[0],
-            "schema": "agora/application/work-item-detail/v2",
+            "schema": "agora/application/work-item-detail/v3",
             "artifacts": self.artifacts(project, swarm, work),
             "evidence": self.evidence(project, swarm, work),
             "approvals": self.approvals(project, swarm, work),
@@ -183,7 +184,7 @@ class FakeGateway:
     def get_method(self, project: Path, swarm: str) -> dict[str, object]:
         self._record("get_method", project, swarm)
         return {
-            "schema": "agora/application/method-summary/v1",
+            "schema": "agora/application/method-summary/v2",
             "id": "scrum",
             "name": "Scrum",
             "version": "1.0.0",
@@ -207,12 +208,13 @@ class FakeGateway:
             "wip_limits": {},
             "criterion_stages": [],
             "criterion_stage_roles": {},
+            "gate_decision_ttl_seconds": 3600,
         }
 
     def lifecycle(self, project: Path, swarm: str, work: str) -> dict[str, object]:
         self._record("lifecycle", project, swarm, work)
         return {
-            "schema": "agora/application/lifecycle-projection/v2",
+            "schema": "agora/application/lifecycle-projection/v3",
             "swarm_id": swarm,
             "work_id": work,
             "method": "scrum",
@@ -255,11 +257,12 @@ class FakeGateway:
         self._record("artifacts", project, swarm, work)
         return [
             {
-                "schema": "agora/application/artifact-summary/v2",
+                "schema": "agora/application/artifact-summary/v3",
                 "kind": "test-report",
                 "uri": "repo://report",
                 "produced_by": "project:owner",
                 "timestamp": "2026-08-20T12:00:00Z",
+                "content_sha256": "b" * 64,
                 "activity": None,
             }
         ]
@@ -268,10 +271,11 @@ class FakeGateway:
         self._record("evidence", project, swarm, work)
         return [
             {
-                "schema": "agora/application/evidence-summary/v2",
+                "schema": "agora/application/evidence-summary/v3",
                 "type": "test-run",
                 "result": "success",
                 "artifact_references": ["repo://report"],
+                "artifact_content_sha256": {"repo://report": "b" * 64},
                 "produced_by": "project:owner",
                 "timestamp": "2026-08-20T12:00:00Z",
                 "activity": None,
@@ -285,7 +289,7 @@ class FakeGateway:
     def traceability(self, project: Path, swarm: str, work: str) -> dict[str, object]:
         self._record("traceability", project, swarm, work)
         return {
-            "schema": "agora/application/traceability-summary/v1",
+            "schema": "agora/application/traceability-summary/v2",
             "swarm_id": swarm,
             "work_id": work,
             "state": "verifying",
@@ -340,7 +344,7 @@ class FakeGateway:
     def gate_options(self, project: Path, swarm: str, work: str) -> dict[str, object]:
         self._record("gate_options", project, swarm, work)
         common = {
-            "schema": "agora/application/gate-decision-option-summary/v2",
+            "schema": "agora/application/gate-decision-option-summary/v3",
             "swarm_id": swarm,
             "work_id": work,
             "expected_state": "verifying",
@@ -354,13 +358,15 @@ class FakeGateway:
             "required_evidence_types": ["test-run"],
             "evidence_references": ["repo://report"],
             "evidence_references_by_type": {"test-run": ["repo://report"]},
+            "evidence_content_sha256": {"repo://report": "b" * 64},
+            "content_addressed_evidence_required": False,
             "authentication_required": False,
             "authentication_algorithm": None,
             "authentication_fingerprint": None,
             "unavailable_reason": None,
         }
         return {
-            "schema": "agora/application/gate-decision-options-projection/v2",
+            "schema": "agora/application/gate-decision-options-projection/v3",
             "swarm_id": swarm,
             "work_id": work,
             "current_state": "verifying",
@@ -374,7 +380,9 @@ class FakeGateway:
                     "decision": "rejected",
                     "evidence_required": False,
                     "required_evidence_types": [],
+                    "evidence_references": [],
                     "evidence_references_by_type": {},
+                    "evidence_content_sha256": {},
                 },
             ],
         }
@@ -383,7 +391,7 @@ class FakeGateway:
         self._record("work_control", project, swarm, work)
         detail = self.get_work_item(project, swarm, work)
         return {
-            "schema": "agora/application/work-control-projection/v2",
+            "schema": "agora/application/work-control-projection/v3",
             "snapshot_token": "a" * 64,
             "work": detail,
             "lifecycle": self.lifecycle(project, swarm, work),

@@ -13,7 +13,7 @@ termination-reason: null
 
     Work advanced from `implementing` to `verifying` and stopped at the human gate.
     
-    - Registered [verification evidence](/home/faguero/dev/agora-studio/docs/evidence/activity-timeline-mvp-verification.md) as an Agora artifact and successful evidence.
+    - Registered [verification evidence](/home/faguero/dev-agora/agora-studio/docs/evidence/activity-timeline-mvp-verification.md) as an Agora artifact and successful evidence.
     - All 28 offline tests passed; Python and JavaScript syntax checks passed.
     - Live browser verification was unavailable because the sandbox denied loopback binding (`EPERM`).
     - Completion now requires `spec-owner` approval from `project:owner`. No approval or completion was attempted with developer authority.
@@ -23,7 +23,7 @@ termination-reason: null
     2026-08-17T12:38:11.999890Z ERROR codex_models_manager::cache: failed to load models cache: missing field `base_instructions` at line 95 column 5
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -37,7 +37,7 @@ termination-reason: null
     codex
     I’m using the Agora execution skill to identify the assigned role, validate the current durable state, and perform exactly one permitted transition. I’ll stop if the protocol reaches a human gate or requires authority this session doesn’t have.
     exec
-    /usr/bin/zsh -lc "sed -n '1,240p' .agents/skills/agora-execute/SKILL.md && printenv AGORA_CONTEXT" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,240p' .agents/skills/agora-execute/SKILL.md && printenv AGORA_CONTEXT" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     name: "agora-execute"
@@ -78,18 +78,18 @@ termination-reason: null
     authority; neither operation permits silently rewriting independently owned child work.
     
     Execution request: `$ARGUMENTS`
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z/CONTEXT.md
     
     exec
-    /usr/bin/zsh -lc 'context_path="$AGORA_CONTEXT"; session_policy="${AGORA_SESSION:-}"; wc -l "$context_path"; sed -n '"'1,260p' \""'$context_path"; if [ -n "$session_policy" ]; then echo "AGORA_SESSION=$session_policy"; fi' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'context_path="$AGORA_CONTEXT"; session_policy="${AGORA_SESSION:-}"; wc -l "$context_path"; sed -n '"'1,260p' \""'$context_path"; if [ -n "$session_policy" ]; then echo "AGORA_SESSION=$session_policy"; fi' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    63 /home/faguero/dev/agora-studio/.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z/CONTEXT.md
+    63 /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z/CONTEXT.md
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -147,12 +147,12 @@ termination-reason: null
     3. Use the Agora CLI to persist state, artifacts, evidence, and material outcomes.
     4. Do not treat unrecorded conversation history as durable project state.
     5. Stop when policy, permissions, or a gate cannot be satisfied.
-    AGORA_SESSION=/home/faguero/dev/agora-studio/.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z/SESSION.md
+    AGORA_SESSION=/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z/SESSION.md
     
     codex
     The durable session assigns me as the `developer` on `activity-timeline-mvp`, currently in `implementing`. I’m reading the full protocol, role contract, handoffs, work record, and immutable session limits before deriving the one allowed transition.
     exec
-    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/activity.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-activity-timeline/SWARM.md .agora/swarms/studio-activity-timeline/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-activity-timeline/handoffs/activity-spec-to-ai/HANDOFF.md .agora/swarms/studio-activity-timeline/handoffs/activity-spec-to-human-review/HANDOFF.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/WORK.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/artifacts.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/evidence.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/approvals.md "$AGORA_SESSION"; do wc -l "$f"; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'for f in .agora/project.md .agora/activity.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-activity-timeline/SWARM.md .agora/swarms/studio-activity-timeline/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-activity-timeline/handoffs/activity-spec-to-ai/HANDOFF.md .agora/swarms/studio-activity-timeline/handoffs/activity-spec-to-human-review/HANDOFF.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/WORK.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/artifacts.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/evidence.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/approvals.md "$AGORA_SESSION"; do wc -l "$f"; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     15 .agora/project.md
     194 .agora/activity.md
@@ -173,10 +173,10 @@ termination-reason: null
     10 .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/artifacts.md
     10 .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/evidence.md
     9 .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/approvals.md
-    32 /home/faguero/dev/agora-studio/.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z/SESSION.md
+    32 /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z/SESSION.md
     
     exec
-    /usr/bin/zsh -lc "awk 'FNR==1 { print \"FILE: \" FILENAME } { print }' .agora/project.md .agora/activity.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-activity-timeline/SWARM.md .agora/swarms/studio-activity-timeline/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-activity-timeline/handoffs/activity-spec-to-ai/HANDOFF.md .agora/swarms/studio-activity-timeline/handoffs/activity-spec-to-human-review/HANDOFF.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/WORK.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/artifacts.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/evidence.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/approvals.md \""'$AGORA_SESSION"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "awk 'FNR==1 { print \"FILE: \" FILENAME } { print }' .agora/project.md .agora/activity.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-activity-timeline/SWARM.md .agora/swarms/studio-activity-timeline/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-activity-timeline/handoffs/activity-spec-to-ai/HANDOFF.md .agora/swarms/studio-activity-timeline/handoffs/activity-spec-to-human-review/HANDOFF.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/WORK.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/artifacts.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/evidence.md .agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/approvals.md \""'$AGORA_SESSION"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     FILE: .agora/project.md
     ---
@@ -732,7 +732,7 @@ termination-reason: null
     
     | Role | Approved by | Note | Timestamp |
     | --- | --- | --- | --- |
-    FILE: /home/faguero/dev/agora-studio/.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z/SESSION.md
+    FILE: /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z/SESSION.md
     ---
     schema: "agora/session/v1"
     id: "run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z"
@@ -744,7 +744,7 @@ termination-reason: null
     provider: "openai"
     model: "configured-by-codex"
     status: "running"
-    context: "/home/faguero/dev/agora-studio/.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z/CONTEXT.md"
+    context: "/home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z/CONTEXT.md"
     launch-command: ["codex","exec","Read the Agora session context from the path in AGORA_CONTEXT. Follow its operational Markdown, perform only the next action permitted for the assigned role, persist artifacts and evidence through Agora, and stop at human approval or unavailable authority."]
     runtime-available: true
     created-at: "2026-08-17T12:38:11.816288Z"
@@ -767,7 +767,7 @@ termination-reason: null
     The session context and runtime selection are durable. Model conversation history is not project state unless its outcome is recorded in Agora files.
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,100p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,100p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/activity-ledger/v1"
@@ -871,7 +871,7 @@ termination-reason: null
     - 2026-08-17T02:04:30.963105Z | artifact.added | actor=project:agent swarm=studio-foundation work=foundation session=- tool-run=- source=repo://.agora/swarms/studio-foundation/work/foundation/events.md | kind=test-report uri=repo://docs/evidence/studio-foundation-verification.md actor=project:agent
     
     exec
-    /usr/bin/zsh -lc "sed -n '101,220p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '101,220p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     - 2026-08-17T02:04:31.114087Z | evidence.added | actor=project:agent swarm=studio-foundation work=foundation session=- tool-run=- source=repo://.agora/swarms/studio-foundation/work/foundation/events.md | type=automated-verification result=success actor=project:agent
     - 2026-08-17T02:04:31.273132Z | work.transitioned | actor=project:agent swarm=studio-foundation work=foundation session=- tool-run=- source=repo://.agora/swarms/studio-foundation/work/foundation/events.md | from=implementing to=verifying actor=project:agent
@@ -969,7 +969,7 @@ termination-reason: null
     - 2026-08-17T12:38:11.816607Z | session.prepared | actor=project:agent swarm=studio-activity-timeline work=activity-timeline-mvp session=run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z tool-run=- source=repo://.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z/SESSION.md | Prepared codex/openai/configured-by-codex session for roles developer
     
     exec
-    /usr/bin/zsh -lc "sed -n '45,95p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '45,95p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     - 2026-08-17T00:31:40.687125Z | evidence.added | actor=project:agent swarm=studio-mvp work=read-only-mvp session=- tool-run=- source=repo://.agora/swarms/studio-mvp/work/read-only-mvp/events.md | type=session-spec-verification result=success actor=project:agent
     - 2026-08-17T00:31:59.002610Z | session.completed | actor=project:agent swarm=studio-mvp work=read-only-mvp session=run-studio-mvp-read-only-mvp-20260817t00301786937413z tool-run=- source=repo://.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00301786937413z/RESULT.md | session=run-studio-mvp-read-only-mvp-20260817t00301786937413z exit-code=0
@@ -1024,7 +1024,7 @@ termination-reason: null
     - 2026-08-17T01:26:50.024177Z | tool.completed | actor=project:agent swarm=studio-foundation work=foundation session=- tool-run=tool-20260817t01261786940810z source=repo://.agora/tool-runs/tool-20260817t01261786940810z/RESULT.md | run=tool-20260817t01261786940810z tool=repository operation=current-branch actor=project:agent
     
     exec
-    /usr/bin/zsh -lc "sed -n '96,145p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '96,145p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     - 2026-08-17T01:26:57.376213Z | tool.prepared | actor=project:agent swarm=studio-foundation work=foundation session=- tool-run=tool-20260817t01261786940817z source=repo://.agora/tool-runs/tool-20260817t01261786940817z/RUN.md | run=tool-20260817t01261786940817z tool=repository operation=status actor=project:agent
     - 2026-08-17T01:26:57.388266Z | tool.completed | actor=project:agent swarm=studio-foundation work=foundation session=- tool-run=tool-20260817t01261786940817z source=repo://.agora/tool-runs/tool-20260817t01261786940817z/RESULT.md | run=tool-20260817t01261786940817z tool=repository operation=status actor=project:agent
@@ -1078,7 +1078,7 @@ termination-reason: null
     - 2026-08-17T02:38:07.188725Z | session.completed | actor=project:agent swarm=studio-visual-console work=visual-console-mvp session=run-studio-visual-console-visual-console-mvp-20260817t02361786944979z tool-run=- source=repo://.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02361786944979z/RESULT.md | session=run-studio-visual-console-visual-console-mvp-20260817t02361786944979z exit-code=0
     
     exec
-    /usr/bin/zsh -lc "sed -n '146,220p' .agora/activity.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '146,220p' .agora/activity.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     - 2026-08-17T02:38:07.195784Z | session.prepared | actor=project:agent swarm=studio-visual-console work=visual-console-mvp session=run-studio-visual-console-visual-console-mvp-20260817t02381786945087z tool-run=- source=repo://.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02381786945087z/SESSION.md | session=run-studio-visual-console-visual-console-mvp-20260817t02381786945087z actor=project:agent swarm=studio-visual-console
     - 2026-08-17T02:39:29.189318Z | tool.prepared | actor=project:agent swarm=studio-visual-console work=visual-console-mvp session=- tool-run=tool-20260817t02391786945169z source=repo://.agora/tool-runs/tool-20260817t02391786945169z/RUN.md | run=tool-20260817t02391786945169z tool=repository operation=status actor=project:agent
@@ -1131,9 +1131,9 @@ termination-reason: null
     - 2026-08-17T12:38:11.816607Z | session.prepared | actor=project:agent swarm=studio-activity-timeline work=activity-timeline-mvp session=run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z tool-run=- source=repo://.agora/sessions/run-studio-activity-timeline-activity-timeline-mvp-20260817t12261786980407z-retry-20260817t12381786981091z/SESSION.md | Prepared codex/openai/configured-by-codex session for roles developer
     
     exec
-    /usr/bin/zsh -lc 'agora usage status --swarm studio-activity-timeline --work activity-timeline-mvp' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora usage status --swarm studio-activity-timeline --work activity-timeline-mvp' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 61ms:
     {
       "swarm_id": "studio-activity-timeline",
@@ -1169,7 +1169,7 @@ termination-reason: null
     codex
     Agora’s next action is unambiguous: continue implementation and, once the increment is complete, transition only to `verifying`. There is no resource budget cap; the reported blocker is the current session itself, so I’ll work inside this active session and persist the implementation outcome through Agora.
     exec
-    /usr/bin/zsh -lc "if [ -f AGENTS.md ]; then sed -n '1,260p' AGENTS.md; fi; sed -n '1,320p' docs/specs/activity-timeline-mvp.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "if [ -f AGENTS.md ]; then sed -n '1,260p' AGENTS.md; fi; sed -n '1,320p' docs/specs/activity-timeline-mvp.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     # Agora Studio Governed Activity Timeline MVP
     
@@ -1393,7 +1393,7 @@ termination-reason: null
       network dependency.
     
     exec
-    /usr/bin/zsh -lc "rg --files -g '"'!node_modules'"' -g '"'!.git'"' | sed -n '1,260p'" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "rg --files -g '"'!node_modules'"' -g '"'!.git'"' | sed -n '1,260p'" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     README.md
     agora_studio/__main__.py
@@ -1419,7 +1419,7 @@ termination-reason: null
     pyproject.toml
     
     exec
-    /usr/bin/zsh -lc 'agora tool invoke --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora tool invoke --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 57ms:
     usage: agora tool invoke [-h] [--id ID] --tool TOOL --operation OPERATION
                              --actor ACTOR --swarm SWARM [--work WORK]
@@ -1440,7 +1440,7 @@ termination-reason: null
       --force
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,360p' agora_studio/static/activity-model.js; sed -n '1,420p' agora_studio/static/app.js" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,360p' agora_studio/static/activity-model.js; sed -n '1,420p' agora_studio/static/app.js" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     "use strict";
     
@@ -1904,7 +1904,7 @@ termination-reason: null
         renderActivity();
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,320p' agora_studio/core.py; sed -n '1,360p' agora_studio/server.py" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,320p' agora_studio/core.py; sed -n '1,360p' agora_studio/server.py" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     """Project selection and the strictly read-only Agora CLI boundary."""
     
@@ -2410,7 +2410,7 @@ termination-reason: null
         return f"http://{host}:{port}"
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,360p' tests/test_activity_timeline.py" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,360p' tests/test_activity_timeline.py" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     from __future__ import annotations
     
@@ -2658,7 +2658,7 @@ termination-reason: null
         unittest.main()
     
     exec
-    /usr/bin/zsh -lc 'agora tool invoke --tool repository --operation status --actor "$AGORA_ACTOR" --swarm studio-activity-timeline --work activity-timeline-mvp --launch' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora tool invoke --tool repository --operation status --actor "$AGORA_ACTOR" --swarm studio-activity-timeline --work activity-timeline-mvp --launch' in /home/faguero/dev-agora/agora-studio
      succeeded in 77ms:
     {
       "id": "tool-20260817t12391786981168z",
@@ -2678,7 +2678,7 @@ termination-reason: null
       ],
       "runtime_available": true,
       "status": "completed",
-      "path": "/home/faguero/dev/agora-studio/.agora/tool-runs/tool-20260817t12391786981168z",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/tool-runs/tool-20260817t12391786981168z",
       "created_at": "2026-08-17T12:39:28.168285Z",
       "result_kind": "repository-status",
       "exit_code": 0,
@@ -2692,7 +2692,7 @@ termination-reason: null
     }
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,220p' .agora/tool-runs/tool-20260817t12391786981168z/RESULT.md; sed -n '150,360p' agora_studio/core.py; sed -n '1,360p' agora_studio/server.py" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,220p' .agora/tool-runs/tool-20260817t12391786981168z/RESULT.md; sed -n '150,360p' agora_studio/core.py; sed -n '1,360p' agora_studio/server.py" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/tool-result/v1"
@@ -3088,7 +3088,7 @@ termination-reason: null
     codex
     The failed predecessor session left a substantial, uncommitted implementation in the workspace. I’ve preserved those changes, confirmed their scope through a governed repository status run, and am now validating them against the clarified specification before deciding whether code changes are still needed.
     exec
-    /usr/bin/zsh -lc 'python -m unittest -v' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'python -m unittest -v' in /home/faguero/dev-agora/agora-studio
      succeeded in 50ms:
     ok
     test_allowed_read_uses_separate_arguments_and_structured_result (tests.test_foundation.CliBoundaryTests.test_allowed_read_uses_separate_arguments_and_structured_result) ... ok
@@ -3118,7 +3118,7 @@ termination-reason: null
     OK
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,320p' agora_studio/static/index.html; sed -n '1,260p' README.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,320p' agora_studio/static/index.html; sed -n '1,260p' README.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     <!doctype html>
     <html lang="en">
@@ -3241,7 +3241,7 @@ termination-reason: null
     ```
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,260p' agora_studio/static/styles.css; sed -n '261,620p' agora_studio/static/styles.css; sed -n '621,980p' agora_studio/static/styles.css" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,260p' agora_studio/static/styles.css; sed -n '261,620p' agora_studio/static/styles.css; sed -n '621,980p' agora_studio/static/styles.css" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     :root {
       --ink: #17201f;
@@ -3795,7 +3795,7 @@ termination-reason: null
     }
     
     exec
-    /usr/bin/zsh -lc "sed -n '360,760p' agora_studio/static/app.js" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '360,760p' agora_studio/static/app.js" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
         element("section", { className: "activity-loading", "aria-busy": "true", "aria-label": "Loading activity" }, [
           ...[0, 1, 2, 3].map(() => element("div", { className: "skeleton-row" }, [element("span"), element("span"), element("span")])),
@@ -4062,7 +4062,7 @@ termination-reason: null
     })();
     
     exec
-    /usr/bin/zsh -lc 'agora activity list --limit 3' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora activity list --limit 3' in /home/faguero/dev-agora/agora-studio
      succeeded in 62ms:
     [
       {
@@ -4075,7 +4075,7 @@ termination-reason: null
         "session_id": null,
         "tool_run_id": "tool-20260817t12391786981168z",
         "source": "repo://.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/events.md",
-        "path": "/home/faguero/dev/agora-studio/.agora/activity.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/activity.md"
       },
       {
         "timestamp": "2026-08-17T12:39:28.181068Z",
@@ -4087,7 +4087,7 @@ termination-reason: null
         "session_id": null,
         "tool_run_id": "tool-20260817t12391786981168z",
         "source": "repo://.agora/tool-runs/tool-20260817t12391786981168z/RESULT.md",
-        "path": "/home/faguero/dev/agora-studio/.agora/activity.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/activity.md"
       },
       {
         "timestamp": "2026-08-17T12:39:28.181384Z",
@@ -4099,12 +4099,12 @@ termination-reason: null
         "session_id": null,
         "tool_run_id": "tool-20260817t12391786981168z",
         "source": "repo://.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp/events.md",
-        "path": "/home/faguero/dev/agora-studio/.agora/activity.md"
+        "path": "/home/faguero/dev-agora/agora-studio/.agora/activity.md"
       }
     ]
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,220p' agora_studio/static/activity-model.js; sed -n '1,180p' agora_studio/static/styles.css; sed -n '181,360p' agora_studio/static/styles.css" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,220p' agora_studio/static/activity-model.js; sed -n '1,180p' agora_studio/static/styles.css; sed -n '181,360p' agora_studio/static/styles.css" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     "use strict";
     
@@ -4509,7 +4509,7 @@ termination-reason: null
     
     2026-08-17T12:40:06.021258Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "sed -n '1,220p' agora_studio/__main__.py; python -m compileall -q agora_studio tests; node --check agora_studio/static/activity-model.js; node --check agora_studio/static/app.js" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,220p' agora_studio/__main__.py; python -m compileall -q agora_studio tests; node --check agora_studio/static/activity-model.js; node --check agora_studio/static/app.js" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     """Command-line entry point."""
     
@@ -4554,7 +4554,7 @@ termination-reason: null
     codex
     The implementation passes all 28 offline tests, Python compilation, JavaScript syntax checks, and a real `agora activity list` shape check. A live loopback launch is unavailable in this sandbox (`EPERM`), so I’m recording automated verification with that limitation explicitly, without claiming human browser verification.
     exec
-    /usr/bin/zsh -lc "rg --files .agora/tools/repository .agora/tools | sort | sed -n '1,240p'; agora artifact add --help; agora evidence add --help; agora work transition --help" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "rg --files .agora/tools/repository .agora/tools | sort | sed -n '1,240p'; agora artifact add --help; agora evidence add --help; agora work transition --help" in /home/faguero/dev-agora/agora-studio
      succeeded in 382ms:
     usage: agora artifact add [-h] --swarm SWARM --work WORK --kind KIND --uri URI
                               --by BY
@@ -4589,7 +4589,7 @@ termination-reason: null
     
     2026-08-17T12:40:35.868005Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "sed -n '1,240p' .agora/tools/repository/TOOL.md; sed -n '1,260p' .agora/tools/repository/operations/commit.md; sed -n '1,200p' .agora/tools/repository/operations/status.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,240p' .agora/tools/repository/TOOL.md; sed -n '1,260p' .agora/tools/repository/operations/commit.md; sed -n '1,200p' .agora/tools/repository/operations/status.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/tool/v1"
@@ -4643,7 +4643,7 @@ termination-reason: null
     2026-08-17T12:40:40.960493Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     apply patch
     patch: completed
-    /home/faguero/dev/agora-studio/docs/evidence/activity-timeline-mvp-verification.md
+    /home/faguero/dev-agora/agora-studio/docs/evidence/activity-timeline-mvp-verification.md
     diff --git a/docs/evidence/activity-timeline-mvp-verification.md b/docs/evidence/activity-timeline-mvp-verification.md
     new file mode 100644
     index 0000000000000000000000000000000000000000..67f307d3262621820b3e814f40ffdde11b7dcd82
@@ -4737,7 +4737,7 @@ termination-reason: null
     +dependency was introduced.
     
     exec
-    /usr/bin/zsh -lc 'agora artifact add --swarm studio-activity-timeline --work activity-timeline-mvp --kind verification-report --uri repo://docs/evidence/activity-timeline-mvp-verification.md --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora artifact add --swarm studio-activity-timeline --work activity-timeline-mvp --kind verification-report --uri repo://docs/evidence/activity-timeline-mvp-verification.md --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 73ms:
     {
       "id": "activity-timeline-mvp",
@@ -4774,7 +4774,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -4832,7 +4832,7 @@ termination-reason: null
     +dependency was introduced.
     
     exec
-    /usr/bin/zsh -lc 'agora evidence add --swarm studio-activity-timeline --work activity-timeline-mvp --type automated-verification --result success --artifact repo://docs/evidence/activity-timeline-mvp-verification.md --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora evidence add --swarm studio-activity-timeline --work activity-timeline-mvp --type automated-verification --result success --artifact repo://docs/evidence/activity-timeline-mvp-verification.md --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 51ms:
     {
       "id": "activity-timeline-mvp",
@@ -4870,7 +4870,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -4931,7 +4931,7 @@ termination-reason: null
     codex
     Automated verification is now durable in Agora as both a `verification-report` artifact and successful `automated-verification` evidence. The developer transition is ready, so I’m moving the work from `implementing` to `verifying`; the next gate belongs to the human Spec Owner.
     exec
-    /usr/bin/zsh -lc 'agora work transition --swarm studio-activity-timeline --work activity-timeline-mvp --to verifying --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work transition --swarm studio-activity-timeline --work activity-timeline-mvp --to verifying --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 54ms:
     {
       "id": "activity-timeline-mvp",
@@ -4969,7 +4969,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-activity-timeline/work/activity-timeline-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -5027,7 +5027,7 @@ termination-reason: null
     +dependency was introduced.
     
     exec
-    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 78ms:
     [
       {
@@ -5097,7 +5097,7 @@ termination-reason: null
     +dependency was introduced.
     
     exec
-    /usr/bin/zsh -lc 'agora next --actor project:owner' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora next --actor project:owner' in /home/faguero/dev-agora/agora-studio
      succeeded in 75ms:
     [
       {
@@ -5170,7 +5170,7 @@ termination-reason: null
     codex
     Work advanced from `implementing` to `verifying` and stopped at the human gate.
     
-    - Registered [verification evidence](/home/faguero/dev/agora-studio/docs/evidence/activity-timeline-mvp-verification.md) as an Agora artifact and successful evidence.
+    - Registered [verification evidence](/home/faguero/dev-agora/agora-studio/docs/evidence/activity-timeline-mvp-verification.md) as an Agora artifact and successful evidence.
     - All 28 offline tests passed; Python and JavaScript syntax checks passed.
     - Live browser verification was unavailable because the sandbox denied loopback binding (`EPERM`).
     - Completion now requires `spec-owner` approval from `project:owner`. No approval or completion was attempted with developer authority.

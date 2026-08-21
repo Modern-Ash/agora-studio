@@ -13,14 +13,14 @@ termination-reason: null
 
     Transitioned `read-only-mvp` from `planned` to `implementing` as `project:agent`.
     
-    Agora durably recorded the transition in [events.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md). No implementation, artifact, evidence, or subsequent transition was performed.
+    Agora durably recorded the transition in [events.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md). No implementation, artifact, evidence, or subsequent transition was performed.
 
 ## Standard error
 
     2026-08-17T00:10:28.464869Z ERROR codex_models_manager::cache: failed to load models cache: missing field `base_instructions` at line 95 column 5
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -34,9 +34,9 @@ termination-reason: null
     codex
     I’m using the `agora-execute` skill because this request is to perform exactly one role-permitted Agora transition. I’ll first read its full operating instructions and the session context, then persist only the authorized artifact/evidence or stop at the required approval boundary.
     exec
-    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' /home/faguero/dev/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00101786936228z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00101786936228z/CONTEXT.md
     ---
     name: "agora-execute"
     description: "Execute a permitted transition step for an assigned Agora role"
@@ -79,14 +79,14 @@ termination-reason: null
     
     2026-08-17T00:10:36.705892Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -146,7 +146,7 @@ termination-reason: null
     codex
     The session assigns `project:agent` the `developer` role on `read-only-mvp`, currently `planned`. I’m now loading every required project, method, role, tool, and work record before asking Agora for the single permitted transition.
     exec
-    /usr/bin/zsh -lc "for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md; do printf '\\n===== %s =====\\n' \""'$f"; sed -n '"'1,400p' \""'$f"; done' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-mvp/SWARM.md .agora/swarms/studio-mvp/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-mvp/work/read-only-mvp/WORK.md .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md .agora/swarms/studio-mvp/work/read-only-mvp/approvals.md; do printf '\\n===== %s =====\\n' \""'$f"; sed -n '"'1,400p' \""'$f"; done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     
     ===== .agora/project.md =====
@@ -477,15 +477,15 @@ termination-reason: null
     
     2026-08-17T00:10:47.758965Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc 'printenv AGORA_ACTOR AGORA_SESSION' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'printenv AGORA_ACTOR AGORA_SESSION' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     project:agent
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00101786936228z/SESSION.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00101786936228z/SESSION.md
     
     exec
-    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
     exec
-    /usr/bin/zsh -lc 'agora usage status --swarm studio-mvp --work read-only-mvp' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora usage status --swarm studio-mvp --work read-only-mvp' in /home/faguero/dev-agora/agora-studio
      succeeded in 99ms:
     [
       {
@@ -522,7 +522,7 @@ termination-reason: null
     codex
     Agora derives one available edge: developer execution from `planned` to `implementing`; there is no work budget limit. The reported session blocker is this currently running controller session, so I’m checking its immutable limits and the exact transition/gate contract before persisting that edge.
     exec
-    /usr/bin/zsh -lc "sed -n '1,280p' \""'$AGORA_SESSION"; rg -n '"'planned|implementing|transition' .agora/methods/spec-driven .agora/swarms/studio-mvp/work/read-only-mvp .agora -g '*.md' -g '*.json' -g '*.yaml' -g '*.yml' | head -n 240; agora work transition --help" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,280p' \""'$AGORA_SESSION"; rg -n '"'planned|implementing|transition' .agora/methods/spec-driven .agora/swarms/studio-mvp/work/read-only-mvp .agora -g '*.md' -g '*.json' -g '*.yaml' -g '*.yml' | head -n 240; agora work transition --help" in /home/faguero/dev-agora/agora-studio
      succeeded in 93ms:
     usage: agora work transition [-h] --swarm SWARM --work WORK --to TO --by BY
     
@@ -535,7 +535,7 @@ termination-reason: null
     
     2026-08-17T00:11:04.120732Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "sed -n '1,10000p' .agora/methods/spec-driven/transitions/03-planned-implementing.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/events.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/interactions.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,10000p' .agora/methods/spec-driven/transitions/03-planned-implementing.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/events.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/interactions.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/transition/v1"
@@ -991,7 +991,7 @@ termination-reason: null
     codex
     The `planned → implementing` edge has no additional gate, is restricted to `developer`, and the assigned role is authorized. I’ll persist only that state transition through Agora; implementation files, tools, evidence, and any following transition are outside this single permitted action.
     exec
-    /usr/bin/zsh -lc 'agora work transition --swarm studio-mvp --work read-only-mvp --to implementing --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work transition --swarm studio-mvp --work read-only-mvp --to implementing --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 70ms:
     {
       "id": "read-only-mvp",
@@ -1021,7 +1021,7 @@ termination-reason: null
       ],
       "evidence_results": [],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1036,7 +1036,7 @@ termination-reason: null
     codex
     The transition is durable and attributed to `project:agent`. I’m doing one read-only validation of the work record and event trail, then I’ll stop at the boundary before any implementation or evidence generation.
     exec
-    /usr/bin/zsh -lc 'agora work show --swarm studio-mvp --work read-only-mvp; tail -n 5 .agora/swarms/studio-mvp/work/read-only-mvp/events.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work show --swarm studio-mvp --work read-only-mvp; tail -n 5 .agora/swarms/studio-mvp/work/read-only-mvp/events.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 59ms:
     {
       "id": "read-only-mvp",
@@ -1066,7 +1066,7 @@ termination-reason: null
       ],
       "evidence_results": [],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1086,6 +1086,6 @@ termination-reason: null
     codex
     Transitioned `read-only-mvp` from `planned` to `implementing` as `project:agent`.
     
-    Agora durably recorded the transition in [events.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md). No implementation, artifact, evidence, or subsequent transition was performed.
+    Agora durably recorded the transition in [events.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/events.md). No implementation, artifact, evidence, or subsequent transition was performed.
     tokens used
     49.562

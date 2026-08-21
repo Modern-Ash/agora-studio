@@ -14,7 +14,7 @@ termination-reason: null
     Advanced `foundation` from `implementing` to `verifying`.
     
     - 11 automated tests passed.
-    - Registered the [verification report](/home/faguero/dev/agora-studio/docs/evidence/studio-foundation-verification.md) as a `test-report` artifact.
+    - Registered the [verification report](/home/faguero/dev-agora/agora-studio/docs/evidence/studio-foundation-verification.md) as a `test-report` artifact.
     - Recorded successful `automated-verification` evidence.
     - `agora validate` passes with no issues.
     
@@ -25,7 +25,7 @@ termination-reason: null
     2026-08-17T02:02:58.920542Z ERROR codex_models_manager::cache: failed to load models cache: missing field `base_instructions` at line 95 column 5
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -39,9 +39,9 @@ termination-reason: null
     codex
     I’m using the `agora-execute` skill because this request is specifically to perform the next governed transition for the assigned Agora role. I’ll read the session context and the skill instructions, execute only the permitted action, persist evidence through Agora, and stop at the required boundary.
     exec
-    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' /home/faguero/dev/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' /home/faguero/dev-agora/agora-studio/.agents/skills/agora-execute/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z/CONTEXT.md
     ---
     name: "agora-execute"
     description: "Execute a permitted transition step for an assigned Agora role"
@@ -83,15 +83,15 @@ termination-reason: null
     Execution request: `$ARGUMENTS`
     
     exec
-    /usr/bin/zsh -lc 'context_path="$AGORA_CONTEXT"; wc -l "$context_path"; sed -n '"'1,320p' \""'$context_path"; printenv AGORA_ACTOR; printenv AGORA_SESSION' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'context_path="$AGORA_CONTEXT"; wc -l "$context_path"; sed -n '"'1,320p' \""'$context_path"; printenv AGORA_ACTOR; printenv AGORA_SESSION' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    60 /home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z/CONTEXT.md
+    60 /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z/CONTEXT.md
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -147,7 +147,7 @@ termination-reason: null
     4. Do not treat unrecorded conversation history as durable project state.
     5. Stop when policy, permissions, or a gate cannot be satisfied.
     project:agent
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z/SESSION.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-foundation-foundation-20260817t01251786940740z-retry-20260817t02021786942978z/SESSION.md
     
     codex
     The session assigns me as the `developer` on work item `foundation`, currently in `implementing`. I’m now loading every required project, method, role, work, and policy file before deriving the next transition; no project changes have been made yet.
@@ -173,10 +173,10 @@ termination-reason: null
       echo "===== $file ====="
       wc -l "$file"
       sed -n '"'1,1000p' \""'$file"
-    done' in /home/faguero/dev/agora-studio
+    done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     exec
-    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 71ms:
     [
       {
@@ -210,7 +210,7 @@ termination-reason: null
     
     sed -n '1,260p' docs/specs/studio-foundation.md
     
-    if [ -f package.json ]; then sed -n '1,240p' package.json; fi" in /home/faguero/dev/agora-studio
+    if [ -f package.json ]; then sed -n '1,240p' package.json; fi" in /home/faguero/dev-agora/agora-studio
      succeeded in 88ms:
     {
       "swarm_id": "studio-foundation",
@@ -518,7 +518,7 @@ termination-reason: null
     sed -n '1,220p' agora_studio/__main__.py
     sed -n '1,420p' tests/test_foundation.py
     sed -n '1,320p' docs/evidence/studio-foundation-verification.md
-    sed -n '1,260p' .agora/swarms/studio-foundation/work/foundation/events.md" in /home/faguero/dev/agora-studio
+    sed -n '1,260p' .agora/swarms/studio-foundation/work/foundation/events.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     [build-system]
     requires = ["setuptools>=77"]
@@ -1091,7 +1091,7 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc 'agora evidence --help
     agora artifact --help
-    agora work transition --help' in /home/faguero/dev/agora-studio
+    agora work transition --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 357ms:
     usage: agora evidence [-h] {add,prepare} ...
     
@@ -1122,7 +1122,7 @@ termination-reason: null
     
     exec
     /usr/bin/zsh -lc 'agora evidence add --help
-    agora artifact add --help' in /home/faguero/dev/agora-studio
+    agora artifact add --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 211ms:
     usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
                               --result {success,failure} --by BY
@@ -1150,47 +1150,47 @@ termination-reason: null
     codex
     The implementation and a verification report already exist in the working tree from earlier governed work. I’m validating them now with the documented offline test command; if successful, I’ll register the report as an artifact, add successful evidence, and advance only to `verifying`.
     exec
-    /usr/bin/zsh -lc 'python3 -m unittest discover -s tests -v' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'python3 -m unittest discover -s tests -v' in /home/faguero/dev-agora/agora-studio
      succeeded in 5ms:
     2026-08-17T02:04:03.124441Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
-    /usr/bin/zsh -lc "rg -n \"evidence add|artifact add|verification-report|test-report\" .agora README.md docs -g '*.md' | sed -n '1,260p'" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "rg -n \"evidence add|artifact add|verification-report|test-report\" .agora README.md docs -g '*.md' | sed -n '1,260p'" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     .agora/artifacts/ARTIFACTS.md:8:`source-code`, `test-report`, `review`, `approval`, `ticket`, `build`, and `deployment`.
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z/RESULT.md:569:    /usr/bin/zsh -lc "sed -n '1,10000p' .agora/methods/spec-driven/transitions/02-clarified-planned.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/events.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/interactions.md; agora work transition --help; agora artifact add --help; agora usage status --help" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z/RESULT.md:569:    /usr/bin/zsh -lc "sed -n '1,10000p' .agora/methods/spec-driven/transitions/02-clarified-planned.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/events.md; sed -n '1,10000p' .agora/swarms/studio-mvp/work/read-only-mvp/interactions.md; agora work transition --help; agora artifact add --help; agora usage status --help" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00081786936137z-retry-20260817t00091786936162z/RESULT.md:579:    usage: agora artifact add [-h] --swarm SWARM --work WORK --kind KIND --uri URI
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00301786937413z/RESULT.md:1122:    /usr/bin/zsh -lc 'agora evidence add --help' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00301786937413z/RESULT.md:1122:    /usr/bin/zsh -lc 'agora evidence add --help' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00301786937413z/RESULT.md:1134:    usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00301786937413z/RESULT.md:1391:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type session-spec-verification --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00301786937413z/RESULT.md:1391:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type session-spec-verification --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00391786937978z/RESULT.md:686:    agora evidence add --help
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00391786937978z/RESULT.md:698:    usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00391786937978z/RESULT.md:1285:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type human-approval-boundary --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00391786937978z/RESULT.md:1285:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type human-approval-boundary --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:1100:    agora evidence add --help
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:1103:    usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:1165:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type completion-readiness --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00121786936351z/RESULT.md:959:    /usr/bin/zsh -lc "sed -n '260,520p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; agora evidence add --help; agora validate --help" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00121786936351z/RESULT.md:959:    /usr/bin/zsh -lc "sed -n '260,520p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; agora evidence add --help; agora validate --help" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00121786936351z/RESULT.md:961:    usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00121786936351z/RESULT.md:1056:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type spec-verification --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev/agora-studio
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00381786937911z/RESULT.md:698:    /usr/bin/zsh -lc 'agora evidence --help; agora evidence add --help; agora approval --help; agora work transition --help; agora inbox --actor project:owner' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00121786936351z/RESULT.md:1056:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type spec-verification --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev-agora/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00381786937911z/RESULT.md:698:    /usr/bin/zsh -lc 'agora evidence --help; agora evidence add --help; agora approval --help; agora work transition --help; agora inbox --actor project:owner' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00381786937911z/RESULT.md:709:    usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00381786937911z/RESULT.md:1199:    /usr/bin/zsh -lc 'agora validate && agora evidence add --swarm studio-mvp --work read-only-mvp --type developer-approval-readiness --result success --by project:agent --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md && agora validate && agora next --actor project:owner' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00381786937911z/RESULT.md:1199:    /usr/bin/zsh -lc 'agora validate && agora evidence add --swarm studio-mvp --work read-only-mvp --type developer-approval-readiness --result success --by project:agent --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md && agora validate && agora next --actor project:owner' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00331786937632z/RESULT.md:502:    agora evidence add --help
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00331786937632z/RESULT.md:506:    usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00331786937632z/RESULT.md:774:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type session-developer-verification --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev/agora-studio
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00371786937827z/RESULT.md:519:    /usr/bin/zsh -lc "wc -l .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; sed -n '1,320p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; agora evidence add --help" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00331786937632z/RESULT.md:774:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type session-developer-verification --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev-agora/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00371786937827z/RESULT.md:519:    /usr/bin/zsh -lc "wc -l .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; sed -n '1,320p' .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md; agora evidence add --help" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00371786937827z/RESULT.md:521:    usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00371786937827z/RESULT.md:763:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type session-gate-verification --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev/agora-studio
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z/RESULT.md:1535:    /usr/bin/zsh -lc 'agora evidence add --help' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00371786937827z/RESULT.md:763:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type session-gate-verification --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev-agora/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z/RESULT.md:1535:    /usr/bin/zsh -lc 'agora evidence add --help' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z/RESULT.md:1539:    usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z/RESULT.md:1603:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type completion-gate-prerequisites --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev/agora-studio
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00411786938068z/RESULT.md:928:    /usr/bin/zsh -lc 'agora evidence add --help' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00351786937716z/RESULT.md:1603:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type completion-gate-prerequisites --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md' in /home/faguero/dev-agora/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00411786938068z/RESULT.md:928:    /usr/bin/zsh -lc 'agora evidence add --help' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00411786938068z/RESULT.md:930:    usage: agora evidence add [-h] --swarm SWARM --work WORK --type TYPE
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00411786938068z/RESULT.md:945:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type session-project-validation --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md && tail -n 8 .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md && agora next --actor project:owner' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00411786938068z/RESULT.md:945:    /usr/bin/zsh -lc 'agora evidence add --swarm studio-mvp --work read-only-mvp --type session-project-validation --result success --by "$AGORA_ACTOR" --artifact .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md && tail -n 8 .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md && agora next --actor project:owner' in /home/faguero/dev-agora/agora-studio
     
     2026-08-17T02:04:12.904957Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
     /usr/bin/zsh -lc "sed -n '1,220p' .agora/artifacts/ARTIFACTS.md
-    find .agora/methods/spec-driven/transitions -maxdepth 1 -type f -print -exec sed -n '1,220p' {} \\;" in /home/faguero/dev/agora-studio
+    find .agora/methods/spec-driven/transitions -maxdepth 1 -type f -print -exec sed -n '1,220p' {} \\;" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/artifact-catalog/v1"
@@ -1262,7 +1262,7 @@ termination-reason: null
     2026-08-17T02:04:17.666642Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
     exec
     /usr/bin/zsh -lc "sed -n '1,180p' .agora/swarms/studio-mvp/work/read-only-mvp/artifacts.md
-    sed -n '1,220p' .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md" in /home/faguero/dev/agora-studio
+    sed -n '1,220p' .agora/swarms/studio-mvp/work/read-only-mvp/evidence.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/artifacts/v1"
@@ -1297,7 +1297,7 @@ termination-reason: null
     exec
     /usr/bin/zsh -lc 'agora artifact add --swarm studio-foundation --work foundation --kind test-report --uri repo://docs/evidence/studio-foundation-verification.md --by "$AGORA_ACTOR"
     agora evidence add --swarm studio-foundation --work foundation --type automated-verification --result success --by "$AGORA_ACTOR" --artifact repo://docs/evidence/studio-foundation-verification.md
-    agora work transition --swarm studio-foundation --work foundation --to verifying --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    agora work transition --swarm studio-foundation --work foundation --to verifying --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 385ms:
     {
       "id": "foundation",
@@ -1328,7 +1328,7 @@ termination-reason: null
       ],
       "evidence_results": [],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1369,7 +1369,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1410,7 +1410,7 @@ termination-reason: null
         "success"
       ],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-foundation/work/foundation",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-foundation/work/foundation",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -1430,7 +1430,7 @@ termination-reason: null
     sed -n '1,180p' .agora/swarms/studio-foundation/work/foundation/artifacts.md
     sed -n '1,180p' .agora/swarms/studio-foundation/work/foundation/evidence.md
     sed -n '1,180p' .agora/swarms/studio-foundation/work/foundation/approvals.md
-    git status --short --branch" in /home/faguero/dev/agora-studio
+    git status --short --branch" in /home/faguero/dev-agora/agora-studio
      succeeded in 267ms:
     {
       "ok": true,
@@ -1553,7 +1553,7 @@ termination-reason: null
     Advanced `foundation` from `implementing` to `verifying`.
     
     - 11 automated tests passed.
-    - Registered the [verification report](/home/faguero/dev/agora-studio/docs/evidence/studio-foundation-verification.md) as a `test-report` artifact.
+    - Registered the [verification report](/home/faguero/dev-agora/agora-studio/docs/evidence/studio-foundation-verification.md) as a `test-report` artifact.
     - Recorded successful `automated-verification` evidence.
     - `agora validate` passes with no issues.
     

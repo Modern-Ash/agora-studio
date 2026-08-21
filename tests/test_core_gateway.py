@@ -33,6 +33,7 @@ class ReadServiceStub:
             default_method="scrum",
             max_delegation_depth=3,
             created_at="2026-08-20T12:00:00Z",
+            gate_decision_ttl_seconds=3600,
             branch="main",
             counts={},
             swarm_statuses={},
@@ -97,8 +98,8 @@ class LegacyWorkControlService(ReadServiceStub):
                 return {
                     "schema": "agora/application/work-control-projection/v1",
                     "work": {"schema": "agora/application/work-item-detail/v1"},
-                    "lifecycle": {"schema": "agora/application/lifecycle-projection/v2"},
-                    "traceability": {"schema": "agora/application/traceability-summary/v1"},
+                    "lifecycle": {"schema": "agora/application/lifecycle-projection/v3"},
+                    "traceability": {"schema": "agora/application/traceability-summary/v2"},
                     "specification_history": {
                         "schema": "agora/application/specification-summary/v1"
                     },
@@ -113,7 +114,7 @@ class LegacyWorkControlService(ReadServiceStub):
 class CoreGatewayTests(unittest.TestCase):
     def test_maps_public_dtos_and_exact_activity_filters(self) -> None:
         service = ReadServiceStub()
-        gateway = CoreReadGateway(lambda _: service, core_version="0.7.0")
+        gateway = CoreReadGateway(lambda _: service, core_version="0.8.0")
 
         overview = gateway.project_overview(Path("/tmp/demo"))
         events = gateway.activity(
@@ -131,24 +132,24 @@ class CoreGatewayTests(unittest.TestCase):
             ),
         )
 
-        self.assertEqual(overview["schema"], "agora/application/project-overview/v1")
+        self.assertEqual(overview["schema"], "agora/application/project-overview/v2")
         self.assertEqual(events[0]["schema"], "agora/application/activity-entry/v1")
         self.assertEqual(service.activity_filters.actor_id, "project:owner")
         self.assertEqual(service.activity_filters.limit, 25)
 
     def test_rejects_incompatible_core_and_schema(self) -> None:
-        with self.assertRaisesRegex(CoreGatewayError, ">=0.7,<0.8"):
+        with self.assertRaisesRegex(CoreGatewayError, ">=0.8,<0.9"):
             CoreReadGateway(lambda _: ReadServiceStub(), core_version="0.4.9").core_version
-        with self.assertRaisesRegex(CoreGatewayError, "project-overview/v1"):
-            CoreReadGateway(lambda _: BadService(), core_version="0.7.0").project_overview(
+        with self.assertRaisesRegex(CoreGatewayError, "project-overview/v2"):
+            CoreReadGateway(lambda _: BadService(), core_version="0.8.0").project_overview(
                 Path("/tmp/demo")
             )
         with self.assertRaises(CoreGatewayError) as legacy:
             CoreReadGateway(
-                lambda _: LegacyWorkControlService(), core_version="0.7.0"
+                lambda _: LegacyWorkControlService(), core_version="0.8.0"
             ).work_control(Path("/tmp/demo"), "delivery", "release")
         self.assertEqual(legacy.exception.code, "core.schema-incompatible")
-        self.assertIn("work-control-projection/v2", legacy.exception.reason)
+        self.assertIn("work-control-projection/v3", legacy.exception.reason)
 
     def test_reports_core_absence_without_cli_fallback(self) -> None:
         with patch("agora_studio.core.version", side_effect=PackageNotFoundError("missing")):
@@ -193,7 +194,7 @@ class CoreGatewayTests(unittest.TestCase):
         for label, mutation in mutations.items():
             with self.subTest(label=label):
                 gateway = CoreReadGateway(
-                    lambda _: NestedSchemaService(mutation), core_version="0.7.0"
+                    lambda _: NestedSchemaService(mutation), core_version="0.8.0"
                 )
                 with self.assertRaises(CoreGatewayError) as captured:
                     gateway.work_control(Path("/tmp/demo"), "delivery", "release")
@@ -207,7 +208,7 @@ class ProjectStoreTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             selected = store.select(directory)
             self.assertEqual(selected.project, Path(directory).name)
-            self.assertEqual(selected.core_version, "0.7.0")
+            self.assertEqual(selected.core_version, "0.8.0")
             with self.assertRaises(Exception):
                 store.select(Path(directory) / "missing")
             self.assertEqual(store.selection, selected)
@@ -219,7 +220,7 @@ class ProjectStoreTests(unittest.TestCase):
             store.select(directory)
             payload = store.overview()
         self.assertEqual(payload["schema"], "agora-studio/api/overview/v1")
-        self.assertEqual(payload["status"]["schema"], "agora/application/project-overview/v1")
+        self.assertEqual(payload["status"]["schema"], "agora/application/project-overview/v2")
         self.assertTrue(payload["actors"])
         self.assertTrue(payload["work"])
 

@@ -11,7 +11,7 @@ termination-reason: null
 
 ## Standard output
 
-    Transitioned `visual-console-mvp` from `planned` to `implementing` as `project:agent` using Agora. The durable state is recorded in [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6).
+    Transitioned `visual-console-mvp` from `planned` to `implementing` as `project:agent` using Agora. The durable state is recorded in [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6).
     
     Stopped after this single permitted action; no implementation or additional evidence was produced.
 
@@ -22,7 +22,7 @@ termination-reason: null
     2026-08-17T02:14:35.894134Z  WARN codex_core_skills::loader: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -38,9 +38,9 @@ termination-reason: null
     codex
     I’m using the `agora-execute` skill because this request is to perform exactly one role-permitted Agora transition. I’ll load the assigned session context and protocol, persist the required artifact/evidence through Agora, and stop at any approval or authority boundary.
     exec
-    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' .agents/skills/agora-execute/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "printenv AGORA_CONTEXT && sed -n '1,240p' .agents/skills/agora-execute/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md
     ---
     name: "agora-execute"
     description: "Execute a permitted transition step for an assigned Agora role"
@@ -82,15 +82,15 @@ termination-reason: null
     Execution request: `$ARGUMENTS`
     
     exec
-    /usr/bin/zsh -lc 'wc -l "$AGORA_CONTEXT" && sed -n '"'1,260p' \""'$AGORA_CONTEXT" && printenv AGORA_ACTOR && printenv AGORA_SESSION' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'wc -l "$AGORA_CONTEXT" && sed -n '"'1,260p' \""'$AGORA_CONTEXT" && printenv AGORA_ACTOR && printenv AGORA_SESSION' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    60 /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md
+    60 /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/CONTEXT.md
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -146,7 +146,7 @@ termination-reason: null
     4. Do not treat unrecorded conversation history as durable project state.
     5. Stop when policy, permissions, or a gate cannot be satisfied.
     project:agent
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/SESSION.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-visual-console-visual-console-mvp-20260817t02141786943675z/SESSION.md
     
     codex
     The session assigns `project:agent` the `developer` role on `visual-console-mvp`, currently `planned`. I’m now reading every protocol, role, tool, work, and evidence file required by the session before deriving the single allowed transition.
@@ -154,7 +154,7 @@ termination-reason: null
     /usr/bin/zsh -lc "for f in .agora/project.md .agora/constitution.md .agora/PROTOCOL.md .agora/STANDARDS.md .agora/tools/TOOLS.md .agora/swarms/studio-visual-console/SWARM.md .agora/swarms/studio-visual-console/events.md .agora/methods/spec-driven/METHOD.md .agora/methods/spec-driven/PROTOCOL.md .agora/methods/spec-driven/TOOLS.md .agora/methods/spec-driven/roles/developer.md .agora/environments/README.md .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/work/visual-console-mvp/artifacts.md .agora/swarms/studio-visual-console/work/visual-console-mvp/evidence.md .agora/swarms/studio-visual-console/work/visual-console-mvp/approvals.md
     do
       sed -n '1,400p' \""'$f"
-    done' in /home/faguero/dev/agora-studio
+    done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     schema: "agora/project/v1"
@@ -454,7 +454,7 @@ termination-reason: null
     | --- | --- | --- | --- |
     
     exec
-    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 87ms:
     [
       {
@@ -480,7 +480,7 @@ termination-reason: null
     codex
     Agora’s durable controller selects one edge only: `planned → implementing` for the developer. The reported running-session blocker is this active session itself, so I’m checking its immutable limits and the transition command, then I’ll record that edge—without starting implementation work.
     exec
-    /usr/bin/zsh -lc "sed -n '1,240p' \""'$AGORA_SESSION"; agora work transition --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,240p' \""'$AGORA_SESSION"; agora work transition --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 67ms:
     usage: agora work transition [-h] --swarm SWARM --work WORK --to TO --by BY
     
@@ -492,7 +492,7 @@ termination-reason: null
       --by BY
     
     exec
-    /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to implementing --by "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora work transition --swarm studio-visual-console --work visual-console-mvp --to implementing --by "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 59ms:
     {
       "id": "visual-console-mvp",
@@ -526,7 +526,7 @@ termination-reason: null
       ],
       "evidence_results": [],
       "approval_roles": [],
-      "path": "/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
+      "path": "/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp",
       "child_work_refs": [],
       "budget_limits": null,
       "operational_status": "active",
@@ -538,12 +538,12 @@ termination-reason: null
     }
     
     exec
-    /usr/bin/zsh -lc "rg -n '"'^state:|work.transitioned|planned|implementing'"' .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/events.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "rg -n '"'^state:|work.transitioned|planned|implementing'"' .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md .agora/swarms/studio-visual-console/events.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     .agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6:state: "implementing"
     
     codex
-    Transitioned `visual-console-mvp` from `planned` to `implementing` as `project:agent` using Agora. The durable state is recorded in [WORK.md](/home/faguero/dev/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6).
+    Transitioned `visual-console-mvp` from `planned` to `implementing` as `project:agent` using Agora. The durable state is recorded in [WORK.md](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-visual-console/work/visual-console-mvp/WORK.md:6).
     
     Stopped after this single permitted action; no implementation or additional evidence was produced.
     tokens used

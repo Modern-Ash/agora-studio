@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import time
 import unicodedata
 from dataclasses import dataclass
 from importlib import import_module
@@ -12,33 +13,33 @@ from threading import RLock
 from typing import Callable, Mapping, Protocol
 
 CORE_DISTRIBUTION = "agora-framework"
-MINIMUM_CORE_VERSION = (0, 7, 0)
-MAXIMUM_CORE_VERSION = (0, 8, 0)
+MINIMUM_CORE_VERSION = (0, 8, 0)
+MAXIMUM_CORE_VERSION = (0, 9, 0)
 
 SCHEMAS = {
-    "overview": "agora/application/project-overview/v1",
+    "overview": "agora/application/project-overview/v2",
     "actor": "agora/application/actor-summary/v1",
     "swarm": "agora/application/swarm-summary/v1",
     "work": "agora/application/work-item-summary/v1",
-    "work_detail": "agora/application/work-item-detail/v2",
+    "work_detail": "agora/application/work-item-detail/v3",
     "session": "agora/application/session-summary/v1",
-    "method": "agora/application/method-summary/v1",
+    "method": "agora/application/method-summary/v2",
     "method_state": "agora/application/method-state-summary/v1",
     "transition": "agora/application/transition-summary/v1",
-    "gate": "agora/application/gate-summary/v1",
+    "gate": "agora/application/gate-summary/v2",
     "gate_blocker": "agora/application/gate-blocker-summary/v1",
     "activity": "agora/application/activity-entry/v1",
-    "lifecycle": "agora/application/lifecycle-projection/v2",
-    "artifact": "agora/application/artifact-summary/v2",
-    "evidence": "agora/application/evidence-summary/v2",
+    "lifecycle": "agora/application/lifecycle-projection/v3",
+    "artifact": "agora/application/artifact-summary/v3",
+    "evidence": "agora/application/evidence-summary/v3",
     "approval": "agora/application/approval-summary/v2",
-    "traceability": "agora/application/traceability-summary/v1",
+    "traceability": "agora/application/traceability-summary/v2",
     "specification": "agora/application/specification-summary/v1",
     "specification_revision_summary": "agora/application/specification-revision-summary/v1",
     "specification_revision": "agora/application/specification-revision-detail/v1",
-    "gate_option": "agora/application/gate-decision-option-summary/v2",
-    "gate_options": "agora/application/gate-decision-options-projection/v2",
-    "work_control": "agora/application/work-control-projection/v2",
+    "gate_option": "agora/application/gate-decision-option-summary/v3",
+    "gate_options": "agora/application/gate-decision-options-projection/v3",
+    "work_control": "agora/application/work-control-projection/v3",
 }
 
 
@@ -199,13 +200,13 @@ class CoreReadGateway:
             except PackageNotFoundError as error:
                 raise CoreGatewayError(
                     "core.unavailable",
-                    "Agora Core is not installed; Studio requires agora-framework>=0.7,<0.8",
+                    "Agora Core is not installed; Studio requires agora-framework>=0.8,<0.9",
                 ) from error
         parsed = _version_tuple(self._core_version)
         if not MINIMUM_CORE_VERSION <= parsed < MAXIMUM_CORE_VERSION:
             raise CoreGatewayError(
                 "core.version-incompatible",
-                f"Agora Studio requires Agora Core >=0.7,<0.8; found {self._core_version}",
+                f"Agora Studio requires Agora Core >=0.8,<0.9; found {self._core_version}",
             )
 
     def _module(self) -> object:
@@ -249,38 +250,76 @@ class CoreReadGateway:
         return payload
 
     def _one(self, project: Path, method: str, schema: str, *args: object) -> dict[str, object]:
-        service = self._service(project)
-        try:
-            return self._payload(getattr(service, method)(*args), schema)
-        except CoreGatewayError:
-            raise
-        except Exception as error:
-            module = self._module()
-            application_error = getattr(module, "AgoraApplicationError", ())
-            if application_error and isinstance(error, application_error):
-                safe = error.to_dict()
-                raise CoreGatewayError(str(safe["code"]), str(safe["message"])) from error
-            raise CoreGatewayError(
-                "core.read-failed", "Agora Core could not read the project"
-            ) from error
+        retries = 2
+        delay = 0.05
+        last_error: Exception | None = None
+        for attempt in range(retries + 1):
+            service = self._service(project)
+            try:
+                return self._payload(getattr(service, method)(*args), schema)
+            except CoreGatewayError:
+                raise
+            except Exception as error:
+                module = self._module()
+                application_error = getattr(module, "AgoraApplicationError", ())
+                if application_error and isinstance(error, application_error):
+                    safe = error.to_dict()
+                    code = str(safe.get("code", ""))
+                    retryable = bool(safe.get("retryable"))
+                    if code == "durable-state.concurrent-edit" and retryable and attempt < retries:
+                        last_error = error
+                        time.sleep(delay)
+                        continue
+                    raise CoreGatewayError(code, str(safe["message"])) from error
+                raise CoreGatewayError(
+                    "core.read-failed", "Agora Core could not read the project"
+                ) from error
+        assert last_error is not None
+        module = self._module()
+        application_error = getattr(module, "AgoraApplicationError", ())
+        if isinstance(last_error, application_error):  # type: ignore[arg-type]
+            safe = last_error.to_dict()  # type: ignore[attr-defined]
+            raise CoreGatewayError(str(safe["code"]), str(safe["message"])) from last_error
+        raise CoreGatewayError(
+            "core.read-failed", "Agora Core could not read the project"
+        ) from last_error
 
     def _many(
         self, project: Path, method: str, schema: str, *args: object
     ) -> list[dict[str, object]]:
-        service = self._service(project)
-        try:
-            return [self._payload(item, schema) for item in getattr(service, method)(*args)]
-        except CoreGatewayError:
-            raise
-        except Exception as error:
-            module = self._module()
-            application_error = getattr(module, "AgoraApplicationError", ())
-            if application_error and isinstance(error, application_error):
-                safe = error.to_dict()
-                raise CoreGatewayError(str(safe["code"]), str(safe["message"])) from error
-            raise CoreGatewayError(
-                "core.read-failed", "Agora Core could not read the project"
-            ) from error
+        retries = 2
+        delay = 0.05
+        last_error: Exception | None = None
+        for attempt in range(retries + 1):
+            service = self._service(project)
+            try:
+                return [self._payload(item, schema) for item in getattr(service, method)(*args)]
+            except CoreGatewayError:
+                raise
+            except Exception as error:
+                module = self._module()
+                application_error = getattr(module, "AgoraApplicationError", ())
+                if application_error and isinstance(error, application_error):
+                    safe = error.to_dict()
+                    code = str(safe.get("code", ""))
+                    retryable = bool(safe.get("retryable"))
+                    if code == "durable-state.concurrent-edit" and retryable and attempt < retries:
+                        last_error = error
+                        time.sleep(delay)
+                        continue
+                    raise CoreGatewayError(code, str(safe["message"])) from error
+                raise CoreGatewayError(
+                    "core.read-failed", "Agora Core could not read the project"
+                ) from error
+        assert last_error is not None
+        module = self._module()
+        application_error = getattr(module, "AgoraApplicationError", ())
+        if isinstance(last_error, application_error):  # type: ignore[arg-type]
+            safe = last_error.to_dict()  # type: ignore[attr-defined]
+            raise CoreGatewayError(str(safe["code"]), str(safe["message"])) from last_error
+        raise CoreGatewayError(
+            "core.read-failed", "Agora Core could not read the project"
+        ) from last_error
 
     def project_overview(self, project: Path) -> dict[str, object]:
         return self._one(project, "project_overview", SCHEMAS["overview"])
@@ -512,6 +551,24 @@ class CoreReadGateway:
                 raise CoreGatewayError(
                     "core.schema-incompatible",
                     "Core gate option contains inconsistent typed evidence references",
+                )
+            evidence_content = option.get("evidence_content_sha256")
+            if not isinstance(evidence_content, dict) or any(
+                not isinstance(k, str)
+                or not k
+                or (v is not None and re.fullmatch(r"[0-9a-f]{64}", v) is None)
+                for k, v in evidence_content.items()
+            ):
+                raise CoreGatewayError(
+                    "core.schema-incompatible",
+                    "Core response field "
+                    f"gate_decision_options.options[{index}].evidence_content_sha256 "
+                    "must map references to SHA-256 or null",
+                )
+            if set(evidence_content.keys()) != set(evidence_references):
+                raise CoreGatewayError(
+                    "core.schema-incompatible",
+                    "Core gate option contains inconsistent evidence_content_sha256 keys",
                 )
         return payload
 

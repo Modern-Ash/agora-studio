@@ -14,8 +14,8 @@ termination-reason: null
     Stopped at the required human approval gate.
     
     - Work remains `verifying`.
-    - All criteria, required artifacts, and successful [evidence](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md) are present.
-    - `project:owner` must add the missing `spec-owner` [approval](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/approvals.md).
+    - All criteria, required artifacts, and successful [evidence](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md) are present.
+    - `project:owner` must add the missing `spec-owner` [approval](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/approvals.md).
     - No unauthorized approval, completion, rework, or block was recorded.
 
 ## Standard error
@@ -23,7 +23,7 @@ termination-reason: null
     2026-08-17T00:17:42.143532Z ERROR codex_models_manager::cache: failed to load models cache: missing field `base_instructions` at line 95 column 5
     OpenAI Codex v0.146.0
     --------
-    workdir: /home/faguero/dev/agora-studio
+    workdir: /home/faguero/dev-agora/agora-studio
     model: gpt-5.6-sol
     provider: openai
     approval: never
@@ -37,12 +37,12 @@ termination-reason: null
     codex
     I’m using the Agora execution workflow because this request is governed by the assigned session role. I’ll load `AGORA_CONTEXT`, follow its operational instructions, perform exactly the next permitted action, persist the resulting artifact/evidence, and stop at any approval or authority boundary.
     exec
-    /usr/bin/zsh -lc 'printenv AGORA_CONTEXT' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'printenv AGORA_CONTEXT' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-    /home/faguero/dev/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00171786936661z/CONTEXT.md
+    /home/faguero/dev-agora/agora-studio/.agora/sessions/run-studio-mvp-read-only-mvp-20260817t00171786936661z/CONTEXT.md
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,240p' .agents/skills/agora-execute/SKILL.md" in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,240p' .agents/skills/agora-execute/SKILL.md" in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     ---
     name: "agora-execute"
@@ -85,14 +85,14 @@ termination-reason: null
     Execution request: `$ARGUMENTS`
     
     exec
-    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc "sed -n '1,320p' \""'$AGORA_CONTEXT"' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     # Agora session context
     
     ## Project
     
     - Name: agora-studio
-    - Root: `/home/faguero/dev/agora-studio`
+    - Root: `/home/faguero/dev-agora/agora-studio`
     
     ## Runtime
     
@@ -155,7 +155,7 @@ termination-reason: null
     do
       printf '\\n### FILE: %s\\n' \""'$file"
       sed -n '"'1,1000p' \""'$file"
-    done' in /home/faguero/dev/agora-studio
+    done' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     
     ### FILE: .agora/project.md
@@ -487,7 +487,7 @@ termination-reason: null
     | --- | --- | --- | --- |
     
     exec
-    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora next --actor "$AGORA_ACTOR"' in /home/faguero/dev-agora/agora-studio
      succeeded in 81ms:
     [
       {
@@ -513,7 +513,7 @@ termination-reason: null
     codex
     Agora confirms the developer’s only state edge from `verifying` is rework back to `implementing`. Existing verification and readiness evidence are successful, so that edge would be improper; the remaining completion gate is Spec Owner approval. I’m checking the governed handoff/approval commands so I can durably place that decision with the human owner without changing the work state.
     exec
-    /usr/bin/zsh -lc 'agora --help' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora --help' in /home/faguero/dev-agora/agora-studio
      succeeded in 62ms:
     usage: agora [-h]
                  {configure,init,adopt,quickstart,doctor,self-test,status,validate,next,inbox,run,resume,environment,lock,coordination,upgrade,registry,trust,pack,start,method,tool,delegation,actor,swarm,work,gate,session,action,event,artifact,evidence,usage,approval} ...
@@ -567,7 +567,7 @@ termination-reason: null
     environment. Precedence: Agora defaults < ~/.agora < project .agora < swarm.
     
     exec
-    /usr/bin/zsh -lc 'rg -n "handoff|approval request|request.*approval|completion-readiness" .agora src tests README.md pyproject.toml 2>/dev/null | head -240' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'rg -n "handoff|approval request|request.*approval|completion-readiness" .agora src tests README.md pyproject.toml 2>/dev/null | head -240' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
     .agora/commands/handoff.md:2:name: "agora-handoff"
     .agora/commands/handoff.md:6:# Create a governed handoff
@@ -596,7 +596,7 @@ termination-reason: null
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:245:    8. Stop and request approval when a policy or gate cannot be satisfied.
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:414:    allowed-actions: ["actor.key.rotate", "actor.runtime.update", "work.transition", "work.block", "work.resume", "work.delegate", "delegation.collect", "artifact.add", "evidence.add", "usage.add", "handoff.create"]
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:487:    | completion-readiness | success | .agora/swarms/studio-mvp/work/read-only-mvp/SPEC.md | project:agent | 2026-08-17T00:15:33.337500Z |
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:717:    /usr/bin/zsh -lc 'rg -n "awaiting.*approval|missing-approvals|work block|operational-status.*blocked|handoff" .agora README.md docs src tests 2>/dev/null | head -240' in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:717:    /usr/bin/zsh -lc 'rg -n "awaiting.*approval|missing-approvals|work block|operational-status.*blocked|handoff" .agora README.md docs src tests 2>/dev/null | head -240' in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:719:    .agora/PROTOCOL.md:13:6. Use a handoff when responsibility moves between a human, AI agent, service, or swarm.
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:720:    .agora/commands/handoff.md:2:name: "agora-handoff"
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:721:    .agora/commands/handoff.md:6:# Create a governed handoff
@@ -624,12 +624,12 @@ termination-reason: null
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:743:    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:551:    The durable state already contains successful developer verification. The remaining gate appears to be Spec Owner approval, which this developer identity cannot grant. I’m checking the session policy and Agora’s authorized handoff/approval commands so the next durable action is an attributable request—not an unauthorized completion.
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:744:    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:555:    agora handoff --help 2>&1 || true
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:745:    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:610:    agora: error: argument command: invalid choice: 'handoff' (choose from configure, init, quickstart, doctor, self-test, status, validate, next, inbox, run, resume, environment, lock, coordination, upgrade, registry, trust, pack, start, method, tool, delegation, actor, swarm, work, gate, session, action, event, artifact, evidence, usage, approval)
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:746:    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:669:    rg -n \"verifying|completed|approval|handoff\" .agora/methods/spec-driven .agora/swarms/studio-mvp -g '*.md' -g '*.yaml' -g '*.json'" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:746:    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:669:    rg -n \"verifying|completed|approval|handoff\" .agora/methods/spec-driven .agora/swarms/studio-mvp -g '*.md' -g '*.yaml' -g '*.json'" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:749:    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:774:    .agora/methods/spec-driven/roles/spec-owner.md:6:allowed-actions: ["actor.key.recover", "actor.key.revoke", "actor.key.rotate", "actor.runtime.update", "swarm.assign", "work.create", "work.decompose", "work.cancel", "delegation.accept", "delegation.reject", "delegation.cancel", "criterion.satisfy", "work.transition", "artifact.add", "evidence.add", "usage.add", "approval.add", "approval.delegate", "approval.delegation.revoke", "gate.waive", "handoff.create"]
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:750:    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:776:    .agora/methods/spec-driven/roles/developer.md:6:allowed-actions: ["actor.key.rotate", "actor.runtime.update", "work.transition", "work.block", "work.resume", "work.delegate", "delegation.collect", "artifact.add", "evidence.add", "usage.add", "handoff.create"]
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:751:    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:792:    rg -n \"handoff.create|handoff|Handoff\" . --glob '"'!node_modules'"' --glob '"'!dist'"' --glob '"'!build'"' --glob '"'!*lock*'"' | head -200" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:751:    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:792:    rg -n \"handoff.create|handoff|Handoff\" . --glob '"'!node_modules'"' --glob '"'!dist'"' --glob '"'!build'"' --glob '"'!*lock*'"' | head -200" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:752:    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:817:    /usr/bin/zsh -lc "rg --hidden -n \"handoff.create|handoff|Handoff\" . --glob '"'!node_modules'"' --glob '"'!.git'"' --glob '"'!dist'"' --glob '"'!build'"' | head -240
-    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:753:    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:818:    rg --hidden -n \"class.*Handoff|handoff\" /home/faguero/dev/agora 2>/dev/null | head -240" in /home/faguero/dev/agora-studio
+    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:753:    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:818:    rg --hidden -n \"class.*Handoff|handoff\" /home/faguero/dev/agora 2>/dev/null | head -240" in /home/faguero/dev-agora/agora-studio
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:754:    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:820:    ./.agora/commands/handoff.md:2:name: "agora-handoff"
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:755:    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:821:    ./.agora/commands/handoff.md:6:# Create a governed handoff
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:756:    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:822:    ./.agora/commands/handoff.md:10:the role. Use `agora swarm handoff`; the current holder needs `handoff.create`, while an actor
@@ -811,16 +811,16 @@ termination-reason: null
     .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md:932:    .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:998:    /home/faguero/dev/agora/src/agora/workspace.py:10349:                                "lifecycle-action.handoff-mismatch",
     
     exec
-    /usr/bin/zsh -lc 'tail -260 .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'tail -260 .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00151786936550z/RESULT.md' in /home/faguero/dev-agora/agora-studio
      succeeded in 0ms:
-        .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:669:    rg -n \"verifying|completed|approval|handoff\" .agora/methods/spec-driven .agora/swarms/studio-mvp -g '*.md' -g '*.yaml' -g '*.json'" in /home/faguero/dev/agora-studio
+        .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:669:    rg -n \"verifying|completed|approval|handoff\" .agora/methods/spec-driven .agora/swarms/studio-mvp -g '*.md' -g '*.yaml' -g '*.json'" in /home/faguero/dev-agora/agora-studio
         .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:725:          "Gate completion failed: unsatisfied=[], missing-artifacts=[], successful-evidence=true, missing-approvals=[spec-owner]"
         .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:745:          "Gate completion failed: unsatisfied=[], missing-artifacts=[], successful-evidence=true, missing-approvals=[spec-owner]"
         .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:774:    .agora/methods/spec-driven/roles/spec-owner.md:6:allowed-actions: ["actor.key.recover", "actor.key.revoke", "actor.key.rotate", "actor.runtime.update", "swarm.assign", "work.create", "work.decompose", "work.cancel", "delegation.accept", "delegation.reject", "delegation.cancel", "criterion.satisfy", "work.transition", "artifact.add", "evidence.add", "usage.add", "approval.add", "approval.delegate", "approval.delegation.revoke", "gate.waive", "handoff.create"]
         .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:776:    .agora/methods/spec-driven/roles/developer.md:6:allowed-actions: ["actor.key.rotate", "actor.runtime.update", "work.transition", "work.block", "work.resume", "work.delegate", "delegation.collect", "artifact.add", "evidence.add", "usage.add", "handoff.create"]
-        .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:792:    rg -n \"handoff.create|handoff|Handoff\" . --glob '"'!node_modules'"' --glob '"'!dist'"' --glob '"'!build'"' --glob '"'!*lock*'"' | head -200" in /home/faguero/dev/agora-studio
+        .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:792:    rg -n \"handoff.create|handoff|Handoff\" . --glob '"'!node_modules'"' --glob '"'!dist'"' --glob '"'!build'"' --glob '"'!*lock*'"' | head -200" in /home/faguero/dev-agora/agora-studio
         .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:817:    /usr/bin/zsh -lc "rg --hidden -n \"handoff.create|handoff|Handoff\" . --glob '"'!node_modules'"' --glob '"'!.git'"' --glob '"'!dist'"' --glob '"'!build'"' | head -240
-        .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:818:    rg --hidden -n \"class.*Handoff|handoff\" /home/faguero/dev/agora 2>/dev/null | head -240" in /home/faguero/dev/agora-studio
+        .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:818:    rg --hidden -n \"class.*Handoff|handoff\" /home/faguero/dev/agora 2>/dev/null | head -240" in /home/faguero/dev-agora/agora-studio
         .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:820:    ./.agora/commands/handoff.md:2:name: "agora-handoff"
         .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:821:    ./.agora/commands/handoff.md:6:# Create a governed handoff
         .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md:822:    ./.agora/commands/handoff.md:10:the role. Use `agora swarm handoff`; the current holder needs `handoff.create`, while an actor
@@ -1031,7 +1031,7 @@ termination-reason: null
         exec
         /usr/bin/zsh -lc 'tail -220 .agora/sessions/run-studio-mvp-read-only-mvp-20260817t00141786936443z/RESULT.md
         agora swarm handoff --help
-        agora swarm handoffs --help 2>/dev/null || true' in /home/faguero/dev/agora-studio
+        agora swarm handoffs --help 2>/dev/null || true' in /home/faguero/dev-agora/agora-studio
          succeeded in 221ms:
         usage: agora swarm handoff [-h] [--id ID] --swarm SWARM --role ROLE
                                    --from FROM_ACTOR --to TO_ACTOR --by BY
@@ -1056,7 +1056,7 @@ termination-reason: null
         2026-08-17T00:16:59.009826Z ERROR codex_models_manager::manager: failed to renew cache TTL: missing field `base_instructions` at line 95 column 5
         exec
         /usr/bin/zsh -lc 'rg -n "def add_approval|operational_status.*approval|approval.*operational_status|Cannot approve.*blocked|blocked.*approval" /home/faguero/dev/agora/src/agora /home/faguero/dev/agora/tests | head -200
-        rg -n "awaiting.*approval|missing approval|block.*approval|approval.*block" /home/faguero/dev/agora/docs /home/faguero/dev/agora/tests | head -200' in /home/faguero/dev/agora-studio
+        rg -n "awaiting.*approval|missing approval|block.*approval|approval.*block" /home/faguero/dev/agora/docs /home/faguero/dev/agora/tests | head -200' in /home/faguero/dev-agora/agora-studio
          succeeded in 0ms:
         /home/faguero/dev/agora/src/agora/workspace.py:4614:    def add_approval(self, data: AddApprovalInput) -> WorkRecord:
         /home/faguero/dev/agora/docs/domain-model.md:145:grantor. Only one active delegation may exist per work and role, and direct approval is blocked
@@ -1068,14 +1068,14 @@ termination-reason: null
         Stopped at the required human gate.
         
         - Work remains `verifying`.
-        - All criteria, artifacts, and [evidence](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md:10) are satisfied.
-        - [Spec Owner approval](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/approvals.md:8) from `project:owner` is missing.
+        - All criteria, artifacts, and [evidence](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md:10) are satisfied.
+        - [Spec Owner approval](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/approvals.md:8) from `project:owner` is missing.
         - No rework transition, duplicate evidence, block, or unauthorized approval was recorded. Blocking would prevent the pending approval.
         tokens used
         54.717
     
     exec
-    /usr/bin/zsh -lc 'agora gate --help && agora inbox --actor project:owner' in /home/faguero/dev/agora-studio
+    /usr/bin/zsh -lc 'agora gate --help && agora inbox --actor project:owner' in /home/faguero/dev-agora/agora-studio
      succeeded in 252ms:
     usage: agora gate [-h] {waive,waive-prepare,list} ...
     
@@ -1112,8 +1112,8 @@ termination-reason: null
     Stopped at the required human approval gate.
     
     - Work remains `verifying`.
-    - All criteria, required artifacts, and successful [evidence](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md) are present.
-    - `project:owner` must add the missing `spec-owner` [approval](/home/faguero/dev/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/approvals.md).
+    - All criteria, required artifacts, and successful [evidence](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/evidence.md) are present.
+    - `project:owner` must add the missing `spec-owner` [approval](/home/faguero/dev-agora/agora-studio/.agora/swarms/studio-mvp/work/read-only-mvp/approvals.md).
     - No unauthorized approval, completion, rework, or block was recorded.
     tokens used
     53.287

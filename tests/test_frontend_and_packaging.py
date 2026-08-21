@@ -16,9 +16,9 @@ PACKAGE = ROOT / "agora_studio"
 class PackagingTests(unittest.TestCase):
     def test_version_and_core_dependency_are_explicit(self) -> None:
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertEqual(agora_studio.__version__, "0.4.0")
+        self.assertEqual(agora_studio.__version__, "0.5.0")
         self.assertEqual(build_parser().parse_args(["--port", "7358"]).port, 7358)
-        self.assertIn('dependencies = ["agora-framework>=0.7,<0.8"]', pyproject)
+        self.assertIn('dependencies = ["agora-framework>=0.8,<0.9"]', pyproject)
         self.assertIn('version = { attr = "agora_studio.__version__" }', pyproject)
 
     def test_static_assets_are_packaged_and_exactly_allowlisted(self) -> None:
@@ -127,7 +127,7 @@ class FrontendContractTests(unittest.TestCase):
             expected_state: 'verifying', transition_target: 'completed', role_id: 'product-owner',
             evidence_references: ['repo://report']}};
           const command = ControlModel.command(option, '  reviewed  ');
-          if (command.schema !== 'agora/application/approve-gate-command/v3') process.exit(1);
+          if (command.schema !== 'agora/application/approve-gate-command/v4') process.exit(1);
           if (command.reason !== '  reviewed  ' || command.role_id !== 'product-owner') process.exit(2);
           if (command.precondition_digest !== null) process.exit(13);
           if (ControlModel.nextTab('summary', 'ArrowLeft') !== 'activity') process.exit(3);
@@ -138,8 +138,8 @@ class FrontendContractTests(unittest.TestCase):
           if (ControlModel.revisionToken('/one', 'delivery/release', 'working-tree') ===
               ControlModel.revisionToken('/two', 'delivery/release', 'working-tree')) process.exit(6);
           if (ControlModel.authenticationIssue({{authentication_required: false}}, null)) process.exit(7);
-          const exact = {{...option, command_schema: 'agora/application/approve-gate-command/v3',
-            reason: 'reviewed', evidence_references: ['repo://report'], precondition_digest: 'b'.repeat(64)}};
+          const exact = {{...option, command_schema: 'agora/application/approve-gate-command/v4',
+            reason: 'reviewed', evidence_references: ['repo://report'], evidence_content_sha256: {{'repo://report': 'c'.repeat(64)}}, precondition_digest: 'b'.repeat(64), prepared_at: new Date().toISOString(), expires_at: new Date(Date.now()+3600000).toISOString()}};
           if (ControlModel.preparationIssue(exact, option)) process.exit(8);
           if (!ControlModel.preparationIssue({{...exact, precondition_digest: 'bad'}}, option)) process.exit(9);
           const confirmed = ControlModel.preparedCommand(exact, auth);
