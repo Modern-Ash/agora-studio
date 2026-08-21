@@ -728,6 +728,8 @@ function gateErrorMessage(error) {
     "command.actor-unauthorized": "This actor does not hold the role or authority required by the Method Pack.",
     "command.gate-already-resolved": "This gate decision was already recorded. Refresh before continuing.",
     "command.stale-precondition": "The work state changed after this view loaded. The projection has been refreshed.",
+    "command.governed-material-stale": "The work state changed after this view loaded. The projection has been refreshed.",
+    "lifecycle.precondition-failed": "The work state changed after this view loaded. The projection has been refreshed.",
     "command.evidence-missing": "Required durable evidence is missing or no longer satisfies the gate.",
     "command.signature-required": "This actor requires a signed lifecycle action before the decision can be recorded.",
     "command.persistence-failed": "Core could not persist the complete decision; no partial result is shown.",
@@ -785,7 +787,14 @@ async function prepareGateDecision(work, detail) {
   } catch (error) {
     if (generation !== state.generation || state.gateAction !== action) return;
     action.error = gateErrorMessage(error);
-    if (["command.stale-precondition", "command.gate-already-resolved"].includes(error.code)) {
+    if (
+      [
+        "command.stale-precondition",
+        "command.governed-material-stale",
+        "lifecycle.precondition-failed",
+        "command.gate-already-resolved",
+      ].includes(error.code)
+    ) {
       try {
         await refreshAfterGateDecision(work);
       } catch {
@@ -867,7 +876,14 @@ async function submitGateDecision(work, detail) {
   } catch (error) {
     action.submitting = false;
     action.error = gateErrorMessage(error);
-    if (["command.stale-precondition", "command.gate-already-resolved"].includes(error.code)) {
+    if (
+      [
+        "command.stale-precondition",
+        "command.governed-material-stale",
+        "lifecycle.precondition-failed",
+        "command.gate-already-resolved",
+      ].includes(error.code)
+    ) {
       const preservedError = action.error;
       resetGatePreparation(action);
       action.error = preservedError;

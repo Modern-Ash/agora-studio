@@ -79,6 +79,7 @@ _COMMAND_STATUS = {
     "command.gate-already-resolved": 409,
     "command.stale-precondition": 409,
     "command.governed-material-stale": 409,
+    "lifecycle.precondition-failed": 409,
     "command.preparation-expired": 410,
     "command.evidence-missing": 422,
     "gate.evidence-missing": 422,
