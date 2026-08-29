@@ -8,6 +8,8 @@ Agora Studio is the experimental, local-first web control plane for Agora projec
 renders operational state through Agora Core 0.8 application services and offers one governed
 mutation: approving or rejecting an exact gate option calculated by Core.
 
+Developed by [Modern Ash](https://modern-ash.com/).
+
 > [!WARNING]
 > Studio is experimental software. Keep it on loopback and review sensitive projects before
 > opening them.
@@ -190,5 +192,6 @@ for the exercised contracts, browser coverage, distribution smoke, and deliberat
 
 ## Contributing and license
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Agora Studio is licensed under the
-[Apache License 2.0](LICENSE).
+See [CONTRIBUTING.md](CONTRIBUTING.md). Agora Studio is developed by
+[Modern Ash](https://modern-ash.com/) and licensed under the
+[Apache License 2.0](LICENSE), an open-source license.
