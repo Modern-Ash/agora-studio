@@ -12,6 +12,33 @@ mutation: approving or rejecting an exact gate option calculated by Core.
 > Studio is experimental software. Keep it on loopback and review sensitive projects before
 > opening them.
 
+## Lugar en el ecosistema Agora
+
+Studio es la superficie visual opcional de [Agora Core](https://github.com/Modern-Ash/agora). Core
+mantiene la política y la verdad durable; Studio la presenta para facilitar la adopción y permite
+revisar una aprobación gobernada sin crear un segundo motor de lifecycle.
+
+| Proyecto | Responsabilidad | Relación con Studio |
+| --- | --- | --- |
+| [Agora Core](https://github.com/Modern-Ash/agora) | Method Packs, actores, roles, gates, evidencia, persistencia Git/Markdown y servicios versionados | Dependencia de runtime y única autoridad de reglas |
+| [Agora Studio](https://github.com/Modern-Ash/agora-studio) | Dashboard local, work board, lifecycle, Activity, trazabilidad y revisión de gates | Este repositorio |
+| [Truco Agora](https://github.com/Modern-Ash/truco-agora) | Aplicación de referencia con juego, agentes LLM y proveedores locales | Demo de producto que muestra cómo se consume y evidencia un proceso gobernado |
+
+```mermaid
+flowchart LR
+    K[Agora Core] -->|servicios versionados| S[Agora Studio]
+    K -->|CLI + protocolo| P[Proyecto gobernado]
+    T[Truco Agora] -->|aplicación de ejemplo| P
+    S -->|lectura y aprobación explícita| P
+```
+
+Para entender el protocolo, la seguridad y la personalización del ciclo, comienza por la
+[documentación de Core](https://github.com/Modern-Ash/agora/tree/main/docs). Para ver una
+implementación completa en funcionamiento, continúa con el
+[README de Truco Agora](https://github.com/Modern-Ash/truco-agora#truco-agora). Studio no ejecuta
+la CLI ni interpreta los Markdown: recibe proyecciones calculadas por Core y conserva únicamente
+el proyecto seleccionado y su estado de sesión local.
+
 ## Architecture
 
 ```text
