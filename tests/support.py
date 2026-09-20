@@ -6,11 +6,12 @@ from agora_studio.core import ActivityQuery, CoreGatewayError
 
 
 class FakeGateway:
-    core_version = "0.8.0"
+    core_version = "0.9.0"
 
     def __init__(self) -> None:
         self.calls: list[tuple[object, ...]] = []
         self.failure: CoreGatewayError | None = None
+        self.projection: dict[str, object] | None = None
 
     def _record(self, *call: object) -> None:
         self.calls.append(call)
@@ -402,3 +403,11 @@ class FakeGateway:
             "specification_history": self.specification(project, swarm, work),
             "gate_decision_options": self.gate_options(project, swarm, work),
         }
+
+    def flavor_projection(
+        self, project: Path, selection_id: str, swarm: str, work: str
+    ) -> dict[str, object]:
+        self._record("flavor_projection", project, selection_id, swarm, work)
+        if self.projection is None:
+            raise CoreGatewayError("read.resource-not-found", "No flavor projector is registered")
+        return self.projection

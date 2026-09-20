@@ -19,7 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
-dependencies = ["agora-framework>=0.8,<0.9"]
+dependencies = ["agora-framework>=0.9,<0.10"]
 
 [project.optional-dependencies]
 dev = [

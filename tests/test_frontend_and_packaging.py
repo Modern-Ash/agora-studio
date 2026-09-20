@@ -16,9 +16,9 @@ PACKAGE = ROOT / "agora_studio"
 class PackagingTests(unittest.TestCase):
     def test_version_and_core_dependency_are_explicit(self) -> None:
         pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertEqual(agora_studio.__version__, "0.5.0")
+        self.assertEqual(agora_studio.__version__, "0.6.0")
         self.assertEqual(build_parser().parse_args(["--port", "7358"]).port, 7358)
-        self.assertIn('dependencies = ["agora-framework>=0.8,<0.9"]', pyproject)
+        self.assertIn('dependencies = ["agora-framework>=0.9,<0.10"]', pyproject)
         self.assertIn('version = { attr = "agora_studio.__version__" }', pyproject)
 
     def test_static_assets_are_packaged_and_exactly_allowlisted(self) -> None:

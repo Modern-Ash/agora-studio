@@ -3,18 +3,22 @@
 from __future__ import annotations
 
 import re
+import secrets
 import time
 import unicodedata
 from dataclasses import dataclass
+from dataclasses import field as dataclass_field
 from importlib import import_module
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from threading import RLock
 from typing import Callable, Mapping, Protocol
 
+from .projection import ProjectionError, validate_projection
+
 CORE_DISTRIBUTION = "agora-framework"
-MINIMUM_CORE_VERSION = (0, 8, 0)
-MAXIMUM_CORE_VERSION = (0, 9, 0)
+MINIMUM_CORE_VERSION = (0, 9, 0)
+MAXIMUM_CORE_VERSION = (0, 10, 0)
 
 SCHEMAS = {
     "overview": "agora/application/project-overview/v2",
@@ -26,7 +30,7 @@ SCHEMAS = {
     "method": "agora/application/method-summary/v2",
     "method_state": "agora/application/method-state-summary/v1",
     "transition": "agora/application/transition-summary/v1",
-    "gate": "agora/application/gate-summary/v2",
+    "gate": "agora/application/gate-summary/v3",
     "gate_blocker": "agora/application/gate-blocker-summary/v1",
     "activity": "agora/application/activity-entry/v1",
     "lifecycle": "agora/application/lifecycle-projection/v3",
@@ -41,6 +45,8 @@ SCHEMAS = {
     "gate_options": "agora/application/gate-decision-options-projection/v3",
     "work_control": "agora/application/work-control-projection/v3",
 }
+AI_SDLC_PROJECTION_SCHEMA = "agora-ai-sdlc/studio-projection/v1"
+_SCOPE_ID = re.compile(r"[a-z0-9][a-z0-9._-]{0,127}\Z")
 
 
 class CoreGatewayError(Exception):
@@ -88,11 +94,24 @@ class ProjectSelection:
     path: Path
     project: str
     core_version: str
+    selection_id: str = dataclass_field(
+        default_factory=lambda: f"selected-{secrets.token_urlsafe(12)}"
+    )
 
     def as_dict(self) -> dict[str, str]:
         return {
             "schema": "agora-studio/api/project-selection/v1",
             "path": str(self.path),
+            "project": self.project,
+            "core_version": self.core_version,
+            "selection_id": self.selection_id,
+        }
+
+    def as_opaque_dict(self) -> dict[str, str]:
+        """Browser-safe identity for flows that must never expose a filesystem path."""
+        return {
+            "schema": "agora-studio/api/opaque-selection/v1",
+            "selection_id": self.selection_id,
             "project": self.project,
             "core_version": self.core_version,
         }
@@ -163,6 +182,9 @@ class ReadGateway(Protocol):
         self, project: Path, swarm: str, work: str, revision: str
     ) -> dict[str, object]: ...
     def work_control(self, project: Path, swarm: str, work: str) -> dict[str, object]: ...
+    def flavor_projection(
+        self, project: Path, selection_id: str, swarm: str, work: str
+    ) -> dict[str, object]: ...
 
 
 def _version_tuple(value: str) -> tuple[int, int, int]:
@@ -182,9 +204,11 @@ class CoreReadGateway:
         service_factory: Callable[[Path], object] | None = None,
         *,
         core_version: str | None = None,
+        flavor_projectors: tuple[object, ...] = (),
     ) -> None:
         self._service_factory = service_factory
         self._core_version = core_version
+        self._flavor_projectors = flavor_projectors
         self._bindings: object | None = None
 
     @property
@@ -200,13 +224,13 @@ class CoreReadGateway:
             except PackageNotFoundError as error:
                 raise CoreGatewayError(
                     "core.unavailable",
-                    "Agora Core is not installed; Studio requires agora-framework>=0.8,<0.9",
+                    "Agora Core is not installed; Studio requires agora-framework>=0.9,<0.10",
                 ) from error
         parsed = _version_tuple(self._core_version)
         if not MINIMUM_CORE_VERSION <= parsed < MAXIMUM_CORE_VERSION:
             raise CoreGatewayError(
                 "core.version-incompatible",
-                f"Agora Studio requires Agora Core >=0.8,<0.9; found {self._core_version}",
+                f"Agora Studio requires Agora Core >=0.9,<0.10; found {self._core_version}",
             )
 
     def _module(self) -> object:
@@ -227,7 +251,9 @@ class CoreReadGateway:
             return self._service_factory(project)
         module = self._module()
         try:
-            return module.AgoraReadService.from_path(project)  # type: ignore[attr-defined]
+            return module.AgoraReadService.from_path(  # type: ignore[attr-defined]
+                project, flavor_projectors=self._flavor_projectors
+            )
         except AttributeError as error:
             raise CoreGatewayError(
                 "core.version-incompatible", "AgoraReadService is unavailable"
@@ -603,6 +629,19 @@ class CoreReadGateway:
             )
         return [cls._nested({"item": value}, "item", schema, prefix=location) for value in values]
 
+    def flavor_projection(
+        self, project: Path, selection_id: str, swarm: str, work: str
+    ) -> dict[str, object]:
+        return self._one(
+            project,
+            "flavor_projection",
+            AI_SDLC_PROJECTION_SCHEMA,
+            AI_SDLC_PROJECTION_SCHEMA,
+            selection_id,
+            swarm,
+            work,
+        )
+
 
 class ProjectStore:
     """Atomically retain one validated project and expose Core-backed projections."""
@@ -702,4 +741,37 @@ class ProjectStore:
                 "limit": normalized.limit,
                 "limit_reached": len(events) >= normalized.limit,
             },
+        }
+
+    def ai_sdlc_projection(
+        self, selection_id: object, swarm_id: object, work_id: object
+    ) -> dict[str, object]:
+        """Return the validated, path-free AI-SDLC aggregate for the current selection."""
+        selection = self._selected("ai_sdlc_projection")
+        if selection_id != selection.selection_id:
+            raise SelectionError(
+                "ai_sdlc_projection",
+                "",
+                "the selection is no longer current; reopen the project",
+                "selection.stale",
+            )
+        for label, value in (("swarm", swarm_id), ("work", work_id)):
+            if not isinstance(value, str) or _SCOPE_ID.fullmatch(value) is None:
+                raise ProjectionError("projection.invalid-request", f"{label} is invalid")
+        assert isinstance(swarm_id, str) and isinstance(work_id, str)
+        payload = self._gateway.flavor_projection(
+            selection.path, selection.selection_id, swarm_id, work_id
+        )
+        projection = validate_projection(
+            payload,
+            selection_id=selection.selection_id,
+            project=selection.project,
+            swarm_id=swarm_id,
+            work_id=work_id,
+        )
+        return {
+            "schema": "agora-studio/api/ai-sdlc-projection/v1",
+            "selection": selection.as_opaque_dict(),
+            "scope": {"swarm_id": swarm_id, "work_id": work_id},
+            "projection": projection,
         }

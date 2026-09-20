@@ -11,6 +11,7 @@ const viewNames = {
   activity: "Durable activity",
   lifecycle: "Lifecycle",
   artifacts: "Artifacts",
+  "ai-sdlc": "AI-SDLC",
 };
 
 function newGateAction(key = null) {
@@ -68,6 +69,13 @@ const state = {
   artifactsError: "",
   artifactsWork: null,
   selectedArtifactsItem: null,
+  selectionId: "",
+  aiSdlcLoading: false,
+  aiSdlcRequest: null,
+  aiSdlc: null,
+  aiSdlcError: "",
+  aiSdlcWork: null,
+  aiSdlcNotice: "",
   view: "overview",
   loading: false,
   csrfToken: "",
@@ -249,7 +257,7 @@ function loadingRows(label = "Loading durable records") {
 function setLoading(loading, message) {
   state.loading = loading;
   nodes.open.disabled = loading;
-  nodes.refresh.disabled = loading || state.activityLoading || state.lifecycleLoading || state.artifactsLoading || !state.overview;
+  nodes.refresh.disabled = loading || state.activityLoading || state.lifecycleLoading || state.artifactsLoading || state.aiSdlcLoading || !state.overview;
   nodes.input.setAttribute("aria-busy", String(loading));
   nodes.refresh.classList.toggle("is-loading", loading);
   if (message) announce(message);
@@ -278,7 +286,18 @@ function resetProjectData() {
   state.artifactsLoading = false;
   state.artifacts = null;
   state.artifactsError = "";
+  resetAiSdlc();
   state.selectedTab = "summary";
+}
+
+function resetAiSdlc() {
+  state.aiSdlcRequest?.abort();
+  state.aiSdlcRequest = null;
+  state.aiSdlcLoading = false;
+  state.aiSdlc = null;
+  state.aiSdlcError = "";
+  state.aiSdlcWork = null;
+  state.aiSdlcNotice = "";
 }
 
 function setSelection(selection) {
@@ -305,7 +324,9 @@ function setSelection(selection) {
     state.artifactsError = "";
     state.artifactsWork = null;
     state.selectedArtifactsItem = null;
+    resetAiSdlc();
   }
+  state.selectionId = selection.selection_id || "";
   state.selectionPath = selection.path;
   nodes.selection.hidden = false;
   nodes.selectionName.textContent = selection.project;
@@ -1833,6 +1854,253 @@ async function loadArtifacts(message = "Loading artifacts") {
   }
 }
 
+function aiSdlcWorkPicker() {
+  const select = element("select", { id: "ai-sdlc-work-select", "aria-label": "Work item" });
+  select.append(element("option", { value: "", text: "Select work..." }));
+  (state.overview.work || []).forEach((work) => {
+    const value = `${work.swarm_id}/${work.id}`;
+    select.append(element("option", { value, text: `${work.title || work.id} - ${work.state}`, title: value }));
+  });
+  select.value = state.aiSdlcWork ? `${state.aiSdlcWork.swarm_id}/${state.aiSdlcWork.id}` : "";
+  select.addEventListener("change", () => {
+    const [swarmId, ...workParts] = select.value.split("/");
+    const workId = workParts.join("/");
+    state.aiSdlcWork = (state.overview.work || []).find((item) => item.swarm_id === swarmId && item.id === workId) || null;
+    state.aiSdlc = null;
+    state.aiSdlcError = "";
+    state.aiSdlcNotice = "";
+    if (state.aiSdlcWork) loadAiSdlc("Loading AI-SDLC projection");
+    else renderAiSdlc();
+  });
+  return select;
+}
+
+function aiSdlcSourcePill(source) {
+  const value = display(source, "unavailable");
+  return element("span", { className: `status-pill tone-${value === "unavailable" ? "neutral" : "good"} source-pill`, text: value });
+}
+
+function aiSdlcUnavailable(name, envelope, projection) {
+  const reason = envelope?.reason || {};
+  return element("section", { className: "ai-sdlc-card is-unavailable", "data-section": name, "data-status": "unavailable", "aria-labelledby": `ai-sdlc-${name}-title` }, [
+    element("div", { className: "card-heading" }, [
+      element("h3", { id: `ai-sdlc-${name}-title`, text: AiSdlcModel.label(projection, name) }),
+      element("span", { className: "status-pill tone-neutral", text: "Unavailable" }),
+    ]),
+    element("p", { className: "muted", text: display(reason.message, "This section is not projected.") }),
+    element("p", { className: "mono wrap-anywhere", text: display(reason.code, "projection.unavailable") }),
+  ]);
+}
+
+function aiSdlcCard(name, projection, body) {
+  return element("section", { className: "ai-sdlc-card", "data-section": name, "data-status": "available", "aria-labelledby": `ai-sdlc-${name}-title` }, [
+    element("div", { className: "card-heading" }, [
+      element("h3", { id: `ai-sdlc-${name}-title`, text: AiSdlcModel.label(projection, name) }),
+      element("span", { className: "status-pill tone-good", text: "Available" }),
+    ]),
+    ...body,
+  ]);
+}
+
+function aiSdlcLifecycle(value, projection) {
+  const states = Array.isArray(value.states) ? value.states : [];
+  const blocked = (Array.isArray(value.transitions) ? value.transitions : []).filter((item) => item.available !== true);
+  const chips = element("ol", { className: "ai-sdlc-states", "aria-label": "Lifecycle states" });
+  states.forEach((item) => {
+    const flags = AiSdlcModel.stateFlags(value, item);
+    const classes = ["ai-sdlc-state"];
+    if (flags.current) classes.push("is-current");
+    if (flags.terminal) classes.push("is-terminal");
+    const marks = [flags.current ? "current" : "", flags.initial ? "initial" : "", flags.terminal ? "terminal" : ""].filter(Boolean);
+    chips.append(element("li", { className: classes.join(" "), "data-state-id": item.id, ...(flags.current ? { "aria-current": "step" } : {}) }, [
+      element("span", { className: "state-id", text: AiSdlcModel.label(projection, item.id) }),
+      marks.length ? element("small", { text: marks.join(" / ") }) : null,
+    ]));
+  });
+  const transitions = element("ul", { className: "ai-sdlc-transitions", "aria-label": "Transitions" });
+  (Array.isArray(value.transitions) ? value.transitions : []).forEach((item) => {
+    const blockers = Array.isArray(item.blockers) ? item.blockers : [];
+    transitions.append(element("li", { className: item.available === true ? "is-open" : "is-blocked", "data-transition": `${item.source}>${item.target}` }, [
+      element("span", { className: "mono", text: `${item.source} → ${item.target}` }),
+      element("span", { className: `status-pill tone-${item.available === true ? "good" : "danger"}`, text: item.available === true ? "Available" : "Blocked" }),
+      ...blockers.map((blocker) => element("p", { className: "blocker-text", "data-code": display(blocker.code, ""), text: AiSdlcModel.label(projection, blocker.code) === String(blocker.code) ? blockerText(blocker) : `${AiSdlcModel.label(projection, blocker.code)} (${blockerText(blocker)})` })),
+    ]));
+  });
+  return [
+    definitionList([["Method", value.method], ["Current state", value.current_state], ["Terminal state", value.terminal_state], ["Blocked transitions", String(blocked.length)]]),
+    chips,
+    transitions.children.length ? transitions : element("p", { className: "muted", text: "No transitions are projected." }),
+  ];
+}
+
+function aiSdlcClarifications(value) {
+  const open = Array.isArray(value.open) ? value.open : [];
+  const resolved = Array.isArray(value.resolved) ? value.resolved : [];
+  const list = element("ul", { className: "ai-sdlc-queue", "aria-label": "Open clarifications" });
+  open.forEach((item) => list.append(element("li", { "data-clarification": item.id }, [
+    element("strong", { text: display(item.question, "Question not recorded") }),
+    element("small", { className: "mono", text: `${display(item.id)} - requested by ${display(item.requested_by)} - ${formatTime(item.created_at)}` }),
+  ])));
+  return [
+    definitionList([["Open", String(open.length)], ["Resolved", String(resolved.length)]]),
+    open.length ? list : element("p", { className: "muted", text: "No open clarifications." }),
+  ];
+}
+
+function aiSdlcSeparation(value) {
+  const blockers = Array.isArray(value.blockers) ? value.blockers : [];
+  return [
+    element("p", {}, [element("span", { className: `status-pill tone-${AiSdlcModel.decisionTone(value.decision)}`, "data-decision": display(value.decision, ""), text: display(value.decision, "unknown") })]),
+    definitionList([["Required dimensions", (value.required_dimensions || []).join(", ") || "None"]]),
+    ...blockers.map((blocker) => element("p", { className: "blocker-text", "data-code": display(blocker.code, ""), text: blockerText(blocker) })),
+  ];
+}
+
+function aiSdlcProvenance(value) {
+  const executions = Array.isArray(value.executions) ? value.executions : [];
+  if (!executions.length) return [element("p", { className: "muted", text: "No execution is associated with this work." })];
+  return executions.map((item) => {
+    const fields = ["runtime", "runtime_version", "provider", "model", "selection_reason"].map((key) => [key, AiSdlcModel.provenanceField(item[key])]);
+    const fallback = item.fallback || {};
+    return element("article", { className: "ai-sdlc-execution", "data-session": item.session_id }, [
+      element("h4", { className: "mono", text: `${display(item.session_id)} - ${display(item.actor)}` }),
+      ...fields.map(([key, field]) => element("div", { className: "provenance-row" }, [
+        element("span", { className: "provenance-key", text: titleCase(key) }),
+        element("span", { className: "mono wrap-anywhere", text: display(field.value, "Not recorded") }),
+        aiSdlcSourcePill(field.source),
+      ])),
+      element("div", { className: "provenance-row" }, [
+        element("span", { className: "provenance-key", text: "Fallback" }),
+        element("span", { className: "mono wrap-anywhere", text: fallback.used === true ? `used (from ${display(fallback.from)}: ${display(fallback.reason)})` : "not used" }),
+        aiSdlcSourcePill(fallback.source),
+      ]),
+    ]);
+  });
+}
+
+function aiSdlcMetrics(value) {
+  const items = Array.isArray(value.items) ? value.items : [];
+  return [
+    definitionList([["Window", value.window]]),
+    items.length ? element("ul", { className: "ai-sdlc-metrics" }, items.map((item) => element("li", { "data-metric": item.id }, [
+      element("span", { className: "metric-id", text: display(item.id) }),
+      element("strong", { text: AiSdlcModel.metricDisplay(item) }),
+      element("small", { className: "mono", text: display(item.source, "source not recorded") }),
+    ]))) : element("p", { className: "muted", text: "No metric window is available." }),
+  ];
+}
+
+const aiSdlcBuilders = {
+  lifecycle: aiSdlcLifecycle,
+  clarifications: (value) => aiSdlcClarifications(value),
+  separation: (value) => aiSdlcSeparation(value),
+  provenance: (value) => aiSdlcProvenance(value),
+  metrics: (value) => aiSdlcMetrics(value),
+};
+
+function aiSdlcContext(projection) {
+  const flavor = AiSdlcModel.section(projection, "flavor");
+  const profiles = AiSdlcModel.section(projection, "profiles");
+  const cards = [];
+  cards.push(AiSdlcModel.isAvailable(flavor)
+    ? aiSdlcCard("flavor", projection, [definitionList([["Flavor", `${display(flavor.value.name)} ${display(flavor.value.version, "")}`.trim()], ["Manifest", flavor.value.manifest_schema], ["Supported Core", flavor.value.supported_core]])])
+    : aiSdlcUnavailable("flavor", flavor, projection));
+  cards.push(AiSdlcModel.isAvailable(profiles)
+    ? aiSdlcCard("profiles", projection, [tags((Array.isArray(profiles.value) ? profiles.value : []).map((item) => `${item.id}${item.depth ? ` / ${item.depth}` : ""}${item.active === true ? " (active)" : ""}`), "No profile")])
+    : aiSdlcUnavailable("profiles", profiles, projection));
+  return cards;
+}
+
+function renderAiSdlcSkeleton() {
+  replaceContent(
+    sectionHeading("09 / Flavor projection", "AI-SDLC", "Loading the Core-verified projection."),
+    element("section", { className: "lifecycle-loading", "aria-busy": "true", "aria-label": "Loading AI-SDLC projection" }, [loadingRows("Loading AI-SDLC projection")]),
+  );
+}
+
+function renderAiSdlc() {
+  if (state.aiSdlcLoading && !state.aiSdlc) return renderAiSdlcSkeleton();
+  const heading = sectionHeading("09 / Flavor projection", "AI-SDLC", "Flavor, lifecycle, clarifications, provenance, review separation and Core-backed metrics for one work item.");
+  const picker = element("label", { className: "standalone-work-picker" }, [element("span", { className: "panel-label", text: "Work item" }), aiSdlcWorkPicker()]);
+  if (!state.aiSdlcWork) {
+    replaceContent(heading, element("div", { className: "empty-state compact-empty" }, [
+      element("span", { className: "empty-index", text: "09 / SELECT" }),
+      element("h2", { text: "Choose work to inspect." }),
+      element("p", { text: "The projection is read for one exact swarm and work item." }),
+      picker,
+    ]));
+    return;
+  }
+  if (!state.aiSdlc) {
+    const retry = element("button", { className: "primary-button", type: "button", text: "Retry" });
+    retry.addEventListener("click", () => loadAiSdlc());
+    replaceContent(heading, picker, element("div", { className: "error-panel", role: "alert", "data-ai-sdlc-error": "true" }, [
+      element("h2", { text: state.aiSdlcError ? "AI-SDLC projection is unavailable." : "Nothing loaded yet." }),
+      element("p", { text: state.aiSdlcError || "Retry to read the projection." }),
+      retry,
+    ]));
+    return;
+  }
+  const projection = state.aiSdlc.projection;
+  const children = [heading, picker];
+  if (state.aiSdlcError) {
+    const retry = element("button", { className: "secondary-button", type: "button", text: "Retry" });
+    retry.addEventListener("click", () => loadAiSdlc());
+    children.push(element("div", { className: "inline-error", role: "alert" }, [element("span", { text: `${state.aiSdlcError} The last verified view is still shown.` }), retry]));
+  }
+  if (state.aiSdlcNotice) children.push(element("div", { className: "partial-notice", role: "status", "data-ai-sdlc-notice": "true" }, [element("strong", { text: state.aiSdlcNotice })]));
+  const missing = AiSdlcModel.unavailableSections(projection);
+  children.push(element("p", { className: "ai-sdlc-meta mono", "data-snapshot": projection.project.snapshot, text: `Snapshot ${AiSdlcModel.shortSnapshot(projection)} - ${projection.project.swarm_id}/${projection.project.work_id}${missing.length ? ` - ${missing.length} section${missing.length === 1 ? "" : "s"} unavailable` : ""}` }));
+  children.push(element("div", { className: "ai-sdlc-grid" }, [
+    ...aiSdlcContext(projection),
+    ...AiSdlcModel.orderedSections(projection).map((name) => {
+      const envelope = AiSdlcModel.section(projection, name);
+      return AiSdlcModel.isAvailable(envelope)
+        ? aiSdlcCard(name, projection, aiSdlcBuilders[name](envelope.value, projection))
+        : aiSdlcUnavailable(name, envelope, projection);
+    }),
+  ]));
+  replaceContent(...children);
+}
+
+async function loadAiSdlc(message = "Loading AI-SDLC projection") {
+  if (!state.aiSdlcWork || state.aiSdlcLoading) return;
+  const request = ++state.generation;
+  const projectPath = state.selectionPath;
+  const scope = `${state.aiSdlcWork.swarm_id}/${state.aiSdlcWork.id}`;
+  const controller = new AbortController();
+  state.aiSdlcRequest = controller;
+  state.aiSdlcLoading = true;
+  state.aiSdlcError = "";
+  state.aiSdlcNotice = "";
+  nodes.refresh.disabled = true;
+  if (!state.aiSdlc) renderAiSdlcSkeleton();
+  announce(message);
+  try {
+    const query = `selection=${encodeURIComponent(state.selectionId)}&swarm=${encodeURIComponent(state.aiSdlcWork.swarm_id)}&work=${encodeURIComponent(state.aiSdlcWork.id)}`;
+    const payload = await requestJson(`${API_ROOT}/ai-sdlc/projection?${query}`, { signal: controller.signal });
+    if (request !== state.generation || projectPath !== state.selectionPath || scope !== `${state.aiSdlcWork?.swarm_id}/${state.aiSdlcWork?.id}`) return;
+    const previous = state.aiSdlc?.projection?.project?.snapshot;
+    const next = payload.projection.project.snapshot;
+    if (previous && previous !== next) state.aiSdlcNotice = "Durable state changed since the last read. The view was refreshed.";
+    state.aiSdlc = payload;
+    state.aiSdlcLoading = false;
+    renderAiSdlc();
+    announce(`AI-SDLC projection loaded for ${scope}.`);
+  } catch (error) {
+    if (error.name === "AbortError" || request !== state.generation || projectPath !== state.selectionPath) return;
+    state.aiSdlcError = error.message;
+    state.aiSdlcLoading = false;
+    renderAiSdlc();
+    announce(`AI-SDLC projection could not be loaded. ${error.message}`);
+  } finally {
+    if (request === state.generation) {
+      state.aiSdlcLoading = false;
+      syncChrome();
+    }
+  }
+}
+
 function definitionList(entries, className = "definition-list") {
   const list = element("dl", { className });
   entries.forEach(([label, value]) => {
@@ -1854,6 +2122,7 @@ function render() {
   else if (state.view === "sessions") renderSessions();
   else if (state.view === "lifecycle") renderLifecycle();
   else if (state.view === "artifacts") renderArtifacts();
+  else if (state.view === "ai-sdlc") renderAiSdlc();
   else renderActivity();
 }
 
@@ -1879,6 +2148,9 @@ function switchView(view) {
   }
   if (view === "artifacts") {
     if (state.artifactsWork && !state.artifacts) loadArtifacts();
+  }
+  if (view === "ai-sdlc") {
+    if (state.aiSdlcWork && !state.aiSdlc) loadAiSdlc();
   }
 }
 
@@ -2032,6 +2304,8 @@ nodes.refresh.addEventListener("click", () => {
     loadLifecycle("Refreshing lifecycle");
   } else if (state.view === "artifacts" && state.artifactsWork) {
     loadArtifacts("Refreshing artifacts");
+  } else if (state.view === "ai-sdlc" && state.aiSdlcWork) {
+    loadAiSdlc("Refreshing AI-SDLC projection");
   } else {
     resetProjectData();
     loadOverview("Refreshing verified process status");

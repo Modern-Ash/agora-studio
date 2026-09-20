@@ -114,7 +114,7 @@ class LegacyWorkControlService(ReadServiceStub):
 class CoreGatewayTests(unittest.TestCase):
     def test_maps_public_dtos_and_exact_activity_filters(self) -> None:
         service = ReadServiceStub()
-        gateway = CoreReadGateway(lambda _: service, core_version="0.8.0")
+        gateway = CoreReadGateway(lambda _: service, core_version="0.9.0")
 
         overview = gateway.project_overview(Path("/tmp/demo"))
         events = gateway.activity(
@@ -138,15 +138,15 @@ class CoreGatewayTests(unittest.TestCase):
         self.assertEqual(service.activity_filters.limit, 25)
 
     def test_rejects_incompatible_core_and_schema(self) -> None:
-        with self.assertRaisesRegex(CoreGatewayError, ">=0.8,<0.9"):
+        with self.assertRaisesRegex(CoreGatewayError, ">=0.9,<0.10"):
             CoreReadGateway(lambda _: ReadServiceStub(), core_version="0.4.9").core_version
         with self.assertRaisesRegex(CoreGatewayError, "project-overview/v2"):
-            CoreReadGateway(lambda _: BadService(), core_version="0.8.0").project_overview(
+            CoreReadGateway(lambda _: BadService(), core_version="0.9.0").project_overview(
                 Path("/tmp/demo")
             )
         with self.assertRaises(CoreGatewayError) as legacy:
             CoreReadGateway(
-                lambda _: LegacyWorkControlService(), core_version="0.8.0"
+                lambda _: LegacyWorkControlService(), core_version="0.9.0"
             ).work_control(Path("/tmp/demo"), "delivery", "release")
         self.assertEqual(legacy.exception.code, "core.schema-incompatible")
         self.assertIn("work-control-projection/v3", legacy.exception.reason)
@@ -194,7 +194,7 @@ class CoreGatewayTests(unittest.TestCase):
         for label, mutation in mutations.items():
             with self.subTest(label=label):
                 gateway = CoreReadGateway(
-                    lambda _: NestedSchemaService(mutation), core_version="0.8.0"
+                    lambda _: NestedSchemaService(mutation), core_version="0.9.0"
                 )
                 with self.assertRaises(CoreGatewayError) as captured:
                     gateway.work_control(Path("/tmp/demo"), "delivery", "release")
@@ -208,7 +208,7 @@ class ProjectStoreTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             selected = store.select(directory)
             self.assertEqual(selected.project, Path(directory).name)
-            self.assertEqual(selected.core_version, "0.8.0")
+            self.assertEqual(selected.core_version, "0.9.0")
             with self.assertRaises(Exception):
                 store.select(Path(directory) / "missing")
             self.assertEqual(store.selection, selected)
