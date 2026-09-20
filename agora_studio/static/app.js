@@ -1875,6 +1875,11 @@ function aiSdlcWorkPicker() {
   return select;
 }
 
+function aiSdlcTitle(projection, name) {
+  const label = AiSdlcModel.label(projection, name);
+  return label === name ? titleCase(name) : label;
+}
+
 function aiSdlcSourcePill(source) {
   const value = display(source, "unavailable");
   return element("span", { className: `status-pill tone-${value === "unavailable" ? "neutral" : "good"} source-pill`, text: value });
@@ -1884,7 +1889,7 @@ function aiSdlcUnavailable(name, envelope, projection) {
   const reason = envelope?.reason || {};
   return element("section", { className: "ai-sdlc-card is-unavailable", "data-section": name, "data-status": "unavailable", "aria-labelledby": `ai-sdlc-${name}-title` }, [
     element("div", { className: "card-heading" }, [
-      element("h3", { id: `ai-sdlc-${name}-title`, text: AiSdlcModel.label(projection, name) }),
+      element("h3", { id: `ai-sdlc-${name}-title`, text: aiSdlcTitle(projection, name) }),
       element("span", { className: "status-pill tone-neutral", text: "Unavailable" }),
     ]),
     element("p", { className: "muted", text: display(reason.message, "This section is not projected.") }),
@@ -1895,7 +1900,7 @@ function aiSdlcUnavailable(name, envelope, projection) {
 function aiSdlcCard(name, projection, body) {
   return element("section", { className: "ai-sdlc-card", "data-section": name, "data-status": "available", "aria-labelledby": `ai-sdlc-${name}-title` }, [
     element("div", { className: "card-heading" }, [
-      element("h3", { id: `ai-sdlc-${name}-title`, text: AiSdlcModel.label(projection, name) }),
+      element("h3", { id: `ai-sdlc-${name}-title`, text: aiSdlcTitle(projection, name) }),
       element("span", { className: "status-pill tone-good", text: "Available" }),
     ]),
     ...body,

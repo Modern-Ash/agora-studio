@@ -183,7 +183,9 @@ class FixtureProjectionTests(BrowserCase):
         self.assertEqual(page.locator("[data-state-id='construction'] img").count(), 0)
         self.assertIn("<img src=x", page.locator("[data-state-id='construction']").inner_text())
         self.assertFalse(page.evaluate("Boolean(window.pwned)"))
-        self.assertIn("separation", page.locator("[data-section='separation'] h3").inner_text())
+        self.assertIn(
+            "separation", page.locator("[data-section='separation'] h3").inner_text().lower()
+        )
 
     def test_every_unavailable_section_is_explicit_and_independent(self) -> None:
         page = self.show("unavailable")

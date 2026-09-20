@@ -164,6 +164,14 @@ jobs:
           path: core
           persist-credentials: false
 
+      - name: Check out the AI-SDLC flavor (real projection provider)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: Modern-Ash/agora-ai-sdlc
+          ref: main
+          path: flavor
+          persist-credentials: false
+
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
@@ -180,7 +188,8 @@ jobs:
           python -m venv "$RUNNER_TEMP/agora-studio-e2e"
           "$RUNNER_TEMP/agora-studio-e2e/bin/python" -m pip install core/dist/*.whl
           "$RUNNER_TEMP/agora-studio-e2e/bin/python" -m pip install --no-deps dist/*.whl
-          "$RUNNER_TEMP/agora-studio-e2e/bin/python" -m pip install "playwright>=1.54,<2"
+          "$RUNNER_TEMP/agora-studio-e2e/bin/python" -m pip install "playwright>=1.54,<2" "pyyaml>=6" "packaging>=24"
+          "$RUNNER_TEMP/agora-studio-e2e/bin/python" -m pip install --no-deps ./flavor
           "$RUNNER_TEMP/agora-studio-e2e/bin/python" -m playwright install --with-deps chromium
 
       - name: Run real Chromium control-plane scenarios
@@ -190,6 +199,8 @@ jobs:
           cd "$RUNNER_TEMP"
           "$RUNNER_TEMP/agora-studio-e2e/bin/python" -c "from importlib.metadata import version; assert version('agora-framework').startswith('0.9.'); assert version('agora-studio') == '0.6.0'"
           "$RUNNER_TEMP/agora-studio-e2e/bin/python" "$GITHUB_WORKSPACE/e2e/test_chromium.py" -v
+          "$RUNNER_TEMP/agora-studio-e2e/bin/python" "$GITHUB_WORKSPACE/e2e/test_ai_sdlc_chromium.py" -v
+          "$RUNNER_TEMP/agora-studio-e2e/bin/python" "$GITHUB_WORKSPACE/e2e/test_ai_sdlc_real_provider.py" -v
 
       - name: Upload screenshots and traces on failure
         if: failure()
