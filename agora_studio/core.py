@@ -74,7 +74,6 @@ class SelectionError(Exception):
             "error": "project_selection_failed",
             "code": self.code,
             "operation": self.operation,
-            "path": self.path,
             "reason": self.reason,
         }
 
@@ -99,12 +98,12 @@ class ProjectSelection:
     )
 
     def as_dict(self) -> dict[str, str]:
+        """Browser-facing identity; the filesystem path never leaves the server."""
         return {
-            "schema": "agora-studio/api/project-selection/v1",
-            "path": str(self.path),
+            "schema": "agora-studio/api/project-selection/v2",
+            "selection_id": self.selection_id,
             "project": self.project,
             "core_version": self.core_version,
-            "selection_id": self.selection_id,
         }
 
     def as_opaque_dict(self) -> dict[str, str]:
@@ -646,8 +645,12 @@ class CoreReadGateway:
 class ProjectStore:
     """Atomically retain one validated project and expose Core-backed projections."""
 
-    def __init__(self, gateway: ReadGateway | None = None) -> None:
+    def __init__(
+        self, gateway: ReadGateway | None = None, *, allow_path_entry: bool = True
+    ) -> None:
         self._gateway = gateway or CoreReadGateway()
+        self._allow_path_entry = allow_path_entry
+        self._registered: dict[str, ProjectSelection] = {}
         self._selection: ProjectSelection | None = None
         self._lock = RLock()
 
@@ -666,8 +669,11 @@ class ProjectStore:
             raise SelectionError(operation, "", "a project must be selected first")
         return selection
 
-    def select(self, requested_path: object) -> ProjectSelection:
-        operation = "select_project"
+    @property
+    def allow_path_entry(self) -> bool:
+        return self._allow_path_entry
+
+    def _validate(self, requested_path: object, operation: str) -> ProjectSelection:
         if not isinstance(requested_path, str) or not requested_path.strip():
             raise SelectionError(
                 operation, requested_path, "a non-empty directory path is required"
@@ -694,7 +700,50 @@ class ProjectStore:
                 "Agora Core returned no durable project identity",
                 "core.schema-incompatible",
             )
-        validated = ProjectSelection(canonical, project, core_version)
+        return ProjectSelection(canonical, project, core_version)
+
+    def register(self, requested_path: object) -> ProjectSelection:
+        """Trusted-host registration: map a validated local path to a stable opaque id."""
+        validated = self._validate(requested_path, "register_project")
+        with self._lock:
+            for existing in self._registered.values():
+                if existing.path == validated.path:
+                    return existing
+            self._registered[validated.selection_id] = validated
+        return validated
+
+    def registered(self) -> list[ProjectSelection]:
+        with self._lock:
+            return list(self._registered.values())
+
+    def open(self, selection_id: object) -> ProjectSelection:
+        """Select a registered project by its opaque id; the browser never supplies a path."""
+        operation = "select_project"
+        with self._lock:
+            chosen = self._registered.get(selection_id) if isinstance(selection_id, str) else None
+        if chosen is None:
+            raise SelectionError(
+                operation, "", "the project is not registered with this Studio", "selection.unknown"
+            )
+        # Re-validate through Core so a moved or removed project fails closed.
+        current = self._validate(str(chosen.path), operation)
+        selection = ProjectSelection(
+            chosen.path, current.project, current.core_version, chosen.selection_id
+        )
+        with self._lock:
+            self._registered[chosen.selection_id] = selection
+            self._selection = selection
+        return selection
+
+    def select(self, requested_path: object) -> ProjectSelection:
+        if not self._allow_path_entry:
+            raise SelectionError(
+                "select_project",
+                "",
+                "this Studio only opens projects registered by its operator",
+                "selection.path-entry-disabled",
+            )
+        validated = self._validate(requested_path, "select_project")
         with self._lock:
             self._selection = validated
         return validated

@@ -19,7 +19,15 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--port", type=int, default=7357, help="loopback port (default: 7357)")
     parser.add_argument(
         "--project",
-        help="local project directory to open at startup; the browser receives only an opaque id",
+        action="append",
+        default=[],
+        metavar="PATH",
+        help="local project directory to register (repeatable); the browser receives only an opaque id",
+    )
+    parser.add_argument(
+        "--no-path-entry",
+        action="store_true",
+        help="do not let the browser open projects by typed path; only registered projects are available",
     )
     parser.add_argument(
         "--flavor-projector",
@@ -35,9 +43,14 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     try:
         projectors = tuple(load_flavor_projector(spec) for spec in args.flavor_projector)
-        store = ProjectStore(CoreReadGateway(flavor_projectors=projectors))
-        if args.project:
-            store.select(args.project)
+        store = ProjectStore(
+            CoreReadGateway(flavor_projectors=projectors), allow_path_entry=not args.no_path_entry
+        )
+        registered = [store.register(path) for path in args.project]
+        if len(registered) == 1:
+            store.open(registered[0].selection_id)
+        if args.no_path_entry and not registered:
+            raise StartupError("--no-path-entry requires at least one --project")
         server = create_server(args.port, store)
     except (StartupError, SelectionError, FlavorProjectorError) as error:
         print(f"Agora Studio failed to start: {error}", file=sys.stderr)

@@ -97,3 +97,12 @@ lifecycle consistency, non-authoritative presentation, and no path, endpoint or 
 Unknown additive fields and lifecycle state ids pass through untouched. The `selection_id` is issued by
 `ProjectStore` per selection; a stale or forged id is rejected before Core is read. Providers are wired
 only by `--flavor-projector MODULE:FACTORY` at process start, never by the browser.
+
+## Project selection (0.7)
+
+`ProjectStore` maps validated local paths to opaque `selection_id`s. `register(path)` (trusted startup) is
+idempotent per canonical path; `open(selection_id)` re-validates through Core and selects a registered
+project; `select(path)` is the optional typed-path flow and can be disabled with `allow_path_entry=False`.
+Browser-facing DTOs use `project-selection/v2` (no `path`); `GET /api/v1/projects` lists registered projects;
+`POST /api/v1/projects/select` accepts `{"selection_id"}` or `{"path"}`. Server-side code keeps using
+`ProjectSelection.path` internally.
