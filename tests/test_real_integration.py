@@ -324,7 +324,7 @@ class RealCoreStudioIntegrationTests(unittest.TestCase):
                     "POST", "/api/v1/projects/select", {"path": str(project)}
                 )
                 self.assertEqual(status, 200)
-                self.assertEqual(opened["project"]["core_version"], "0.8.0")
+                self.assertEqual(opened["project"]["core_version"], "0.9.0")
 
                 responses = {}
                 for route in (

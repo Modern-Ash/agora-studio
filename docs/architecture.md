@@ -1,6 +1,6 @@
 # Agora Studio architecture
 
-Agora Studio 0.5 is a local-first HTTP and browser adapter over Agora Core 0.8 application
+Agora Studio 0.6 is a local-first HTTP and browser adapter over Agora Core 0.9 application
 services.
 
 ```text
@@ -23,7 +23,7 @@ records.
 
 `ProjectStore` retains one canonical project path in memory only after
 `AgoraReadService.project_overview()` succeeds. `CoreReadGateway` requires the
-`agora-framework>=0.8,<0.9` distribution and validates every consumed DTO's exact schema.
+`agora-framework>=0.9,<0.10` distribution and validates every consumed DTO's exact schema.
 Compatibility failures are explicit and have no CLI or filesystem fallback.
 
 Work detail uses `agora/application/work-item-detail/v2` inside Core's
@@ -86,3 +86,14 @@ boundaries, and recreated frontend readiness heuristics. A separate Playwright s
 scenarios in real Chromium against the same loopback boundary, including canonical preparation,
 unsigned and Ed25519 confirmation, stale refresh, rapid specification-revision switching, response
 ordering, keyboard focus, mobile layout, and safe durable-text rendering.
+
+## AI-SDLC projection (0.6)
+
+`GET /api/v1/ai-sdlc/projection?selection=<id>&swarm=<id>&work=<id>` calls
+`AgoraReadService.flavor_projection` through `CoreReadGateway` and validates the returned aggregate in
+`agora_studio/projection.py`: exact top-level schema, all required sections with a strict
+`available`/`unavailable` envelope, SHA-256 snapshot, project/swarm/work/selection identity match,
+lifecycle consistency, non-authoritative presentation, and no path, endpoint or credential-shaped value.
+Unknown additive fields and lifecycle state ids pass through untouched. The `selection_id` is issued by
+`ProjectStore` per selection; a stale or forged id is rejected before Core is read. Providers are wired
+only by `--flavor-projector MODULE:FACTORY` at process start, never by the browser.

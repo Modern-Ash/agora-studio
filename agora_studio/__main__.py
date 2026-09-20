@@ -6,6 +6,8 @@ import argparse
 import sys
 
 from . import __version__
+from .core import CoreReadGateway, ProjectStore, SelectionError
+from .flavor import FlavorProjectorError, load_flavor_projector
 from .server import StartupError, create_server, server_url
 
 
@@ -15,14 +17,29 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("--port", type=int, default=7357, help="loopback port (default: 7357)")
+    parser.add_argument(
+        "--project",
+        help="local project directory to open at startup; the browser receives only an opaque id",
+    )
+    parser.add_argument(
+        "--flavor-projector",
+        action="append",
+        default=[],
+        metavar="MODULE:FACTORY",
+        help="trusted local factory returning an Agora Core flavor projection provider",
+    )
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     try:
-        server = create_server(args.port)
-    except StartupError as error:
+        projectors = tuple(load_flavor_projector(spec) for spec in args.flavor_projector)
+        store = ProjectStore(CoreReadGateway(flavor_projectors=projectors))
+        if args.project:
+            store.select(args.project)
+        server = create_server(args.port, store)
+    except (StartupError, SelectionError, FlavorProjectorError) as error:
         print(f"Agora Studio failed to start: {error}", file=sys.stderr)
         return 1
 

@@ -225,8 +225,8 @@ def add_specification_history(project: Path) -> None:
 
 
 class RunningStudio:
-    def __init__(self) -> None:
-        self.server = create_server(0, csrf_token="e2e-token")
+    def __init__(self, store: object | None = None) -> None:
+        self.server = create_server(0, store, csrf_token="e2e-token")
         self.port = self.server.server_address[1]
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()

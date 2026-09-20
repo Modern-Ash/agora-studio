@@ -5,7 +5,7 @@
 # Agora Studio
 
 Agora Studio is the experimental, local-first web control plane for Agora projects. Studio 0.5
-renders operational state through Agora Core 0.8 application services and offers one governed
+renders operational state through Agora Core 0.9 application services and offers one governed
 mutation: approving or rejecting an exact gate option calculated by Core.
 
 Developed by [Modern Ash](https://modern-ash.com/).
@@ -44,7 +44,7 @@ el proyecto seleccionado y su estado de sesión local.
 ## Architecture
 
 ```text
-Browser -> /api/v1 -> Studio API -> AgoraReadService / AgoraCommandService -> Agora Core 0.8
+Browser -> /api/v1 -> Studio API -> AgoraReadService / AgoraCommandService -> Agora Core 0.9
 ```
 
 The browser consumes only `/api/v1`. Studio does not execute Agora CLI, spawn subprocesses, read
@@ -117,9 +117,10 @@ python3 -m venv .venv
 | 0.2.x | `agora-framework>=0.5,<0.6` | Core 0.5 read DTOs and gate command v1 | Project-defined and independently versioned |
 | 0.3.x | `agora-framework>=0.6,<0.7` | Work detail v2, work control v1, gate command v2, prepared decision v1, revision detail v1 | Project-defined and independently versioned |
 | 0.5.x | `agora-framework>=0.8,<0.9` | Work control v3, typed gate options v3, gate command v4, prepared decision v3, gate projection v3 | Project-defined and independently versioned |
+| 0.6.x | `agora-framework>=0.9,<0.10` | 0.5.x contracts, gate summary v3, session provenance, `agora-ai-sdlc/studio-projection/v1` through `AgoraReadService.flavor_projection` | Project-defined and independently versioned |
 
-CI builds the minimum compatible Core wheel from immutable tag `v0.8.0`. A separate range matrix
-installs both `agora-framework==0.8.0` and the latest published `agora-framework>=0.8,<0.9` wheel,
+CI builds the minimum compatible Core wheel from immutable tag `v0.9.0`. A separate range matrix
+installs both `agora-framework==0.9.0` and the latest published `agora-framework>=0.9,<0.10` wheel,
 so source integration and the actual public package contract are both exercised.
 
 Three versions must not be conflated:
@@ -195,3 +196,22 @@ for the exercised contracts, browser coverage, distribution smoke, and deliberat
 See [CONTRIBUTING.md](CONTRIBUTING.md). Agora Studio is developed by
 [Modern Ash](https://modern-ash.com/) and licensed under the
 [Apache License 2.0](LICENSE), an open-source license.
+
+## AI-SDLC projection
+
+The **AI-SDLC** view renders the `agora-ai-sdlc/studio-projection/v1` aggregate for one work item:
+flavor and profiles, lifecycle, clarification queue, runtime provenance, review separation and
+Core-backed metrics. Studio only consumes `AgoraReadService.flavor_projection`; it never imports a
+flavor or reads `.agora/`. The browser addresses the project with a server-issued opaque
+`selection_id`, and the response contains no filesystem path. Every section is either `available` or
+explicitly `unavailable`, and an unsupported version, missing section, identity mismatch or
+contradictory lifecycle fails the whole aggregate closed.
+
+Core discovers no flavor by itself. A trusted operator supplies a provider factory at startup:
+
+```bash
+agora-studio --project ~/dev/my-project --flavor-projector my_flavor.studio:projector
+```
+
+Without a provider the view reports that no projection is available and every other view keeps
+working.

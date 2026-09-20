@@ -180,7 +180,7 @@ def valid_preparation() -> dict[str, object]:
 
 class CommandGatewayTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.selection = ProjectSelection(Path("/tmp/demo"), "demo", "0.8.0")
+        self.selection = ProjectSelection(Path("/tmp/demo"), "demo", "0.9.0")
         self.gateway = CoreCommandGateway()
         self.bindings = patch.object(
             CoreCommandGateway,

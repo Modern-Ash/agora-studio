@@ -21,6 +21,7 @@ from .commands import (
 )
 from .core import ActivityQueryError, CoreGatewayError, ProjectStore, SelectionError
 from .lifecycle import LifecycleError, build_lifecycle, normalize_lifecycle_query
+from .projection import ProjectionError
 
 
 class StartupError(Exception):
@@ -54,6 +55,7 @@ _ASSETS = {
     "artifacts-model.js": (_STATIC_ROOT / "artifacts-model.js", "text/javascript; charset=utf-8"),
     "dashboard-model.js": (_STATIC_ROOT / "dashboard-model.js", "text/javascript; charset=utf-8"),
     "control-model.js": (_STATIC_ROOT / "control-model.js", "text/javascript; charset=utf-8"),
+    "ai-sdlc-model.js": (_STATIC_ROOT / "ai-sdlc-model.js", "text/javascript; charset=utf-8"),
     "app.js": (_STATIC_ROOT / "app.js", "text/javascript; charset=utf-8"),
     "agora-mark.png": (_STATIC_ROOT / "agora-mark.png", "image/png"),
     "agora-logo.png": (_STATIC_ROOT / "agora-logo.png", "image/png"),
@@ -96,6 +98,19 @@ _COMMAND_STATUS = {
     "command.invalid": 400,
     "invalid_request": 400,
 }
+
+
+_PROJECTION_STATUS = {
+    "projection.invalid-request": 400,
+    "projection.unsupported-version": 426,
+}
+
+
+def _single(values: Mapping[str, object], key: str) -> object:
+    raw = values.get(key)
+    if isinstance(raw, (list, tuple)):
+        return raw[0] if len(raw) == 1 else None
+    return raw
 
 
 def _error(code: str, reason: str) -> dict[str, str]:
@@ -241,6 +256,11 @@ def handle_api(
             return 200, store.collection(collections[route])
         if route == "/api/v1/activity":
             return 200, store.activity(query)
+        if route == "/api/v1/ai-sdlc/projection":
+            values = query or {}
+            return 200, store.ai_sdlc_projection(
+                _single(values, "selection"), _single(values, "swarm"), _single(values, "work")
+            )
         if route == "/api/v1/lifecycle":
             return 200, build_lifecycle(store, query)
         if route in {
@@ -306,7 +326,11 @@ def handle_api(
         return (404 if error.kind == "not_found" else 400), _error(error.kind, error.reason)
     except ArtifactsError as error:
         return (404 if error.kind == "not_found" else 400), _error(error.kind, error.reason)
+    except ProjectionError as error:
+        return _PROJECTION_STATUS.get(error.code, 502), _error(error.code, error.reason)
     except SelectionError as error:
+        if error.code == "selection.stale":
+            return 409, _error("selection_stale", error.reason)
         return 409, _error("project_required", error.reason)
     except CoreGatewayError as error:
         return _core_status(error), _error(error.code, error.reason)
