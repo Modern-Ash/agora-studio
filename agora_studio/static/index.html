@@ -7,14 +7,14 @@
   <meta name="theme-color" content="#060913">
   <title>Agora Studio — Process control</title>
   <link rel="icon" href="/assets/agora-mark.png" type="image/png">
-  <link rel="stylesheet" href="/assets/styles.css?v=0.6.0">
-  <script src="/assets/activity-model.js?v=0.6.0" defer></script>
-  <script src="/assets/lifecycle-model.js?v=0.6.0" defer></script>
-  <script src="/assets/artifacts-model.js?v=0.6.0" defer></script>
-  <script src="/assets/dashboard-model.js?v=0.6.0" defer></script>
-  <script src="/assets/control-model.js?v=0.6.0" defer></script>
-  <script src="/assets/ai-sdlc-model.js?v=0.6.0" defer></script>
-  <script src="/assets/app.js?v=0.6.0" defer></script>
+  <link rel="stylesheet" href="/assets/styles.css?v=0.7.0">
+  <script src="/assets/activity-model.js?v=0.7.0" defer></script>
+  <script src="/assets/lifecycle-model.js?v=0.7.0" defer></script>
+  <script src="/assets/artifacts-model.js?v=0.7.0" defer></script>
+  <script src="/assets/dashboard-model.js?v=0.7.0" defer></script>
+  <script src="/assets/control-model.js?v=0.7.0" defer></script>
+  <script src="/assets/ai-sdlc-model.js?v=0.7.0" defer></script>
+  <script src="/assets/app.js?v=0.7.0" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to process status</a>
@@ -80,12 +80,14 @@
       <main id="main-content" tabindex="-1">
         <section class="project-bar" aria-labelledby="project-path-label">
           <form id="project-form" novalidate>
-            <label id="project-path-label" for="project-path">Project directory</label>
+            <label id="project-choice-label" for="project-choice" hidden>Registered project</label>
+            <select id="project-choice" name="selection_id" aria-describedby="project-path-error" hidden></select>
+            <label id="project-path-label" for="project-path" data-path-entry>Project directory</label>
             <div class="project-control">
-              <input id="project-path" name="path" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="/home/you/dev/agora-project" aria-describedby="project-path-help project-path-error" required>
+              <input id="project-path" name="path" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="/home/you/dev/agora-project" aria-describedby="project-path-help project-path-error" required data-path-entry>
               <button id="open-button" class="primary-button" type="submit">Open</button>
             </div>
-            <span id="project-path-help" class="field-help">Local path to an Agora project</span>
+            <span id="project-path-help" class="field-help" data-path-entry>Local path to an Agora project</span>
             <span id="project-path-error" class="field-error" role="alert"></span>
           </form>
           <div id="selected-project" class="selection-chip" hidden>

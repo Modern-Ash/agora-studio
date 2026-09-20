@@ -219,15 +219,31 @@ def handle_api(
         return 200, {
             "schema": "agora-studio/api/session/v1",
             "project": selection.as_dict() if selection else None,
+            "path_entry": store.allow_path_entry,
             "csrf_token": csrf_token,
+        }
+    if method == "GET" and route == "/api/v1/projects":
+        return 200, {
+            "schema": "agora-studio/api/projects/v1",
+            "path_entry": store.allow_path_entry,
+            "projects": [item.as_dict() for item in store.registered()],
         }
     if method == "POST" and route == "/api/v1/projects/select":
         if not isinstance(payload, dict):
             return 400, _error("invalid_request", "the JSON body must be an object")
         try:
-            selected = store.select(payload.get("path"))
+            if "selection_id" in payload:
+                selected = store.open(payload.get("selection_id"))
+            else:
+                selected = store.select(payload.get("path"))
         except SelectionError as error:
-            status = 426 if error.code.startswith("core.") else 400
+            status = (
+                426
+                if error.code.startswith("core.")
+                else 403
+                if error.code == "selection.path-entry-disabled"
+                else 400
+            )
             return status, error.as_dict()
         return 200, {
             "schema": "agora-studio/api/project-opened/v1",

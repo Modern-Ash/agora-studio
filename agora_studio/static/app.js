@@ -50,7 +50,7 @@ const state = {
   enrichmentLoading: false,
   generation: 0,
   gateAction: newGateAction(),
-  selectionPath: "",
+  selectionKey: "",
   selectedWork: null,
   selectedTab: "summary",
   selectedRevision: null,
@@ -79,12 +79,17 @@ const state = {
   view: "overview",
   loading: false,
   csrfToken: "",
+  pathEntry: true,
+  registered: [],
 };
 
 const nodes = {
   content: document.querySelector("#content"),
   error: document.querySelector("#project-path-error"),
   form: document.querySelector("#project-form"),
+  choice: document.querySelector("#project-choice"),
+  choiceLabel: document.querySelector("#project-choice-label"),
+  pathControls: [...document.querySelectorAll("[data-path-entry]")],
   input: document.querySelector("#project-path"),
   live: document.querySelector("#live-status"),
   method: document.querySelector("#method-badge"),
@@ -301,7 +306,7 @@ function resetAiSdlc() {
 }
 
 function setSelection(selection) {
-  if (state.selectionPath && state.selectionPath !== selection.path) {
+  if (state.selectionKey && state.selectionKey !== selection.selection_id) {
     state.generation += 1;
     state.activity = null;
     state.activityError = "";
@@ -327,11 +332,12 @@ function setSelection(selection) {
     resetAiSdlc();
   }
   state.selectionId = selection.selection_id || "";
-  state.selectionPath = selection.path;
+  state.selectionKey = selection.selection_id || "";
   nodes.selection.hidden = false;
   nodes.selectionName.textContent = selection.project;
-  nodes.selectionName.title = selection.path;
-  nodes.input.value = selection.path;
+  nodes.selectionName.removeAttribute("title");
+  nodes.input.value = "";
+  if (nodes.choice.querySelector(`option[value="${CSS.escape(state.selectionKey)}"]`)) nodes.choice.value = state.selectionKey;
 }
 
 function syncChrome() {
@@ -559,7 +565,7 @@ function renderSummaryTab(work, detail) {
 
 function revisionKey(work, revisionId) {
   return ControlModel.revisionToken(
-    state.selectionPath,
+    state.selectionKey,
     DashboardModel.workKey(work),
     revisionId,
   );
@@ -833,7 +839,7 @@ async function prepareGateDecision(work, detail) {
 async function refreshAfterGateDecision(work) {
   const key = DashboardModel.workKey(work);
   const generation = state.generation;
-  const selectionPath = state.selectionPath;
+  const selectionKey = state.selectionKey;
   const revision = ++state.mutationRevision;
   state.detailRequests.get(key)?.controller?.abort();
   state.detailRequests.delete(key);
@@ -847,7 +853,7 @@ async function refreshAfterGateDecision(work) {
   if (
     revision !== state.mutationRevision
     || generation !== state.generation
-    || selectionPath !== state.selectionPath
+    || selectionKey !== state.selectionKey
     || state.selectedWork !== key
   ) return false;
   state.overview = overview;
@@ -1577,7 +1583,7 @@ function renderLifecycle() {
 async function loadLifecycle(message = "Loading lifecycle") {
   if (!state.lifecycleWork || state.lifecycleLoading) return;
   const request = ++state.generation;
-  const projectPath = state.selectionPath;
+  const projectPath = state.selectionKey;
   const scope = `${state.lifecycleWork.swarm_id}/${state.lifecycleWork.id}`;
   state.lifecycleLoading = true;
   state.lifecycleError = "";
@@ -1587,13 +1593,13 @@ async function loadLifecycle(message = "Loading lifecycle") {
   try {
     const query = `swarm=${encodeURIComponent(state.lifecycleWork.swarm_id)}&work=${encodeURIComponent(state.lifecycleWork.id)}`;
     const payload = await requestJson(`${API_ROOT}/lifecycle?${query}`);
-    if (request !== state.generation || projectPath !== state.selectionPath || scope !== `${state.lifecycleWork?.swarm_id}/${state.lifecycleWork?.id}`) return;
+    if (request !== state.generation || projectPath !== state.selectionKey || scope !== `${state.lifecycleWork?.swarm_id}/${state.lifecycleWork?.id}`) return;
     state.lifecycle = payload;
     state.lifecycleLoading = false;
     renderLifecycle();
     announce(`Lifecycle loaded for ${scope}.${payload.availability?.partial ? " Some layers are explicitly unavailable." : ""}`);
   } catch (error) {
-    if (request !== state.generation || projectPath !== state.selectionPath) return;
+    if (request !== state.generation || projectPath !== state.selectionKey) return;
     state.lifecycleError = error.message;
     state.lifecycleLoading = false;
     renderLifecycle();
@@ -1609,16 +1615,16 @@ async function loadLifecycle(message = "Loading lifecycle") {
 async function loadRevisionDetail(revision) {
   if (!state.lifecycleWork || state.revisionDetails.has(revision)) return;
   const request = state.generation;
-  const projectPath = state.selectionPath;
+  const projectPath = state.selectionKey;
   state.revisionDetails.set(revision, "loading");
   renderLifecycle();
   try {
     const query = `swarm=${encodeURIComponent(state.lifecycleWork.swarm_id)}&work=${encodeURIComponent(state.lifecycleWork.id)}&revision=${encodeURIComponent(revision)}`;
     const payload = await requestJson(`${API_ROOT}/specification-revisions/${encodeURIComponent(revision)}?${query}`);
-    if (request !== state.generation || projectPath !== state.selectionPath) return;
+    if (request !== state.generation || projectPath !== state.selectionKey) return;
     state.revisionDetails.set(revision, payload);
   } catch (error) {
-    if (request !== state.generation || projectPath !== state.selectionPath) return;
+    if (request !== state.generation || projectPath !== state.selectionKey) return;
     state.revisionDetails.set(revision, { error: error.message });
   }
   renderLifecycle();
@@ -1820,7 +1826,7 @@ async function loadArtifacts(message = "Loading artifacts") {
   state.artifactsRequest?.abort();
   const controller = new AbortController();
   const request = ++state.generation;
-  const projectPath = state.selectionPath;
+  const projectPath = state.selectionKey;
   const scope = `${state.artifactsWork.swarm_id}/${state.artifactsWork.id}`;
   state.artifactsLoading = true;
   state.artifactsError = "";
@@ -1831,7 +1837,7 @@ async function loadArtifacts(message = "Loading artifacts") {
   try {
     const query = `swarm=${encodeURIComponent(state.artifactsWork.swarm_id)}&work=${encodeURIComponent(state.artifactsWork.id)}`;
     const payload = await requestJson(`${API_ROOT}/artifacts?${query}`, { signal: controller.signal });
-    if (request !== state.generation || projectPath !== state.selectionPath || scope !== `${state.artifactsWork?.swarm_id}/${state.artifactsWork?.id}`) return;
+    if (request !== state.generation || projectPath !== state.selectionKey || scope !== `${state.artifactsWork?.swarm_id}/${state.artifactsWork?.id}`) return;
     state.artifacts = payload;
     state.artifactsLoading = false;
     state.artifactsRequest = null;
@@ -1839,7 +1845,7 @@ async function loadArtifacts(message = "Loading artifacts") {
     announce(`Artifacts loaded for ${scope}: ${payload.artifacts.length} artifacts, ${payload.evidence.length} evidence records, ${payload.approvals.satisfaction.length} required approval roles.`);
   } catch (error) {
     if (controller.signal.aborted) return;
-    if (request !== state.generation || projectPath !== state.selectionPath) return;
+    if (request !== state.generation || projectPath !== state.selectionKey) return;
     state.artifactsError = error.message;
     state.artifactsLoading = false;
     state.artifactsRequest = null;
@@ -2071,7 +2077,7 @@ function renderAiSdlc() {
 async function loadAiSdlc(message = "Loading AI-SDLC projection") {
   if (!state.aiSdlcWork || state.aiSdlcLoading) return;
   const request = ++state.generation;
-  const projectPath = state.selectionPath;
+  const projectPath = state.selectionKey;
   const scope = `${state.aiSdlcWork.swarm_id}/${state.aiSdlcWork.id}`;
   const controller = new AbortController();
   state.aiSdlcRequest = controller;
@@ -2084,7 +2090,7 @@ async function loadAiSdlc(message = "Loading AI-SDLC projection") {
   try {
     const query = `selection=${encodeURIComponent(state.selectionId)}&swarm=${encodeURIComponent(state.aiSdlcWork.swarm_id)}&work=${encodeURIComponent(state.aiSdlcWork.id)}`;
     const payload = await requestJson(`${API_ROOT}/ai-sdlc/projection?${query}`, { signal: controller.signal });
-    if (request !== state.generation || projectPath !== state.selectionPath || scope !== `${state.aiSdlcWork?.swarm_id}/${state.aiSdlcWork?.id}`) return;
+    if (request !== state.generation || projectPath !== state.selectionKey || scope !== `${state.aiSdlcWork?.swarm_id}/${state.aiSdlcWork?.id}`) return;
     const previous = state.aiSdlc?.projection?.project?.snapshot;
     const next = payload.projection.project.snapshot;
     if (previous && previous !== next) state.aiSdlcNotice = "Durable state changed since the last read. The view was refreshed.";
@@ -2093,7 +2099,7 @@ async function loadAiSdlc(message = "Loading AI-SDLC projection") {
     renderAiSdlc();
     announce(`AI-SDLC projection loaded for ${scope}.`);
   } catch (error) {
-    if (error.name === "AbortError" || request !== state.generation || projectPath !== state.selectionPath) return;
+    if (error.name === "AbortError" || request !== state.generation || projectPath !== state.selectionKey) return;
     state.aiSdlcError = error.message;
     state.aiSdlcLoading = false;
     renderAiSdlc();
@@ -2199,7 +2205,7 @@ async function ensureWorkDetail(work) {
   if (state.detailRequests.has(key)) return state.detailRequests.get(key).promise;
   if (state.details[key] && !state.details[key].loading) return state.details[key];
   const generation = state.generation;
-  const selectionPath = state.selectionPath;
+  const selectionKey = state.selectionKey;
   const revision = ++state.controlRevision;
   const controller = new AbortController();
   const request = (async () => {
@@ -2219,7 +2225,7 @@ async function ensureWorkDetail(work) {
     const active = state.detailRequests.get(key);
     if (
       generation !== state.generation
-      || selectionPath !== state.selectionPath
+      || selectionKey !== state.selectionKey
       || active?.revision !== revision
     ) return null;
     state.details[key] = {
@@ -2284,12 +2290,13 @@ nodes.form.addEventListener("submit", async (event) => {
   state.revisionRequest = null;
   nodes.error.textContent = "";
   nodes.input.removeAttribute("aria-invalid");
-  setLoading(true, "Validating project path");
+  const choosing = state.registered.length > 0 && (!state.pathEntry || !nodes.input.value.trim());
+  setLoading(true, choosing ? "Opening registered project" : "Validating project path");
   try {
     const payload = await requestJson(`${API_ROOT}/projects/select`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path: nodes.input.value }),
+      body: JSON.stringify(choosing ? { selection_id: nodes.choice.value } : { path: nodes.input.value }),
     });
     resetProjectData();
     setSelection(payload.project);
@@ -2321,10 +2328,23 @@ nodes.nav.forEach((button) => button.addEventListener("click", () => {
   if (state.overview) switchView(button.dataset.view);
 }));
 
+function renderProjectChoice() {
+  const hasChoices = state.registered.length > 0;
+  nodes.choice.hidden = !hasChoices;
+  nodes.choiceLabel.hidden = !hasChoices;
+  nodes.choice.replaceChildren(...state.registered.map((item) => element("option", { value: item.selection_id, text: item.project })));
+  nodes.pathControls.forEach((node) => { node.hidden = !state.pathEntry; });
+  nodes.input.required = state.pathEntry && !hasChoices;
+}
+
 (async function restoreSelection() {
   try {
     const payload = await requestJson(`${API_ROOT}/project`);
     state.csrfToken = payload.csrf_token || "";
+    state.pathEntry = payload.path_entry !== false;
+    const projects = await requestJson(`${API_ROOT}/projects`);
+    state.registered = projects.projects || [];
+    renderProjectChoice();
     if (payload.project) {
       setSelection(payload.project);
       await loadOverview("Restoring selected project");

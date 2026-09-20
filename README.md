@@ -117,7 +117,7 @@ python3 -m venv .venv
 | 0.2.x | `agora-framework>=0.5,<0.6` | Core 0.5 read DTOs and gate command v1 | Project-defined and independently versioned |
 | 0.3.x | `agora-framework>=0.6,<0.7` | Work detail v2, work control v1, gate command v2, prepared decision v1, revision detail v1 | Project-defined and independently versioned |
 | 0.5.x | `agora-framework>=0.8,<0.9` | Work control v3, typed gate options v3, gate command v4, prepared decision v3, gate projection v3 | Project-defined and independently versioned |
-| 0.6.x | `agora-framework>=0.9,<0.10` | 0.5.x contracts, gate summary v3, session provenance, `agora-ai-sdlc/studio-projection/v1` through `AgoraReadService.flavor_projection` | Project-defined and independently versioned |
+| 0.6.x, 0.7.x | `agora-framework>=0.9,<0.10` | 0.5.x contracts, gate summary v3, session provenance, `agora-ai-sdlc/studio-projection/v1` through `AgoraReadService.flavor_projection` | Project-defined and independently versioned |
 
 CI builds the minimum compatible Core wheel from immutable tag `v0.9.0`. A separate range matrix
 installs both `agora-framework==0.9.0` and the latest published `agora-framework>=0.9,<0.10` wheel,
@@ -215,3 +215,19 @@ agora-studio --project ~/dev/my-project --flavor-projector my_flavor.studio:proj
 
 Without a provider the view reports that no projection is available and every other view keeps
 working.
+
+## Project selection and paths
+
+The browser never receives a filesystem path. Every selection carries a server-issued opaque
+`selection_id` and the logical project name; `path` is not part of `agora-studio/api/project-selection/v2`,
+selection errors do not echo the requested path, and the project bar does not show it. A trusted operator can
+register projects at startup and forbid typed paths:
+
+```bash
+agora-studio --project ~/dev/payments-api --project ~/dev/ledger --no-path-entry
+```
+
+Registered projects appear in a chooser and open by `selection_id`. With one `--project` Studio opens it
+immediately. Without `--no-path-entry` the typed-path form remains available for local use; the path is only
+sent from the browser to the loopback server and is not echoed back. `--no-path-entry` requires at least one
+`--project`.

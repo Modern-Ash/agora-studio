@@ -65,7 +65,7 @@ jobs:
           "$RUNNER_TEMP/agora-studio-wheel/bin/python" -m pip install --no-deps dist/*.whl
           cd "$RUNNER_TEMP"
           "./agora-studio-wheel/bin/agora-studio" --version
-          "./agora-studio-wheel/bin/python" -c "from importlib.metadata import version; assert version('agora-studio') == '0.6.0'; assert version('agora-framework').startswith('0.9.')"
+          "./agora-studio-wheel/bin/python" -c "from importlib.metadata import version; assert version('agora-studio') == '0.7.0'; assert version('agora-framework').startswith('0.9.')"
           "./agora-studio-wheel/bin/python" -c "from importlib.resources import files; root = files('agora_studio') / 'static'; assert (root / 'index.html').is_file(); assert (root / 'control-model.js').is_file(); assert (root / 'agora-mark.png').is_file()"
 
   wheel-integration:
@@ -109,7 +109,7 @@ jobs:
         run: |
           cd "$RUNNER_TEMP"
           agora-studio --version
-          python -c "from importlib.metadata import version; assert version('agora-framework') == '0.9.0'; assert version('agora-studio') == '0.6.0'"
+          python -c "from importlib.metadata import version; assert version('agora-framework') == '0.9.0'; assert version('agora-studio') == '0.7.0'"
 
   core-range:
     name: Core ${{ matrix.core }}
@@ -197,9 +197,10 @@ jobs:
           E2E_ARTIFACT_DIR: ${{ github.workspace }}/test-results/e2e
         run: |
           cd "$RUNNER_TEMP"
-          "$RUNNER_TEMP/agora-studio-e2e/bin/python" -c "from importlib.metadata import version; assert version('agora-framework').startswith('0.9.'); assert version('agora-studio') == '0.6.0'"
+          "$RUNNER_TEMP/agora-studio-e2e/bin/python" -c "from importlib.metadata import version; assert version('agora-framework').startswith('0.9.'); assert version('agora-studio') == '0.7.0'"
           "$RUNNER_TEMP/agora-studio-e2e/bin/python" "$GITHUB_WORKSPACE/e2e/test_chromium.py" -v
           "$RUNNER_TEMP/agora-studio-e2e/bin/python" "$GITHUB_WORKSPACE/e2e/test_ai_sdlc_chromium.py" -v
+          "$RUNNER_TEMP/agora-studio-e2e/bin/python" "$GITHUB_WORKSPACE/e2e/test_project_selection_privacy.py" -v
           "$RUNNER_TEMP/agora-studio-e2e/bin/python" "$GITHUB_WORKSPACE/e2e/test_ai_sdlc_real_provider.py" -v
 
       - name: Upload screenshots and traces on failure
